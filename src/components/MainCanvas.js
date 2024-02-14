@@ -158,7 +158,7 @@ export default function MainCanvas() {
         let tblName = document.querySelector("#tblName").value;
         document.querySelector("#tblName").value = '';
         let new_element = null, last_element = null;
-        if(all_tbls==null){
+        if(all_tbls == null || all_tbls.length < 1){ // second condition is necessary after deleting all tables, state doesn't become null but empty array
             all_tbls = [{ name: tblName, x: 20, y: 20, w: 150, h: 40, rh: 20, fields: [{ name: 'id', type: 'int' }] }];
         }else{
             last_element = all_tbls[all_tbls.length - 1];
@@ -171,21 +171,19 @@ export default function MainCanvas() {
         draw();
     }
 
-    //zoom into the canvas
-    function incsize() {
-        const canvas = document.getElementById("canvas");
-        const ctxt = canvas.getContext("2d");
-        ctxt.scale(1.25, 1.25);
+    //delete the selected table
+    function delTbl(){
+        if(tbls == null){
+            return;
+        }
+        let all_tbls = tbls;
+        if(selections.selectedTbl>-1){
+            all_tbls.splice(selections.selectedTbl,1); //splice(index,number of items to be deleted)
+        }
+        setTbls(all_tbls);
         draw();
     }
 
-    //zoom out of the canvas
-    function decsize() {
-        const canvas = document.getElementById("canvas");
-        const ctxt = canvas.getContext("2d");
-        ctxt.scale(0.75, 0.75);
-        draw();
-    }
     return (
         <>
             <div className='m-3 border'>
@@ -194,6 +192,7 @@ export default function MainCanvas() {
                 <button className='btn btn-success mx-2' data-bs-toggle="modal" data-bs-target="#addTblModal">Add Table</button>
                 <button className='btn btn-success mx-2' data-bs-toggle="modal" data-bs-target="#addRowModal">Add Row</button>
                 <button className='btn btn-success mx-2' onClick={delRow}>Delete Row</button>
+                <button className='btn btn-danger mx-2' data-bs-toggle="modal" data-bs-target="#delTblModal">Delete Table</button>
             </div>
             <div className="modal fade" id="addTblModal" data-bs-keyboard="false" tabindex="-1" aria-labelledby="addTblModalLabel" aria-hidden="true">
                 <div className="modal-dialog">
@@ -240,6 +239,23 @@ export default function MainCanvas() {
                         <div className="modal-footer">
                             <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                             <button type="button" className="btn btn-primary" onClick={addRow}>Add</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div className="modal fade" id="delTblModal" data-bs-keyboard="false" tabindex="-1" aria-labelledby="delTblModalLabel" aria-hidden="true">
+                <div className="modal-dialog">
+                    <div className="modal-content">
+                        <div className="modal-header">
+                            <h1 className="modal-title fs-5" id="delTblModalLabel">Delete Table</h1>
+                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div className="modal-body">
+                            <p>Do you want to delete the selected table?</p>
+                        </div>
+                        <div className="modal-footer">
+                            <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <button type="button" className="btn btn-primary" data-bs-dismiss="modal" onClick={delTbl}>Yes, Delete</button>
                         </div>
                     </div>
                 </div>
