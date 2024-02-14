@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import { useState } from 'react';
 
 export default function MainCanvas() {
-    const [tbls, setTbls] = useState([{ name: 'defaultTable', x: 0, y: 0, w: 150, h: 40, rh: 20, fields: [{ name: 'id', type: 'int' }] }]);
+    const [tbls, setTbls] = useState([{ name: 'table1', x: 20, y: 20, w: 150, h: 40, rh: 20, fields: [{ name: 'id', type: 'int' }] }]);
     const [selections, setSelections] = useState({ selectedTbl: 0, is_dragging: false });
     useEffect(draw);
     let startX; //these are used to determine initial position of pointer
@@ -87,6 +87,9 @@ export default function MainCanvas() {
         ctxt.font = '20px serif';
         ctxt.clearRect(0, 0, canvas.width, canvas.height);
         let index = 0;
+        if(tbls == null){
+            return;
+        }
         for (let tbl of tbls) {
             ctxt.strokeStyle = "orange";
             if (index === selections.selectedTbl) {
@@ -154,11 +157,16 @@ export default function MainCanvas() {
         let all_tbls = tbls;
         let tblName = document.querySelector("#tblName").value;
         document.querySelector("#tblName").value = '';
-        let last_element = all_tbls[all_tbls.length - 1];
-        let new_element = { name: tblName, x: last_element.x + 50, y: last_element.y + 50, w: 150, h: 40, rh: 20, fields: [{ name: 'id', type: 'int' }] };
-        new_element.x = last_element.x + 50;
-        new_element.y = last_element.y + 50;
-        all_tbls.push(new_element);
+        let new_element = null, last_element = null;
+        if(all_tbls==null){
+            all_tbls = [{ name: tblName, x: 20, y: 20, w: 150, h: 40, rh: 20, fields: [{ name: 'id', type: 'int' }] }];
+        }else{
+            last_element = all_tbls[all_tbls.length - 1];
+            new_element = { name: tblName, x: last_element.x + 50, y: last_element.y + 50, w: 150, h: 40, rh: 20, fields: [{ name: 'id', type: 'int' }] };
+            new_element.x = last_element.x + 50;
+            new_element.y = last_element.y + 50;
+            all_tbls.push(new_element);
+        }
         setTbls(all_tbls);
         draw();
     }
