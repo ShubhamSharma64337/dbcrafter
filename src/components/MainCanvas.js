@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import { useState } from 'react';
 
 export default function MainCanvas() {
-    const [tbls, setTbls] = useState([{ x: 0, y: 0, w: 150, h: 40, rh: 20, fields: [{ name: 'id', type: 'int' }] }]);
+    const [tbls, setTbls] = useState([{ name: 'defaultTable', x: 0, y: 0, w: 150, h: 40, rh: 20, fields: [{ name: 'id', type: 'int' }] }]);
     const [selections, setSelections] = useState({ selectedTbl: 0, is_dragging: false });
     useEffect(draw);
     let startX; //these are used to determine initial position of pointer
@@ -105,6 +105,9 @@ export default function MainCanvas() {
             ctxt.lineTo(tbl.x + tbl.w * 0.5, tbl.y + tbl.h);
             ctxt.stroke();
 
+            //printing the table name
+            ctxt.fillText(tbl.name, tbl.x, tbl.y - tbl.rh*0.2);
+
             //now creating all other fields and their upper row borders
             let row_index = 1;
             for (let row of tbl.fields) {
@@ -149,8 +152,10 @@ export default function MainCanvas() {
     //this function is used to add new table to the canvas
     function addTbl() {
         let all_tbls = tbls;
+        let tblName = document.querySelector("#tblName").value;
+        document.querySelector("#tblName").value = '';
         let last_element = all_tbls[all_tbls.length - 1];
-        let new_element = { x: last_element.x + 50, y: last_element.y + 50, w: 150, h: 40, rh: 20, fields: [{ name: 'id', type: 'int' }] };
+        let new_element = { name: tblName, x: last_element.x + 50, y: last_element.y + 50, w: 150, h: 40, rh: 20, fields: [{ name: 'id', type: 'int' }] };
         new_element.x = last_element.x + 50;
         new_element.y = last_element.y + 50;
         all_tbls.push(new_element);
@@ -191,8 +196,8 @@ export default function MainCanvas() {
                         </div>
                         <div className="modal-body">
                             <div className="mb-3">
-                                <label for="exampleFormControlInput1" className="form-label">Table Name</label>
-                                <input type="text" className="form-control" id="exampleFormControlInput1" placeholder="Enter name of table"/>
+                                <label for="tblName" className="form-label">Table Name</label>
+                                <input type="text" className="form-control" id="tblName" placeholder="Enter name of table"/>
                             </div>
                             <div className="mb-3">
                                 <label for="exampleFormControlTextarea1" className="form-label">Example textarea</label>
