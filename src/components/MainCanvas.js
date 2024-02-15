@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react'
 import { useState } from 'react';
+import background from './../graph-paper.svg';
 
 export default function MainCanvas() {
     const [tbls, setTbls] = useState([{ name: 'table1', x: 20, y: 20, w: 150, h: 40, rh: 20, fields: [{ name: 'id', type: 'int' }] }]);
@@ -84,6 +85,10 @@ export default function MainCanvas() {
     function draw() {
         const canvas = document.getElementById("canvas");
         const ctxt = canvas.getContext("2d");
+        //setting width and height properly
+        const nav_height = document.querySelector(".navbar").clientHeight;
+        ctxt.canvas.height = window.innerHeight - nav_height;
+        ctxt.canvas.width = window.innerWidth;
         ctxt.font = '20px serif';
         ctxt.clearRect(0, 0, canvas.width, canvas.height);
         let index = 0;
@@ -126,7 +131,6 @@ export default function MainCanvas() {
         }
     }
 
-    window.document.onload = draw;
     //adds fields to the selectedTblIndex table
     function addRow() {
         let key = document.querySelector("#fieldName").value;
@@ -156,6 +160,12 @@ export default function MainCanvas() {
     function addTbl() {
         let all_tbls = tbls;
         let tblName = document.querySelector("#tblName").value;
+        //checking if table name already exists
+        for(let tbl of tbls){
+            if(tblName == tbl.name){
+                return;
+            }
+        }
         document.querySelector("#tblName").value = '';
         let new_element = null, last_element = null;
         if(all_tbls == null || all_tbls.length < 1){ // second condition is necessary after deleting all tables, state doesn't become null but empty array
@@ -185,20 +195,26 @@ export default function MainCanvas() {
     }
 
     return (
-        <>
-            <div className='m-3 border'>
-                <canvas id='canvas' className='border border-danger' width='1000' height='600' onMouseDown={handleMouseDown} onMouseMove={tblDragHandler} onMouseUp={handleMouseUp}></canvas>
-                <br></br>
-                <button className='btn btn-success mx-2' data-bs-toggle="modal" data-bs-target="#addTblModal">Add Table</button>
-                <button className='btn btn-success mx-2' data-bs-toggle="modal" data-bs-target="#addRowModal">Add Row</button>
-                <button className='btn btn-success mx-2' onClick={delRow}>Delete Row</button>
-                <button className='btn btn-danger mx-2' data-bs-toggle="modal" data-bs-target="#delTblModal">Delete Table</button>
+        <div className='canvas-div' style={{ backgroundImage: `url(${background})`}}>
+            <canvas id='canvas' width={window.innerWidth} height={window.innerHeight} onMouseDown={handleMouseDown} onMouseMove={tblDragHandler} onMouseUp={handleMouseUp}></canvas>
+            <div class='action-bar fixed-bottom d-flex justify-content-center align-items-center'>
+                <ul className='border border-warning my-3 p-0 bg-white rounded-3 d-flex align-items-center' style={{listStyle: 'none'}}>
+                    <div class='action-button mx-2 my-0'>
+                        <button className='btn' data-bs-target='#addTblModal' data-bs-toggle='modal' data-bs-dismiss='modal'><i class="bi bi-file-plus-fill text-warning fs-3"></i></button>
+                    </div>
+                    <div class='action-button mx-2 my-0'>
+                        <button className='btn' data-bs-target='#delTblModal' data-bs-toggle='modal' data-bs-dismiss='modal'><i class="bi bi-file-minus-fill fs-3 text-warning"></i></button>
+                    </div>
+                    <div class='action-button mx-2 my-0'>
+                        <button className='btn' data-bs-target='#addRowModal' data-bs-toggle='modal' data-bs-dismiss='modal'><i class="bi bi-node-plus-fill fs-3 text-warning"></i></button>
+                    </div>
+                </ul>
             </div>
             <div className="modal fade" id="addTblModal" data-bs-keyboard="false" tabindex="-1" aria-labelledby="addTblModalLabel" aria-hidden="true">
-                <div className="modal-dialog">
+                <div className="modal-dialog modal-dialog-centered">
                     <div className="modal-content">
                         <div className="modal-header">
-                            <h1 className="modal-title fs-5" id="addTblModalLabel">Add Table</h1>
+                            <h1 className="modal-title fs-5"  id="addTblModalLabel">Add Table</h1>
                             <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div className="modal-body">
@@ -206,24 +222,20 @@ export default function MainCanvas() {
                                 <label for="tblName" className="form-label">Table Name</label>
                                 <input type="text" className="form-control" id="tblName" placeholder="Enter name of table"/>
                             </div>
-                            <div className="mb-3">
-                                <label for="exampleFormControlTextarea1" className="form-label">Example textarea</label>
-                                <textarea className="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
-                            </div>
                         </div>
                         <div className="modal-footer">
                             <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="button" className="btn btn-primary" onClick={addTbl}>Create</button>
+                            <button type="button" className="btn btn-primary" data-bs-dismiss="modal"  onClick={addTbl}>Create</button>
                         </div>
                     </div>
                 </div>
             </div>
 
             <div className="modal fade" id="addRowModal" data-bs-keyboard="false" tabindex="-1" aria-labelledby="addRowModalLabel" aria-hidden="true">
-                <div className="modal-dialog">
+                <div className="modal-dialog modal-dialog-centered">
                     <div className="modal-content">
                         <div className="modal-header">
-                            <h1 className="modal-title fs-5" id="addRowModalLabel">Add Row</h1>
+                            <h1 className="modal-title fs-5" id="addRowModalLabel">New Field</h1>
                             <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div className="modal-body">
@@ -244,7 +256,7 @@ export default function MainCanvas() {
                 </div>
             </div>
             <div className="modal fade" id="delTblModal" data-bs-keyboard="false" tabindex="-1" aria-labelledby="delTblModalLabel" aria-hidden="true">
-                <div className="modal-dialog">
+                <div className="modal-dialog modal-dialog-centered">
                     <div className="modal-content">
                         <div className="modal-header">
                             <h1 className="modal-title fs-5" id="delTblModalLabel">Delete Table</h1>
@@ -255,11 +267,11 @@ export default function MainCanvas() {
                         </div>
                         <div className="modal-footer">
                             <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                            <button type="button" className="btn btn-primary" data-bs-dismiss="modal" onClick={delTbl}>Yes, Delete</button>
+                            <button type="button" className="btn btn-danger" data-bs-dismiss="modal" onClick={delTbl}>Yes, Delete</button>
                         </div>
                     </div>
                 </div>
             </div>
-        </>
+        </div>
     )
 }
