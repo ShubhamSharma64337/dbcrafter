@@ -96,9 +96,9 @@ export default function MainCanvas() {
             return;
         }
         for (let tbl of tbls) {
-            ctxt.strokeStyle = "orange";
+            ctxt.strokeStyle = "grey";
             if (index === selections.selectedTbl) {
-                ctxt.strokeStyle = 'red';
+                ctxt.strokeStyle = 'orange';
             }
             ctxt.strokeRect(tbl.x, tbl.y, tbl.w, tbl.h); //drawing the outer rectangle
             //The origin for the text to be drawn is at the bottom left corner of the string
@@ -187,8 +187,11 @@ export default function MainCanvas() {
             return;
         }
         let all_tbls = tbls;
+        let current_selections = selections;
         if(selections.selectedTbl>-1){
-            all_tbls.splice(selections.selectedTbl,1); //splice(index,number of items to be deleted)
+            all_tbls.splice(current_selections.selectedTbl,1); //splice(index,number of items to be deleted)
+            current_selections.selectedTbl -= 1;
+            setSelections(current_selections);
         }
         setTbls(all_tbls);
         draw();
