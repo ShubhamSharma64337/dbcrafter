@@ -3,10 +3,22 @@ import { useState } from 'react';
 import background from './../graph-paper.svg';
 
 export default function MainCanvas() {
+    // tbls is an array of objects, each object represents a table on the canvas
+    // each object has following members - 
+    //      x - x coordinate of top left point of the table
+    //      y - y coordinate of the top left point of the table
+    //      w - width of the table
+    //      h - height of the table
+    //      rh - row height
+    //      fields - this is an array of objects, each of which is a field of the table
     const [tbls, setTbls] = useState([{ name: 'table1', x: 20, y: 20, w: 150, h: 40, rh: 20, fields: [{ name: 'id', type: 'int' }] }]);
+    //  selectedTbl is the index of the table which is currently selected
+    //  is_dragging becomes true only when mousedown event is triggered on a particular table and is again set to false
+    //  when the mouseup event is triggered
     const [selections, setSelections] = useState({ selectedTbl: 0, is_dragging: false });
+    // useEffect is used to trigger draw function every single time the component is rendered, mainly to run draw the first time this component is loaded
     useEffect(draw);
-    let startX; //these are used to determine initial position of pointer
+    let startX; //these are used to determine initial position of pointer (useful in implementing drag and drop)
     let startY; //when dragging a table. It needs to be global because
     //initially, the values will be set by handleMouseDown and then modified
     //by tblDragHandler
@@ -48,6 +60,7 @@ export default function MainCanvas() {
         draw();
     }
 
+    //this function sets the is_dragging value in selections state variable to false when the mouse button is lifted up
     function handleMouseUp(event) {
         event.preventDefault();
         let sel = selections;
@@ -55,6 +68,7 @@ export default function MainCanvas() {
         setSelections(sel);
     }
 
+    //implements drag and drop
     function tblDragHandler(event) {
 
         if (!(selections.is_dragging)) {
@@ -137,6 +151,11 @@ export default function MainCanvas() {
         let val = document.querySelector("#fieldType").value;
         document.querySelector("#fieldName").value = '';
         document.querySelector("#fieldType").value = '';
+        for(let field of tbls[selections.selectedTbl].fields){ //do not add duplicate field names
+            if(field.name === key){
+                return;
+            }
+        }
         let all_tbls = tbls;
         all_tbls[selections.selectedTbl].h += 20;
         all_tbls[selections.selectedTbl].fields.push({ name: key, type: val });
@@ -147,11 +166,17 @@ export default function MainCanvas() {
     //deletes fields from the selectedTblIndex table
     function delRow() {
         let all_tbls = tbls;
-        if (all_tbls[selections.selectedTbl].fields.length < 2) {
+        let field_name = document.querySelector("#delFieldName").value;
+        document.querySelector("#delFieldName").value = '';
+        let element = all_tbls[selections.selectedTbl].fields.find(function(element){
+            return element.name === field_name;
+        });
+        let del_index = all_tbls[selections.selectedTbl].fields.indexOf(element);
+        if(del_index<0 || field_name === 'id'){ //do not delete if element does not exist or if field is id
             return;
         }
-        all_tbls[selections.selectedTbl].h -= 20;
-        all_tbls[selections.selectedTbl].fields.pop();
+        all_tbls[selections.selectedTbl].fields.splice(del_index,1);
+        all_tbls[selections.selectedTbl].h -= all_tbls[selections.selectedTbl].rh;
         setTbls(all_tbls);
         draw();
     }
@@ -162,7 +187,7 @@ export default function MainCanvas() {
         let tblName = document.querySelector("#tblName").value;
         //checking if table name already exists
         for(let tbl of tbls){
-            if(tblName == tbl.name){
+            if(tblName === tbl.name){
                 return;
             }
         }
@@ -211,6 +236,9 @@ export default function MainCanvas() {
                     <div class='action-button mx-2 my-0'>
                         <button className='btn' data-bs-target='#addRowModal' data-bs-toggle='modal' data-bs-dismiss='modal'><i class="bi bi-node-plus-fill fs-3 text-warning"></i></button>
                     </div>
+                    <div class='action-button mx-2 my-0'>
+                        <button className='btn' data-bs-target='#delRowModal' data-bs-toggle='modal' data-bs-dismiss='modal'><i class="bi bi-node-minus-fill fs-3 text-warning"></i></button>
+                    </div>
                 </ul>
             </div>
             <div className="modal fade" id="addTblModal" data-bs-keyboard="false" tabindex="-1" aria-labelledby="addTblModalLabel" aria-hidden="true">
@@ -258,6 +286,28 @@ export default function MainCanvas() {
                     </div>
                 </div>
             </div>
+
+            <div className="modal fade" id="delRowModal" data-bs-keyboard="false" tabindex="-1" aria-labelledby="delRowModalLabel" aria-hidden="true">
+                <div className="modal-dialog modal-dialog-centered">
+                    <div className="modal-content">
+                        <div className="modal-header">
+                            <h1 className="modal-title fs-5" id="delRowModalLabel">Delete Field</h1>
+                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div className="modal-body">
+                            <div className="mb-3">
+                                <label for="delFieldName" className="form-label">Field Name</label>
+                                <input type="text" className="form-control" id="delFieldName" placeholder="Which field do you want to delete?"/>
+                            </div>
+                        </div>
+                        <div className="modal-footer">
+                            <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="button" className="btn btn-danger" onClick={delRow}>Delete</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div className="modal fade" id="delTblModal" data-bs-keyboard="false" tabindex="-1" aria-labelledby="delTblModalLabel" aria-hidden="true">
                 <div className="modal-dialog modal-dialog-centered">
                     <div className="modal-content">
