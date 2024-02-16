@@ -11,7 +11,7 @@ export default function MainCanvas() {
     //      h - height of the table
     //      rh - row height
     //      fields - this is an array of objects, each of which is a field of the table
-    const [tbls, setTbls] = useState([{ name: 'table1', x: 20, y: 20, w: 150, h: 40, rh: 20, fields: [{ name: 'id', type: 'int' }] }]);
+    const [tbls, setTbls] = useState([{ name: 'Table1', x: 20, y: 20, w: 150, h: 40, rh: 20, fields: [{ name: 'id', type: 'int' }] }]);
     //  selectedTbl is the index of the table which is currently selected
     //  is_dragging becomes true only when mousedown event is triggered on a particular table and is again set to false
     //  when the mouseup event is triggered
@@ -103,13 +103,18 @@ export default function MainCanvas() {
         const nav_height = document.querySelector(".navbar").clientHeight;
         ctxt.canvas.height = window.innerHeight - nav_height;
         ctxt.canvas.width = window.innerWidth;
-        ctxt.font = '20px serif';
+        ctxt.font = '16px Segoe UI';
         ctxt.clearRect(0, 0, canvas.width, canvas.height);
         let index = 0;
         if(tbls == null){
             return;
         }
         for (let tbl of tbls) {
+            //filling background of table with white color
+            ctxt.fillStyle = 'white';
+            ctxt.fillRect(tbl.x, tbl.y, tbl.w, tbl.h);
+            ctxt.fillStyle = 'black';
+
             ctxt.strokeStyle = "grey";
             if (index === selections.selectedTbl) {
                 ctxt.strokeStyle = 'orange';
@@ -118,27 +123,42 @@ export default function MainCanvas() {
             //The origin for the text to be drawn is at the bottom left corner of the string
 
             //filling the header
-            ctxt.fillText("Name", tbl.x + 3, tbl.y + 16);
-            ctxt.fillText("Type", tbl.x + 3 + tbl.w / 2, tbl.y + 16);
+            ctxt.textAlign = 'center'; //this makes sure that the x,y coordinates supplied to fillText lie at center of the text
+
+            if (index === selections.selectedTbl) { //this chooses the header bg color
+                ctxt.fillStyle = 'orange';
+            }else{
+                ctxt.fillStyle = 'grey';
+            }
+            ctxt.fillRect(tbl.x, tbl.y, tbl.w, tbl.rh);
+
+            ctxt.fillStyle = 'white';
+            ctxt.fillText(tbl.name, tbl.x + tbl.w * 0.5, tbl.y + 16);
+            ctxt.fillStyle = 'black';
+
+            ctxt.textAlign = 'left';
+            
 
             //creating the column seperator
             ctxt.beginPath();
-            ctxt.moveTo(tbl.x + tbl.w * 0.5, tbl.y);
+            ctxt.moveTo(tbl.x + tbl.w * 0.5, tbl.y + tbl.rh);
             ctxt.lineTo(tbl.x + tbl.w * 0.5, tbl.y + tbl.h);
             ctxt.stroke();
-
-            //printing the table name
-            ctxt.fillText(tbl.name, tbl.x, tbl.y - tbl.rh*0.2);
 
             //now creating all other fields and their upper row borders
             let row_index = 1;
             for (let row of tbl.fields) {
+                // creating the upper border
                 ctxt.beginPath();
                 ctxt.moveTo(tbl.x, tbl.y + tbl.rh * (row_index));
                 ctxt.lineTo(tbl.x + tbl.w, tbl.y + tbl.rh * (row_index))
                 ctxt.stroke();
+                //filling the text
                 ctxt.fillText(row.name, tbl.x + 3, tbl.y + 16 + tbl.rh * (row_index));
-                ctxt.fillText(row.type, tbl.x + 3 + tbl.w * 0.5, tbl.y + 16 + tbl.rh * (row_index));
+                ctxt.textAlign = 'right'; //this makes sure the datatype is aligned with last character just touching the right border...
+                // doing this not only makes it look better, but makes better use of space between name and type
+                ctxt.fillText(row.type, tbl.x + tbl.w - 3, tbl.y + 16 + tbl.rh * (row_index));
+                ctxt.textAlign = 'left';
                 row_index += 1;
             }
             index += 1;
@@ -147,6 +167,9 @@ export default function MainCanvas() {
 
     //adds fields to the selectedTblIndex table
     function addRow() {
+        if(!(selections.selectedTbl>-1) && !(tbls === null)){
+            return;
+        }
         let key = document.querySelector("#fieldName").value;
         let val = document.querySelector("#fieldType").value;
         document.querySelector("#fieldName").value = '';
@@ -157,7 +180,7 @@ export default function MainCanvas() {
             }
         }
         let all_tbls = tbls;
-        all_tbls[selections.selectedTbl].h += 20;
+        all_tbls[selections.selectedTbl].h += all_tbls[selections.selectedTbl].rh;
         all_tbls[selections.selectedTbl].fields.push({ name: key, type: val });
         setTbls(all_tbls);
         draw();
@@ -166,6 +189,9 @@ export default function MainCanvas() {
     //deletes fields from the selectedTblIndex table
     function delRow() {
         let all_tbls = tbls;
+        if(!(selections.selectedTbl>-1) && !(tbls === null)){
+            return;
+        }
         let field_name = document.querySelector("#delFieldName").value;
         document.querySelector("#delFieldName").value = '';
         let element = all_tbls[selections.selectedTbl].fields.find(function(element){
