@@ -176,7 +176,7 @@ export default function MainCanvas() {
         let key = document.querySelector("#fieldName").value;
         let val = document.querySelector("#fieldType").value;
         document.querySelector("#fieldName").value = '';
-        document.querySelector("#fieldType").value = '';
+        document.querySelector("#fieldType").value = 'NONE';
         for(let field of tbls[selections.selectedTbl].fields){ //do not add duplicate field names
             if(field.name === key){
                 return;
@@ -195,7 +195,6 @@ export default function MainCanvas() {
             return;
         }
         let field_name = document.querySelector("#delFieldName").value;
-        document.querySelector("#delFieldName").value = '';
         let element = all_tbls[selections.selectedTbl].fields.find(function(element){
             return element.name === field_name;
         });
@@ -205,6 +204,7 @@ export default function MainCanvas() {
         }
         all_tbls[selections.selectedTbl].fields.splice(del_index,1);
         setTbls(all_tbls);
+        fillDelRow();
         draw();
     }
 
@@ -249,6 +249,21 @@ export default function MainCanvas() {
         draw();
     }
 
+    //this function fills the select input with field names of the selected table
+    function fillDelRow(){
+        if(tbls === null){
+            return;
+        }
+        let select_input = document.querySelector('#delFieldName');
+        while (select_input.options.length > 0) {                
+            select_input.remove(0);
+        }    
+        for(let field of tbls[selections.selectedTbl].fields){
+            let newOption = new Option(field.name,field.name);
+            select_input.add(newOption);
+        }
+    }
+
     return (
         <div className='canvas-div' style={{ backgroundImage: `url(${background})`}}>
             <canvas id='canvas' width={window.innerWidth} height={window.innerHeight} onMouseDown={handleMouseDown} onMouseMove={tblDragHandler} onMouseUp={handleMouseUp}></canvas>
@@ -264,7 +279,7 @@ export default function MainCanvas() {
                         <button className='btn' data-bs-target='#addRowModal' data-bs-toggle='modal' data-bs-dismiss='modal'><i className="bi bi-node-plus-fill fs-3 text-warning"></i></button>
                     </div>
                     <div className='action-button mx-2 my-0'>
-                        <button className='btn' data-bs-target='#delRowModal' data-bs-toggle='modal' data-bs-dismiss='modal'><i className="bi bi-node-minus-fill fs-3 text-warning"></i></button>
+                        <button className='btn' data-bs-target='#delRowModal' data-bs-toggle='modal' data-bs-dismiss='modal' onClick={fillDelRow}><i className="bi bi-node-minus-fill fs-3 text-warning"></i></button>
                     </div>
                 </ul>
             </div>
@@ -301,9 +316,22 @@ export default function MainCanvas() {
                                 <label htmlFor="fieldName" className="form-label">Field Name</label>
                                 <input type="text" className="form-control" id="fieldName" placeholder="Enter name of field"/>
                             </div>
-                            <div className="mb-3">
-                                <label htmlFor="fieldType" className="form-label">Data Type</label>
-                                <input type="text" className="form-control" id="fieldType" placeholder="Enter type of field"/>
+                            <div className='mb-3'>
+                                <label htmlFor='fieldType' className='form-label'>Field Type</label>
+                                <select id='fieldType' class="form-select" aria-label="Default select example">
+                                    <option selected>NONE</option>
+                                    <option>BOOL</option>
+                                    <option>CHAR</option>
+                                    <option>INT</option>
+                                    <option>BIGINT</option>
+                                    <option>FLOAT</option>
+                                    <option>DOUBLE</option>
+                                    <option>DATE</option>
+                                    <option>VARCHAR</option>
+                                    <option>TIMESTAMP</option>
+                                    <option>TIME</option>
+                                    <option>YEAR</option>
+                                </select>
                             </div>
                         </div>
                         <div className="modal-footer">
@@ -324,7 +352,8 @@ export default function MainCanvas() {
                         <div className="modal-body">
                             <div className="mb-3">
                                 <label htmlFor="delFieldName" className="form-label">Field Name</label>
-                                <input type="text" className="form-control" id="delFieldName" placeholder="Which field do you want to delete?"/>
+                                <select id='delFieldName' class="form-select" aria-label="Default select example">
+                                </select>
                             </div>
                         </div>
                         <div className="modal-footer">
