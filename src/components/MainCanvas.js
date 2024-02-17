@@ -11,7 +11,8 @@ export default function MainCanvas() {
     //      h - height of the table
     //      rh - row height
     //      fields - this is an array of objects, each of which is a field of the table
-    const [tbls, setTbls] = useState([{ name: 'Table1', x: 20, y: 20, w: 150, h: 40, rh: 20, fields: [{ name: 'id', type: 'int' }] }]);
+    const [tbls, setTbls] = useState([{ name: 'Table1', x: 20, y: 20, w: 150, fields: [{ name: 'id', type: 'int' }] }]);
+    const [commonProps, setCommonProps] = useState({rh: 20});
     //  selectedTbl is the index of the table which is currently selected
     //  is_dragging becomes true only when mousedown event is triggered on a particular table and is again set to false
     //  when the mouseup event is triggered
@@ -28,7 +29,8 @@ export default function MainCanvas() {
         let top = tbl.y;
         let left = tbl.x;
         let right = tbl.x + tbl.w;
-        let bottom = tbl.y + tbl.h;
+        let tbl_height = commonProps.rh +  commonProps.rh * tbl.fields.length;
+        let bottom = tbl.y + tbl_height;
         if (x >= left && x <= right && y >= top && y <= bottom) {
             return true;
         }
@@ -112,14 +114,15 @@ export default function MainCanvas() {
         for (let tbl of tbls) {
             //filling background of table with white color
             ctxt.fillStyle = 'white';
-            ctxt.fillRect(tbl.x, tbl.y, tbl.w, tbl.h);
+            let tbl_height = commonProps.rh + commonProps.rh * tbl.fields.length;
+            ctxt.fillRect(tbl.x, tbl.y, tbl.w, tbl_height);
             ctxt.fillStyle = 'black';
 
             ctxt.strokeStyle = "grey";
             if (index === selections.selectedTbl) {
                 ctxt.strokeStyle = 'orange';
             }
-            ctxt.strokeRect(tbl.x, tbl.y, tbl.w, tbl.h); //drawing the outer rectangle
+            ctxt.strokeRect(tbl.x, tbl.y, tbl.w, tbl_height); //drawing the outer rectangle
             //The origin for the text to be drawn is at the bottom left corner of the string
 
             //filling the header
@@ -130,7 +133,7 @@ export default function MainCanvas() {
             }else{
                 ctxt.fillStyle = 'grey';
             }
-            ctxt.fillRect(tbl.x, tbl.y, tbl.w, tbl.rh);
+            ctxt.fillRect(tbl.x, tbl.y, tbl.w, commonProps.rh);
 
             ctxt.fillStyle = 'white';
             ctxt.fillText(tbl.name, tbl.x + tbl.w * 0.5, tbl.y + 16);
@@ -141,8 +144,8 @@ export default function MainCanvas() {
 
             //creating the column seperator
             ctxt.beginPath();
-            ctxt.moveTo(tbl.x + tbl.w * 0.5, tbl.y + tbl.rh);
-            ctxt.lineTo(tbl.x + tbl.w * 0.5, tbl.y + tbl.h);
+            ctxt.moveTo(tbl.x + tbl.w * 0.5, tbl.y + commonProps.rh);
+            ctxt.lineTo(tbl.x + tbl.w * 0.5, tbl.y + tbl_height);
             ctxt.stroke();
 
             //now creating all other fields and their upper row borders
@@ -150,14 +153,14 @@ export default function MainCanvas() {
             for (let row of tbl.fields) {
                 // creating the upper border
                 ctxt.beginPath();
-                ctxt.moveTo(tbl.x, tbl.y + tbl.rh * (row_index));
-                ctxt.lineTo(tbl.x + tbl.w, tbl.y + tbl.rh * (row_index))
+                ctxt.moveTo(tbl.x, tbl.y + commonProps.rh * (row_index));
+                ctxt.lineTo(tbl.x + tbl.w, tbl.y + commonProps.rh * (row_index))
                 ctxt.stroke();
                 //filling the text
-                ctxt.fillText(row.name, tbl.x + 3, tbl.y + 16 + tbl.rh * (row_index));
+                ctxt.fillText(row.name, tbl.x + 3, tbl.y + 16 + commonProps.rh * (row_index));
                 ctxt.textAlign = 'right'; //this makes sure the datatype is aligned with last character just touching the right border...
                 // doing this not only makes it look better, but makes better use of space between name and type
-                ctxt.fillText(row.type, tbl.x + tbl.w - 3, tbl.y + 16 + tbl.rh * (row_index));
+                ctxt.fillText(row.type, tbl.x + tbl.w - 3, tbl.y + 16 + commonProps.rh * (row_index));
                 ctxt.textAlign = 'left';
                 row_index += 1;
             }
@@ -180,7 +183,6 @@ export default function MainCanvas() {
             }
         }
         let all_tbls = tbls;
-        all_tbls[selections.selectedTbl].h += all_tbls[selections.selectedTbl].rh;
         all_tbls[selections.selectedTbl].fields.push({ name: key, type: val });
         setTbls(all_tbls);
         draw();
@@ -202,7 +204,6 @@ export default function MainCanvas() {
             return;
         }
         all_tbls[selections.selectedTbl].fields.splice(del_index,1);
-        all_tbls[selections.selectedTbl].h -= all_tbls[selections.selectedTbl].rh;
         setTbls(all_tbls);
         draw();
     }
@@ -251,23 +252,23 @@ export default function MainCanvas() {
     return (
         <div className='canvas-div' style={{ backgroundImage: `url(${background})`}}>
             <canvas id='canvas' width={window.innerWidth} height={window.innerHeight} onMouseDown={handleMouseDown} onMouseMove={tblDragHandler} onMouseUp={handleMouseUp}></canvas>
-            <div class='action-bar fixed-bottom d-flex justify-content-center align-items-center'>
+            <div className='action-bar fixed-bottom d-flex justify-content-center align-items-center'>
                 <ul className='border border-warning my-3 p-0 bg-white rounded-3 d-flex align-items-center' style={{listStyle: 'none'}}>
-                    <div class='action-button mx-2 my-0'>
-                        <button className='btn' data-bs-target='#addTblModal' data-bs-toggle='modal' data-bs-dismiss='modal'><i class="bi bi-file-plus-fill text-warning fs-3"></i></button>
+                    <div className='action-button mx-2 my-0'>
+                        <button className='btn' data-bs-target='#addTblModal' data-bs-toggle='modal' data-bs-dismiss='modal'><i className="bi bi-file-plus-fill text-warning fs-3"></i></button>
                     </div>
-                    <div class='action-button mx-2 my-0'>
-                        <button className='btn' data-bs-target='#delTblModal' data-bs-toggle='modal' data-bs-dismiss='modal'><i class="bi bi-file-minus-fill fs-3 text-warning"></i></button>
+                    <div className='action-button mx-2 my-0'>
+                        <button className='btn' data-bs-target='#delTblModal' data-bs-toggle='modal' data-bs-dismiss='modal'><i className="bi bi-file-minus-fill fs-3 text-warning"></i></button>
                     </div>
-                    <div class='action-button mx-2 my-0'>
-                        <button className='btn' data-bs-target='#addRowModal' data-bs-toggle='modal' data-bs-dismiss='modal'><i class="bi bi-node-plus-fill fs-3 text-warning"></i></button>
+                    <div className='action-button mx-2 my-0'>
+                        <button className='btn' data-bs-target='#addRowModal' data-bs-toggle='modal' data-bs-dismiss='modal'><i className="bi bi-node-plus-fill fs-3 text-warning"></i></button>
                     </div>
-                    <div class='action-button mx-2 my-0'>
-                        <button className='btn' data-bs-target='#delRowModal' data-bs-toggle='modal' data-bs-dismiss='modal'><i class="bi bi-node-minus-fill fs-3 text-warning"></i></button>
+                    <div className='action-button mx-2 my-0'>
+                        <button className='btn' data-bs-target='#delRowModal' data-bs-toggle='modal' data-bs-dismiss='modal'><i className="bi bi-node-minus-fill fs-3 text-warning"></i></button>
                     </div>
                 </ul>
             </div>
-            <div className="modal fade" id="addTblModal" data-bs-keyboard="false" tabindex="-1" aria-labelledby="addTblModalLabel" aria-hidden="true">
+            <div className="modal fade" id="addTblModal" data-bs-keyboard="false" tabIndex="-1" aria-labelledby="addTblModalLabel" aria-hidden="true">
                 <div className="modal-dialog modal-dialog-centered">
                     <div className="modal-content">
                         <div className="modal-header">
@@ -276,7 +277,7 @@ export default function MainCanvas() {
                         </div>
                         <div className="modal-body">
                             <div className="mb-3">
-                                <label for="tblName" className="form-label">Table Name</label>
+                                <label htmlFor="tblName" className="form-label">Table Name</label>
                                 <input type="text" className="form-control" id="tblName" placeholder="Enter name of table"/>
                             </div>
                         </div>
@@ -288,7 +289,7 @@ export default function MainCanvas() {
                 </div>
             </div>
 
-            <div className="modal fade" id="addRowModal" data-bs-keyboard="false" tabindex="-1" aria-labelledby="addRowModalLabel" aria-hidden="true">
+            <div className="modal fade" id="addRowModal" data-bs-keyboard="false" tabIndex="-1" aria-labelledby="addRowModalLabel" aria-hidden="true">
                 <div className="modal-dialog modal-dialog-centered">
                     <div className="modal-content">
                         <div className="modal-header">
@@ -297,11 +298,11 @@ export default function MainCanvas() {
                         </div>
                         <div className="modal-body">
                             <div className="mb-3">
-                                <label for="fieldName" className="form-label">Field Name</label>
+                                <label htmlFor="fieldName" className="form-label">Field Name</label>
                                 <input type="text" className="form-control" id="fieldName" placeholder="Enter name of field"/>
                             </div>
                             <div className="mb-3">
-                                <label for="fieldType" className="form-label">Data Type</label>
+                                <label htmlFor="fieldType" className="form-label">Data Type</label>
                                 <input type="text" className="form-control" id="fieldType" placeholder="Enter type of field"/>
                             </div>
                         </div>
@@ -313,7 +314,7 @@ export default function MainCanvas() {
                 </div>
             </div>
 
-            <div className="modal fade" id="delRowModal" data-bs-keyboard="false" tabindex="-1" aria-labelledby="delRowModalLabel" aria-hidden="true">
+            <div className="modal fade" id="delRowModal" data-bs-keyboard="false" tabIndex="-1" aria-labelledby="delRowModalLabel" aria-hidden="true">
                 <div className="modal-dialog modal-dialog-centered">
                     <div className="modal-content">
                         <div className="modal-header">
@@ -322,7 +323,7 @@ export default function MainCanvas() {
                         </div>
                         <div className="modal-body">
                             <div className="mb-3">
-                                <label for="delFieldName" className="form-label">Field Name</label>
+                                <label htmlFor="delFieldName" className="form-label">Field Name</label>
                                 <input type="text" className="form-control" id="delFieldName" placeholder="Which field do you want to delete?"/>
                             </div>
                         </div>
@@ -334,7 +335,7 @@ export default function MainCanvas() {
                 </div>
             </div>
 
-            <div className="modal fade" id="delTblModal" data-bs-keyboard="false" tabindex="-1" aria-labelledby="delTblModalLabel" aria-hidden="true">
+            <div className="modal fade" id="delTblModal" data-bs-keyboard="false" tabIndex="-1" aria-labelledby="delTblModalLabel" aria-hidden="true">
                 <div className="modal-dialog modal-dialog-centered">
                     <div className="modal-content">
                         <div className="modal-header">
