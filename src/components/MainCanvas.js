@@ -11,7 +11,7 @@ export default function MainCanvas() {
     //      h - height of the table
     //      rh - row height
     //      fields - this is an array of objects, each of which is a field of the table
-    const [tbls, setTbls] = useState([{ name: 'Table1', x: 20, y: 20, w: 150, fields: [{ name: 'id', type: 'int' }] }]);
+    const [tbls, setTbls] = useState([{ name: 'Table1', x: 20, y: 20, w: 150, pKey: 'id', fields: [{ name: 'id', type: 'INT'}] }]);
     const [commonProps, setCommonProps] = useState({rh: 20});
     //  selectedTbl is the index of the table which is currently selected
     //  is_dragging becomes true only when mousedown event is triggered on a particular table and is again set to false
@@ -157,7 +157,13 @@ export default function MainCanvas() {
                 ctxt.lineTo(tbl.x + tbl.w, tbl.y + commonProps.rh * (row_index))
                 ctxt.stroke();
                 //filling the text
-                ctxt.fillText(row.name, tbl.x + 3, tbl.y + 16 + commonProps.rh * (row_index));
+                if(tbl.pKey === row.name){
+                    ctxt.fillStyle = 'orange';
+                    ctxt.fillText(row.name , tbl.x + 3, tbl.y + 16 + commonProps.rh * (row_index));
+                    ctxt.fillStyle = 'black';
+                } else {
+                    ctxt.fillText(row.name, tbl.x + 3, tbl.y + 16 + commonProps.rh * (row_index));
+                }
                 ctxt.textAlign = 'right'; //this makes sure the datatype is aligned with last character just touching the right border...
                 // doing this not only makes it look better, but makes better use of space between name and type
                 ctxt.fillText(row.type, tbl.x + tbl.w - 3, tbl.y + 16 + commonProps.rh * (row_index));
@@ -175,6 +181,7 @@ export default function MainCanvas() {
         }
         let key = document.querySelector("#fieldName").value;
         let val = document.querySelector("#fieldType").value;
+        let pkey = document.querySelector("#isPkey").checked;
         document.querySelector("#fieldName").value = '';
         document.querySelector("#fieldType").value = 'NONE';
         for(let field of tbls[selections.selectedTbl].fields){ //do not add duplicate field names
@@ -183,7 +190,10 @@ export default function MainCanvas() {
             }
         }
         let all_tbls = tbls;
-        all_tbls[selections.selectedTbl].fields.push({ name: key, type: val });
+        if(pkey){
+            all_tbls[selections.selectedTbl].pKey = key;
+        }
+        all_tbls[selections.selectedTbl].fields.push({ name: key, type: val});
         setTbls(all_tbls);
         draw();
     }
@@ -201,6 +211,9 @@ export default function MainCanvas() {
         let del_index = all_tbls[selections.selectedTbl].fields.indexOf(element);
         if(del_index<0 || field_name === 'id'){ //do not delete if element does not exist or if field is id
             return;
+        }
+        if(field_name === all_tbls[selections.selectedTbl].pKey){
+            all_tbls[selections.selectedTbl].pKey = null;
         }
         all_tbls[selections.selectedTbl].fields.splice(del_index,1);
         setTbls(all_tbls);
@@ -221,10 +234,10 @@ export default function MainCanvas() {
         document.querySelector("#tblName").value = '';
         let new_element = null, last_element = null;
         if(all_tbls == null || all_tbls.length < 1){ // second condition is necessary after deleting all tables, state doesn't become null but empty array
-            all_tbls = [{ name: tblName, x: 20, y: 20, w: 150, h: 40, rh: 20, fields: [{ name: 'id', type: 'int' }] }];
+            all_tbls = [{ name: tblName, x: 20, y: 20, w: 150, pKey: 'id', fields: [{ name: 'id', type: 'int' }] }];
         }else{
             last_element = all_tbls[all_tbls.length - 1];
-            new_element = { name: tblName, x: last_element.x + 50, y: last_element.y + 50, w: 150, h: 40, rh: 20, fields: [{ name: 'id', type: 'int' }] };
+            new_element = { name: tblName, x: last_element.x + 50, y: last_element.y + 50, pKey: 'id', w: 150, fields: [{ name: 'id', type: 'int' }] };
             new_element.x = last_element.x + 50;
             new_element.y = last_element.y + 50;
             all_tbls.push(new_element);
@@ -249,7 +262,7 @@ export default function MainCanvas() {
         draw();
     }
 
-    //this function fills the select input with field names of the selected table
+    //this function fills the select input with field names of the selected table when deleting a field
     function fillDelRow(){
         if(tbls === null){
             return;
@@ -264,6 +277,33 @@ export default function MainCanvas() {
         }
     }
 
+    //this function fills the select input with field names of the selected table when changing pkey
+    function fillChgPKey(){
+        if(tbls === null){
+            return;
+        }
+        let select_input = document.querySelector('#pKeyField');
+        while (select_input.options.length > 0) {                
+            select_input.remove(0);
+        }    
+        for(let field of tbls[selections.selectedTbl].fields){
+            let newOption = new Option(field.name,field.name);
+            select_input.add(newOption);
+        }
+    }
+
+    //this changes the primary key
+    function chgPKey(){
+        if(tbls === null){
+            return;
+        }
+        let new_pkey = document.querySelector('#pKeyField').value;
+        document.querySelector('#pKeyField').value = '';
+        let all_tbls = tbls;
+        all_tbls[selections.selectedTbl].pKey = new_pkey;
+        setTbls(all_tbls);
+        draw();
+    }
     return (
         <div className='canvas-div' style={{ backgroundImage: `url(${background})`}}>
             <canvas id='canvas' width={window.innerWidth} height={window.innerHeight} onMouseDown={handleMouseDown} onMouseMove={tblDragHandler} onMouseUp={handleMouseUp}></canvas>
@@ -280,6 +320,9 @@ export default function MainCanvas() {
                     </div>
                     <div className='action-button mx-2 my-0'>
                         <button className='btn' data-bs-target='#delRowModal' data-bs-toggle='modal' data-bs-dismiss='modal' onClick={fillDelRow}><i className="bi bi-node-minus-fill fs-3 text-warning"></i></button>
+                    </div>
+                    <div className='action-button mx-2 my-0'>
+                        <button className='btn' data-bs-target='#chgPKeyModal' data-bs-toggle='modal' data-bs-dismiss='modal' onClick={fillChgPKey}><i className="bi bi-key-fill fs-3 text-warning"></i></button>
                     </div>
                 </ul>
             </div>
@@ -332,6 +375,15 @@ export default function MainCanvas() {
                                     <option>TIME</option>
                                     <option>YEAR</option>
                                 </select>
+                                
+                            </div>
+                            <div className='mb-3'>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="" id="isPkey"/>
+                                    <label class="form-check-label" for="isPkey">
+                                        Primary key
+                                    </label>
+                                </div>
                             </div>
                         </div>
                         <div className="modal-footer">
@@ -377,6 +429,28 @@ export default function MainCanvas() {
                         <div className="modal-footer">
                             <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                             <button type="button" className="btn btn-danger" data-bs-dismiss="modal" onClick={delTbl}>Yes, Delete</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div className="modal fade" id="chgPKeyModal" data-bs-keyboard="false" tabIndex="-1" aria-labelledby="chgPKeyModalLabel" aria-hidden="true">
+                <div className="modal-dialog modal-dialog-centered">
+                    <div className="modal-content">
+                        <div className="modal-header">
+                            <h1 className="modal-title fs-5" id="chgPKeyModalLabel">Change Primary key</h1>
+                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div className="modal-body">
+                            <div className="mb-3">
+                                <label htmlFor="pKeyField" className="form-label">Field Name</label>
+                                <select id='pKeyField' class="form-select" aria-label="Default select example">
+                                    
+                                </select>
+                            </div>
+                        </div>
+                        <div className="modal-footer">
+                            <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="button" className="btn btn-danger" data-bs-dismiss='modal' onClick={chgPKey}>Change</button>
                         </div>
                     </div>
                 </div>
