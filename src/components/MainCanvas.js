@@ -232,18 +232,32 @@ export default function MainCanvas() {
             }
         }
         document.querySelector("#tblName").value = '';
-        let new_element = null, last_element = null;
+        let new_element = null;
         if(all_tbls == null || all_tbls.length < 1){ // second condition is necessary after deleting all tables, state doesn't become null but empty array
             all_tbls = [{ name: tblName, x: 20, y: 20, w: 150, pKey: 'id', fields: [{ name: 'id', type: 'int' }] }];
         }else{
-            last_element = all_tbls[all_tbls.length - 1];
-            new_element = { name: tblName, x: last_element.x + 50, y: last_element.y + 50, pKey: 'id', w: 150, fields: [{ name: 'id', type: 'int' }] };
-            new_element.x = last_element.x + 50;
-            new_element.y = last_element.y + 50;
+            let coords = nonCollapseFinder();
+            new_element = { name: tblName, x: coords.x, y: coords.y, pKey: 'id', w: 150, fields: [{ name: 'id', type: 'int' }] };
             all_tbls.push(new_element);
         }
         setTbls(all_tbls);
         draw();
+    }
+
+    //this function finds a place in canvas such that it does not collapse with any previously drawn tables
+    function nonCollapseFinder(){
+        let all_tbls = tbls;
+        let rightMostX = 0;
+        let rightMostY = 0;
+        let rightEdge;
+        for(let tbl of all_tbls){
+            rightEdge = tbl.x + tbl.w;
+            if(rightEdge > rightMostX){
+                rightMostX = rightEdge;
+                rightMostY = tbl.y;
+            }
+        }
+        return {x: rightMostX + 20, y: rightMostY} ;
     }
 
     //delete the selected table
