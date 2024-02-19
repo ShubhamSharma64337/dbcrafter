@@ -42,6 +42,9 @@ export default function MainCanvas() {
     // to the index of the table on which mouse button is down
     function handleMouseDown(event) {
         event.preventDefault();
+        if(!tbls){
+            return;
+        }
         //By default the clientY and clientX values will be relative to whole document
         //therefore we need to get offsets of the canvas relative to document
         //and subtract them from the clientX and clientY values.
@@ -107,10 +110,10 @@ export default function MainCanvas() {
         ctxt.canvas.width = window.innerWidth;
         ctxt.font = '16px Segoe UI';
         ctxt.clearRect(0, 0, canvas.width, canvas.height);
-        let index = 0;
-        if(tbls == null){
+        if(!tbls){
             return;
         }
+        let index = 0;
         for (let tbl of tbls) {
             //filling background of table with white color
             ctxt.fillStyle = 'white';
@@ -176,7 +179,7 @@ export default function MainCanvas() {
 
     //adds fields to the selectedTblIndex table
     function addRow() {
-        if(!(selections.selectedTbl>-1) && !(tbls === null)){
+        if(!tbls){
             return;
         }
         let key = document.querySelector("#fieldName").value;
@@ -200,10 +203,10 @@ export default function MainCanvas() {
 
     //deletes fields from the selectedTblIndex table
     function delRow() {
-        let all_tbls = tbls;
-        if(selections.selectedTbl < 0 || tbls === null || tbls.length < 1){
+        if(!tbls){
             return;
         }
+        let all_tbls = tbls;
         let field_name = document.querySelector("#delFieldName").value;
         let element = all_tbls[selections.selectedTbl].fields.find(function(element){
             return element.name === field_name;
@@ -226,26 +229,34 @@ export default function MainCanvas() {
         let all_tbls = tbls;
         let tblName = document.querySelector("#tblName").value;
         //checking if table name already exists
-        for(let tbl of tbls){
-            if(tblName === tbl.name){
-                return;
+        if(all_tbls){
+            for(let tbl of tbls){
+                if(tblName === tbl.name){
+                    return;
+                }
             }
         }
         document.querySelector("#tblName").value = '';
         let new_element = null;
-        if(all_tbls == null || all_tbls.length < 1){ // second condition is necessary after deleting all tables, state doesn't become null but empty array
+        if(!all_tbls){ //checking if there does not exist any prior table
             all_tbls = [{ name: tblName, x: 20, y: 20, w: 150, pKey: 'id', fields: [{ name: 'id', type: 'int' }] }];
         }else{
             let coords = nonCollapseFinder();
             new_element = { name: tblName, x: coords.x, y: coords.y, pKey: 'id', w: 150, fields: [{ name: 'id', type: 'int' }] };
             all_tbls.push(new_element);
         }
+        let sel = selections; //setting selected table to newly created one
+        sel.selectedTbl = all_tbls.length - 1;
         setTbls(all_tbls);
+        setSelections(sel);
         draw();
     }
 
     //this function finds a place in canvas such that it does not collapse with any previously drawn tables
     function nonCollapseFinder(){
+        if(!tbls){
+            return {x: 20, y: 20};
+        }
         let all_tbls = tbls;
         let rightMostX = 0;
         let rightMostY = 0;
@@ -262,15 +273,25 @@ export default function MainCanvas() {
 
     //delete the selected table
     function delTbl(){
-        if(tbls == null){
+        if(!tbls){
             return;
         }
         let all_tbls = tbls;
+        let current_count = tbls.length;
         let current_selections = selections;
-        if(selections.selectedTbl>-1){
-            all_tbls.splice(current_selections.selectedTbl,1); //splice(index,number of items to be deleted)
-            current_selections.selectedTbl -= 1;
-            setSelections(current_selections);
+        console.log(current_selections.selectedTbl);
+        all_tbls.splice(current_selections.selectedTbl,1); //splice(index,number of items to be deleted)
+
+       // if the table to be deleted is the last one, then, we will 
+        if(current_selections.selectedTbl === current_count-1){
+                current_selections.selectedTbl -= 1;
+            }
+        
+
+        setSelections(current_selections);
+
+        if(all_tbls.length < 1){
+            all_tbls = null;
         }
         setTbls(all_tbls);
         draw();
@@ -278,7 +299,7 @@ export default function MainCanvas() {
 
     //this function fills the select input with field names of the selected table when deleting a field
     function fillDelRow(){
-        if(tbls === null || tbls.length < 1 || selections.selectedTbl < 0){
+        if(!tbls){
             return;
         }
         let select_input = document.querySelector('#delFieldName');
@@ -293,7 +314,7 @@ export default function MainCanvas() {
 
     //this function fills the select input with field names of the selected table when changing pkey
     function fillChgPKey(){
-        if(tbls === null || tbls.length < 1 || selections.selectedTbl < 0){
+        if(!tbls){
             return;
         }
         let select_input = document.querySelector('#pKeyField');
@@ -308,7 +329,7 @@ export default function MainCanvas() {
 
     //this changes the primary key
     function chgPKey(){
-        if(tbls === null || selections.selectedTbl < 0 || tbls.length < 1){
+        if(!tbls){
             return;
         }
         let new_pkey = document.querySelector('#pKeyField').value;
@@ -321,7 +342,7 @@ export default function MainCanvas() {
 
     //this function renames the table
     function renameTbl(){
-        if(tbls === null || tbls.length < 1 || selections.selectedTbl < 0){
+        if(!tbls){
             return;
         }
         let newName = document.querySelector("#newTblName").value;
@@ -334,7 +355,7 @@ export default function MainCanvas() {
 
     //this function fills the rename table modal with old table name value
     function oldTblNameFiller(){
-        if(tbls === null || tbls.length < 1 || selections.selectedTbl < 0){
+        if(!tbls){
             return;
         }
         document.querySelector("#oldTblName").value = tbls[selections.selectedTbl].name;
@@ -350,7 +371,6 @@ export default function MainCanvas() {
             document.querySelector('#newNameError').hidden = true;
             document.querySelector('#newNameSubmitBtn').disabled = false;
         }
-        console.log("CHanged");
     }
     return (
         <div className='canvas-div' style={{ backgroundImage: `url(${background})`}}>
