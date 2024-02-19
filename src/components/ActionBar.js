@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 export default function ActionBar(props) {
     //this function fills the select input with field names of the selected table when deleting a field
     const [hidden,setHidden] = useState(false);
-    function fillDelRow() {
+    function setDelRowModal() {
         if (!props.tbls) {
             return;
         }
@@ -18,7 +18,7 @@ export default function ActionBar(props) {
     }
 
     //this function fills the select input with field names of the selected table when changing pkey
-    function fillChgPKey() {
+    function setChgPKeyModal() {
         if (!props.tbls) {
             return;
         }
@@ -32,12 +32,13 @@ export default function ActionBar(props) {
         }
     }
 
-    //this function fills the rename table modal with old table name value
-    function oldTblNameFiller() {
+    //this function fills the rename table modal with old table name value and resets the new name value
+    function setRenameModal() {
         if (!props.tbls) {
             return;
         }
         document.querySelector("#oldTblName").value = props.tbls[props.selections.selectedTbl].name;
+        document.querySelector("#newTblName").value = '';
     }
 
     //this function makes sure new name is not same as the old name
@@ -52,44 +53,46 @@ export default function ActionBar(props) {
         }
     }
 
+    //this function properly initializes the Add New Row modal fields
+    function setAddRowModal(){
+        document.querySelector("#fieldName").value = '';
+    }
+
     //this function is used to toggle the action bar hidden prop
     function toggleHidden(){
         hidden?setHidden(false):setHidden(true);
     }
     
+    //this function triggers an alert with message that no tables exist
+    function noTblError(){
+        props.showAlert('No tables exist','warning');
+    }
     return (
         <div>
-            
             <div className='action-bar fixed-bottom d-flex justify-content-center align-items-center'>
                 <ul className={`border border-warning my-3 p-0 bg-white rounded-3 d-flex align-items-center  ${hidden?'d-none':''}`} style={{ listStyle : 'none' }}>
                     <div className='action-button mx-2 my-0'>
-                        <button className='btn' data-bs-target='#addTblModal' data-bs-toggle='modal' data-bs-dismiss='modal'><i className="bi bi-file-plus-fill text-warning fs-3"></i></button>
+                        <button className='btn' data-bs-target='#addTblModal' data-bs-toggle='modal'><i className="bi bi-file-plus-fill text-warning fs-3"></i></button>
                     </div>
                     <div className='action-button mx-2 my-0'>
-                        <button className='btn' data-bs-target='#delTblModal' data-bs-toggle='modal' data-bs-dismiss='modal'><i className="bi bi-file-minus-fill fs-3 text-warning"></i></button>
+                        <button className='btn' data-bs-target={props.tbls?'#delTblModal':undefined} data-bs-toggle={props.tbls?'modal':undefined} onClick={props.tbls?undefined:noTblError}><i className="bi bi-file-minus-fill fs-3 text-warning"></i></button>
                     </div>
                     <div className='action-button mx-2 my-0'>
-                        <button className='btn' data-bs-target='#addRowModal' data-bs-toggle='modal' data-bs-dismiss='modal'><i className="bi bi-node-plus-fill fs-3 text-warning"></i></button>
+                        <button className='btn' data-bs-target={props.tbls?'#addRowModal':undefined} data-bs-toggle={props.tbls?'modal':undefined} onClick={props.tbls?setAddRowModal:noTblError}><i className="bi bi-node-plus-fill fs-3 text-warning"></i></button>
                     </div>
                     <div className='action-button mx-2 my-0'>
-                        <button className='btn' data-bs-target='#delRowModal' data-bs-toggle='modal' data-bs-dismiss='modal' onClick={fillDelRow}><i className="bi bi-node-minus-fill fs-3 text-warning"></i></button>
+                        <button className='btn' data-bs-target={props.tbls?'#delRowModal':undefined} data-bs-toggle={props.tbls?'modal':undefined} onClick={props.tbls?setDelRowModal:noTblError}><i className="bi bi-node-minus-fill fs-3 text-warning"></i></button>
                     </div>
                     <div className='action-button mx-2 my-0'>
-                        <button className='btn' data-bs-target='#chgPKeyModal' data-bs-toggle='modal' data-bs-dismiss='modal' onClick={fillChgPKey}><i className="bi bi-key-fill fs-3 text-warning"></i></button>
+                        <button className='btn' data-bs-target={props.tbls?'#chgPKeyModal':undefined} data-bs-toggle={props.tbls?'modal':undefined} onClick={props.tbls?setChgPKeyModal:noTblError}><i className="bi bi-key-fill fs-3 text-warning"></i></button>
                     </div>
                     <div className='action-button mx-2 my-0'>
-                        <button className='btn' data-bs-target='#renameModal' data-bs-toggle='modal' data-bs-dismiss='modal' onClick={oldTblNameFiller}><i className="bi bi-input-cursor-text fs-3 text-warning"></i></button>
+                        <button className='btn' data-bs-target={props.tbls?'#renameModal':undefined} data-bs-toggle={props.tbls?'modal':undefined} onClick={props.tbls?setRenameModal:noTblError}><i className="bi bi-input-cursor-text fs-3 text-warning"></i></button>
                     </div>
                 </ul>
-                {hidden?
-                    <div className='pullBtn'>
-                        <i class="bi bi-caret-up-square-fill text-warning fs-5 my-0" onClick={toggleHidden}></i>
-                    </div>
-                    :
-                    <div className='pullBtn'>
-                        <i class="bi bi-caret-down-square-fill text-warning fs-5 my-0"  onClick={toggleHidden}></i>
-                    </div> 
-            }
+                <div className='pullBtn'>
+                    <i class={`bi bi-caret-${hidden?"up":"down"}-square-fill text-warning fs-5 my-0`} onClick={toggleHidden}></i>
+                </div>
             </div>
             <div className="modal fade" id="addTblModal" data-bs-keyboard="false" tabIndex="-1" aria-labelledby="addTblModalLabel" aria-hidden="true">
                 <div className="modal-dialog modal-dialog-centered">

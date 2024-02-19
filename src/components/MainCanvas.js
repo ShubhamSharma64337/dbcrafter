@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import { useState } from 'react';
 import background from './../graph-paper.svg';
 import ActionBar from './ActionBar';
-export default function MainCanvas() {
+export default function MainCanvas(props) {
     // tbls is an array of objects, each object represents a table on the canvas
     // each object has following members - 
     //      x - x coordinate of top left point of the table
@@ -213,6 +213,7 @@ export default function MainCanvas() {
         });
         let del_index = all_tbls[selections.selectedTbl].fields.indexOf(element);
         if(del_index<0 || field_name === 'id'){ //do not delete if element does not exist or if field is id
+            props.showAlert('You cannot delete the primary key attribute','warning');
             return;
         }
         if(field_name === all_tbls[selections.selectedTbl].pKey){
@@ -327,7 +328,7 @@ export default function MainCanvas() {
     return (
         <div className='canvas-div' style={{ backgroundImage: `url(${background})`}}>
             <canvas id='canvas' width={window.innerWidth} height={window.innerHeight} onMouseDown={handleMouseDown} onMouseMove={tblDragHandler} onMouseUp={handleMouseUp}></canvas>
-            <ActionBar tbls = {tbls} selections={selections} addTbl = {addTbl} delTbl = {delTbl} delRow = {delRow} addRow = {addRow} renameTbl = {renameTbl} chgPKey = {chgPKey} />
+            <ActionBar tbls = {tbls} selections={selections} addTbl = {addTbl} delTbl = {delTbl} delRow = {delRow} addRow = {addRow} renameTbl = {renameTbl} chgPKey = {chgPKey} showAlert={props.showAlert}/>
         </div>
     )
 }
