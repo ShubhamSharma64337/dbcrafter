@@ -201,7 +201,7 @@ export default function MainCanvas() {
     //deletes fields from the selectedTblIndex table
     function delRow() {
         let all_tbls = tbls;
-        if(!(selections.selectedTbl>-1) && !(tbls === null)){
+        if(selections.selectedTbl < 0 || tbls === null || tbls.length < 1){
             return;
         }
         let field_name = document.querySelector("#delFieldName").value;
@@ -278,7 +278,7 @@ export default function MainCanvas() {
 
     //this function fills the select input with field names of the selected table when deleting a field
     function fillDelRow(){
-        if(tbls === null){
+        if(tbls === null || tbls.length < 1 || selections.selectedTbl < 0){
             return;
         }
         let select_input = document.querySelector('#delFieldName');
@@ -293,7 +293,7 @@ export default function MainCanvas() {
 
     //this function fills the select input with field names of the selected table when changing pkey
     function fillChgPKey(){
-        if(tbls === null){
+        if(tbls === null || tbls.length < 1 || selections.selectedTbl < 0){
             return;
         }
         let select_input = document.querySelector('#pKeyField');
@@ -308,7 +308,7 @@ export default function MainCanvas() {
 
     //this changes the primary key
     function chgPKey(){
-        if(tbls === null){
+        if(tbls === null || selections.selectedTbl < 0 || tbls.length < 1){
             return;
         }
         let new_pkey = document.querySelector('#pKeyField').value;
@@ -317,6 +317,40 @@ export default function MainCanvas() {
         all_tbls[selections.selectedTbl].pKey = new_pkey;
         setTbls(all_tbls);
         draw();
+    }
+
+    //this function renames the table
+    function renameTbl(){
+        if(tbls === null || tbls.length < 1 || selections.selectedTbl < 0){
+            return;
+        }
+        let newName = document.querySelector("#newTblName").value;
+        document.querySelector("#newTblName").value = '';
+        let all_tbls = tbls;
+        all_tbls[selections.selectedTbl].name = newName;
+        setTbls(all_tbls);
+        draw();
+    }
+
+    //this function fills the rename table modal with old table name value
+    function oldTblNameFiller(){
+        if(tbls === null || tbls.length < 1 || selections.selectedTbl < 0){
+            return;
+        }
+        document.querySelector("#oldTblName").value = tbls[selections.selectedTbl].name;
+    }
+
+    //this function makes sure new name is not same as the old name
+    function newNameValidator(){
+        let newName = document.querySelector('#newTblName').value;
+        if(newName === document.querySelector('#oldTblName').value){
+            document.querySelector('#newNameError').hidden = false;
+            document.querySelector('#newNameSubmitBtn').disabled = true;
+        } else {
+            document.querySelector('#newNameError').hidden = true;
+            document.querySelector('#newNameSubmitBtn').disabled = false;
+        }
+        console.log("CHanged");
     }
     return (
         <div className='canvas-div' style={{ backgroundImage: `url(${background})`}}>
@@ -337,6 +371,9 @@ export default function MainCanvas() {
                     </div>
                     <div className='action-button mx-2 my-0'>
                         <button className='btn' data-bs-target='#chgPKeyModal' data-bs-toggle='modal' data-bs-dismiss='modal' onClick={fillChgPKey}><i className="bi bi-key-fill fs-3 text-warning"></i></button>
+                    </div>
+                    <div className='action-button mx-2 my-0'>
+                        <button className='btn' data-bs-target='#renameModal' data-bs-toggle='modal' data-bs-dismiss='modal' onClick={oldTblNameFiller}><i className="bi bi-input-cursor-text fs-3 text-warning"></i></button>
                     </div>
                 </ul>
             </div>
@@ -375,8 +412,8 @@ export default function MainCanvas() {
                             </div>
                             <div className='mb-3'>
                                 <label htmlFor='fieldType' className='form-label'>Field Type</label>
-                                <select id='fieldType' class="form-select" aria-label="Default select example">
-                                    <option selected>NONE</option>
+                                <select id='fieldType' defaultValue={'NONE'} className="form-select" aria-label="Default select example">
+                                    <option>NONE</option>
                                     <option>BOOL</option>
                                     <option>CHAR</option>
                                     <option>INT</option>
@@ -392,9 +429,9 @@ export default function MainCanvas() {
                                 
                             </div>
                             <div className='mb-3'>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" value="" id="isPkey"/>
-                                    <label class="form-check-label" for="isPkey">
+                                <div className="form-check">
+                                    <input className="form-check-input" type="checkbox" value="" id="isPkey"/>
+                                    <label className="form-check-label" htmlFor="isPkey">
                                         Primary key
                                     </label>
                                 </div>
@@ -418,7 +455,7 @@ export default function MainCanvas() {
                         <div className="modal-body">
                             <div className="mb-3">
                                 <label htmlFor="delFieldName" className="form-label">Field Name</label>
-                                <select id='delFieldName' class="form-select" aria-label="Default select example">
+                                <select id='delFieldName' className="form-select" aria-label="Default select example">
                                 </select>
                             </div>
                         </div>
@@ -457,7 +494,7 @@ export default function MainCanvas() {
                         <div className="modal-body">
                             <div className="mb-3">
                                 <label htmlFor="pKeyField" className="form-label">Field Name</label>
-                                <select id='pKeyField' class="form-select" aria-label="Default select example">
+                                <select id='pKeyField' className="form-select" aria-label="Default select example">
                                     
                                 </select>
                             </div>
@@ -465,6 +502,31 @@ export default function MainCanvas() {
                         <div className="modal-footer">
                             <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                             <button type="button" className="btn btn-danger" data-bs-dismiss='modal' onClick={chgPKey}>Change</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div className="modal fade" id="renameModal" data-bs-keyboard="false" tabIndex="-1" aria-labelledby="renameModalLabel" aria-hidden="true">
+                <div className="modal-dialog modal-dialog-centered">
+                    <div className="modal-content">
+                        <div className="modal-header">
+                            <h1 className="modal-title fs-5" id="renameModalLabel">Rename Table</h1>
+                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div className="modal-body">
+                            <div className="mb-3">
+                                <label htmlFor="oldTblName" className="form-label">Old Table Name</label>
+                                <input type="text" className="form-control" disabled={true} id="oldTblName" placeholder="Old Table name"/>
+                            </div>
+                            <div className="mb-3">
+                                <label htmlFor="newTblName" className="form-label">New Table Name</label>
+                                <input type="text" className="form-control" id="newTblName" placeholder="Enter the new name" onChange={newNameValidator}/>
+                                <p id='newNameError' className='mx-1 text-danger' hidden={true}>New name is same as the old name</p>
+                            </div>
+                        </div>
+                        <div className="modal-footer">
+                            <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button id='newNameSubmitBtn' type="button" className="btn btn-danger" data-bs-dismiss='modal' onClick={renameTbl}>Change</button>
                         </div>
                     </div>
                 </div>
