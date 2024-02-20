@@ -67,6 +67,7 @@ export default function ActionBar(props) {
     function noTblError(){
         props.showAlert('No tables exist','warning');
     }
+
     return (
         <div>
             <div className='action-bar fixed-bottom d-flex justify-content-center align-items-center'>
