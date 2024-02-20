@@ -212,7 +212,7 @@ export default function MainCanvas(props) {
             return element.name === field_name;
         });
         let del_index = all_tbls[selections.selectedTbl].fields.indexOf(element);
-        if(del_index<0 || field_name === 'id'){ //do not delete if element does not exist or if field is id
+        if(del_index<0 || field_name === all_tbls[selections.selectedTbl].pKey){ //do not delete if element does not exist or if field is primary key
             props.showAlert('You cannot delete the primary key attribute','warning');
             return;
         }
