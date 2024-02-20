@@ -1,8 +1,12 @@
 import React, { useState } from 'react'
 
 export default function ActionBar(props) {
-    //this function fills the select input with field names of the selected table when deleting a field
     const [hidden,setHidden] = useState(false);
+    //this function resets the table name field to blank when creating a new table
+    function setAddTblModal(){
+        document.querySelector("#tblName").value = '';
+    }
+    //this function fills the select input with field names of the selected table when deleting a field
     function setDelRowModal() {
         if (!props.tbls) {
             return;
@@ -73,7 +77,7 @@ export default function ActionBar(props) {
             <div className='action-bar fixed-bottom d-flex justify-content-center align-items-center'>
                 <ul className={`border border-warning my-3 p-0 bg-white rounded-3 d-flex align-items-center  ${hidden?'d-none':''}`} style={{ listStyle : 'none' }}>
                     <div className='action-button mx-2 my-0'>
-                        <button className='btn' data-bs-target='#addTblModal' data-bs-toggle='modal'><i className="bi bi-file-plus-fill text-warning fs-3"></i></button>
+                        <button className='btn' data-bs-target='#addTblModal' data-bs-toggle='modal' onClick={setAddTblModal}><i className="bi bi-file-plus-fill text-warning fs-3"></i></button>
                     </div>
                     <div className='action-button mx-2 my-0'>
                         <button className='btn' data-bs-target={props.tbls?'#delTblModal':undefined} data-bs-toggle={props.tbls?'modal':undefined} onClick={props.tbls?undefined:noTblError}><i className="bi bi-file-minus-fill fs-3 text-warning"></i></button>
