@@ -57,9 +57,80 @@ export default function ActionBar(props) {
         }
     }
 
-    //this function properly initializes the Add New Row modal fields
+    //this function properly initializes/resets the Add New Row modal fields
     function setAddRowModal(){
         document.querySelector("#fieldName").value = '';
+        document.querySelector('#isFKey').checked = false;
+        document.querySelector('#isPKey').checked = false;
+        document.querySelector('.fKeyInputs').classList.add('d-none');
+        document.querySelector('#refFieldName').disabled = true;
+        if(props.tbls.length < 2){ //this condition disables the Foreign Key checkbox if there does not exist any other table
+            document.querySelector('#isFKey').disabled = true;
+        } else {
+            document.querySelector('#isFKey').disabled = false;
+        }
+    }
+
+    //this function enables setting the table name if Foreign Key checkbox is checked while adding new row
+    //it also fills the select list of table names properly, it is added as onchange event handler of the isFKey checkbox
+    function enableRefTblInput(){
+        let fKeyCheck = document.querySelector('#isFKey');
+        let refTblInput = document.querySelector('#refTblName');
+        let refFieldInput = document.querySelector('#refFieldName');
+        if(fKeyCheck.checked){ 
+            document.querySelector('.fKeyInputs').classList.remove('d-none'); //unhides the foreign key related inputs
+            if(!props.tbls){
+                return;
+            }
+            while (refTblInput.options.length > 0) { //to avoid repeated addition of same options
+                refTblInput.remove(0);
+            }
+            refTblInput.add(new Option('NONE','NONE'));
+            for (let tbl of props.tbls) { //adding the names of tables except the selected table to the select list
+                if(tbl.name === props.tbls[props.selections.selectedTbl].name){
+                    continue;
+                }
+                let newOption = new Option(tbl.name, tbl.name);
+                refTblInput.add(newOption);
+            }
+        } else {
+            document.querySelector('.fKeyInputs').classList.add('d-none'); //hides the foreign key related inputs
+            refTblInput.value = 'NONE';
+            refFieldInput.disabled = true; //disables the Referenced Field Name input when checkbox is unchecked
+            refFieldInput.value = 'NONE';
+        }
+        
+    }
+
+    //this function enables and properly initializes the Referenced Field Name select list when Referenced Table Name is changed
+    //this is added to onchange event handler of Referenced Table Name select list
+    function enableRefFieldInput(){
+        let refTblInput = document.querySelector('#refTblName');
+        let refFieldInput = document.querySelector('#refFieldName');
+        let refTblExists = false;
+        let tblIndex = 0;
+        for(let tbl of props.tbls){ //checking if user has selected a valid table (e.g the user might have selected the default option 'NONE')
+            if(tbl.name === refTblInput.value){
+                refTblExists = true;
+                break;
+            }
+            tblIndex += 1; //storing the index of the table selected in select list
+        }
+
+        if(refTblExists){
+            while (refFieldInput.options.length > 0) {
+                refFieldInput.remove(0);
+            }
+            refFieldInput.add(new Option('NONE','NONE'));
+            for (let field of props.tbls[tblIndex].fields) { //filling the field names of the referenced table
+                let newOption = new Option(field.name, field.name);
+                refFieldInput.add(newOption);
+            }
+            refFieldInput.disabled = false; //enabling the referenced field input select list
+        } else {
+            refFieldInput.value = 'NONE'; //this again resets and disables the referenced field input select list
+            refFieldInput.disabled = true; // if the user reselects the default 'NONE' option in the referenced table list
+        }
     }
 
     //this function is used to toggle the action bar hidden prop
@@ -96,7 +167,7 @@ export default function ActionBar(props) {
                     </div>
                 </ul>
                 <div className='pullBtn'>
-                    <i class={`bi bi-caret-${hidden?"up":"down"}-square-fill text-warning fs-5 my-0`} onClick={toggleHidden}></i>
+                    <i className={`bi bi-caret-${hidden?"up":"down"}-square-fill text-warning fs-5 my-0`} onClick={toggleHidden}></i>
                 </div>
             </div>
             <div className="modal fade" id="addTblModal" data-bs-keyboard="false" tabIndex="-1" aria-labelledby="addTblModalLabel" aria-hidden="true">
@@ -152,10 +223,30 @@ export default function ActionBar(props) {
                             </div>
                             <div className='mb-3'>
                                 <div className="form-check">
-                                    <input className="form-check-input" type="checkbox" value="" id="isPkey" />
-                                    <label className="form-check-label" htmlFor="isPkey">
+                                    <input className="form-check-input" type="checkbox" value="" id="isPKey" />
+                                    <label className="form-check-label" htmlFor="isPKey">
                                         Primary key
                                     </label>
+                                </div>
+                            </div>
+                            <div className='mb-3'>
+                                <div className="form-check">
+                                    <input className="form-check-input" type="checkbox" value="" id="isFKey" onChange={enableRefTblInput}/>
+                                    <label className="form-check-label" htmlFor="isFKey">
+                                        Foreign key
+                                    </label>
+                                </div>
+                            </div>
+                            <div className='fKeyInputs m-0 p-0 d-none'>
+                                <div className="mb-3">
+                                    <label htmlFor="refTblName" className="form-label">Referenced Table Name</label>
+                                    <select id='refTblName' className="form-select" aria-label="Default select example" defaultValue={'NONE'} onChange={enableRefFieldInput}>
+                                    </select>
+                                </div>
+                                <div className="mb-3">
+                                    <label htmlFor="refFieldName" className="form-label">Referenced Field Name</label>
+                                    <select id='refFieldName' className="form-select" disabled={true} aria-label="Default select example" defaultValue={'NONE'}>
+                                    </select>
                                 </div>
                             </div>
                         </div>

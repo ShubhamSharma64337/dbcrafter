@@ -11,7 +11,7 @@ export default function MainCanvas(props) {
     //      h - height of the table
     //      rh - row height
     //      fields - this is an array of objects, each of which is a field of the table
-    const [tbls, setTbls] = useState([{ name: 'Table1', x: 20, y: 20, w: 150, pKey: 'id', fields: [{ name: 'id', type: 'INT'}] }]);
+    const [tbls, setTbls] = useState([{ name: 'Table1', x: 20, y: 20, w: 150, pKey: 'id', fields: [{ name: 'id', type: 'INT', isFKey: null, refTbl: null, refField: null}] }]);
     const [commonProps, setCommonProps] = useState({rh: 20});
     //  selectedTbl is the index of the table which is currently selected
     //  is_dragging becomes true only when mousedown event is triggered on a particular table and is again set to false
@@ -180,15 +180,28 @@ export default function MainCanvas(props) {
     //adds fields to the selectedTblIndex table
     function addRow() {
         if(!tbls){
+            props.showAlert('No tables exist!','warning');
             return;
         }
         let key = document.querySelector("#fieldName").value;
         let val = document.querySelector("#fieldType").value;
-        let pkey = document.querySelector("#isPkey").checked;
+        let pkey = document.querySelector("#isPKey").checked;
+        let isFKey = document.querySelector("#isFKey").checked;
+        let refTblName = document.querySelector("#refTblName").value;
+        let refFieldName = document.querySelector("#refFieldName").value;
+        if(key === ''){
+            props.showAlert('Field name cannot be empty!','warning');
+            return;
+        }
+        if(val === 'NONE'){
+            props.showAlert('Datatype selected is invalid','warning');
+            return;
+        }
         document.querySelector("#fieldName").value = '';
         document.querySelector("#fieldType").value = 'NONE';
         for(let field of tbls[selections.selectedTbl].fields){ //do not add duplicate field names
             if(field.name === key){
+                props.showAlert('A field with same name already exists!','warning');
                 return;
             }
         }
@@ -196,7 +209,13 @@ export default function MainCanvas(props) {
         if(pkey){
             all_tbls[selections.selectedTbl].pKey = key;
         }
-        all_tbls[selections.selectedTbl].fields.push({ name: key, type: val});
+        if(isFKey){
+            if(refTblName==='NONE' || refFieldName === 'NONE'){
+                props.showAlert('Referenced Table or Field cannot be NONE','warning');
+                return;
+            }
+        }
+        all_tbls[selections.selectedTbl].fields.push({ name: key, type: val, isFKey: isFKey, refTbl: refTblName, refField: refFieldName});
         setTbls(all_tbls);
         draw();
     }
@@ -228,10 +247,15 @@ export default function MainCanvas(props) {
     function addTbl() {
         let all_tbls = tbls;
         let tblName = document.querySelector("#tblName").value;
+        if(tblName===''){
+            props.showAlert('Table name cannot be empty!','danger');
+            return;
+        }
         //checking if table name already exists
         if(all_tbls){
             for(let tbl of tbls){
                 if(tblName === tbl.name){
+                    props.showAlert('Table name already exists!','danger');
                     return;
                 }
             }
@@ -239,10 +263,10 @@ export default function MainCanvas(props) {
         document.querySelector("#tblName").value = '';
         let new_element = null;
         if(!all_tbls){ //checking if there does not exist any prior table
-            all_tbls = [{ name: tblName, x: 20, y: 20, w: 150, pKey: 'id', fields: [{ name: 'id', type: 'int' }] }];
+            all_tbls = [{ name: tblName, x: 20, y: 20, w: 150, pKey: 'id', fields: [{ name: 'id', type: 'int' , isFKey: null, refTbl: null, refField: null}] }];
         }else{
             let coords = nonCollapseFinder();
-            new_element = { name: tblName, x: coords.x, y: coords.y, pKey: 'id', w: 150, fields: [{ name: 'id', type: 'int' }] };
+            new_element = { name: tblName, x: coords.x, y: coords.y, pKey: 'id', w: 150, fields: [{ name: 'id', type: 'int' , isFKey: null, refTbl: null, refField: null}] };
             all_tbls.push(new_element);
         }
         let sel = selections; //setting selected table to newly created one
@@ -318,6 +342,9 @@ export default function MainCanvas(props) {
             return;
         }
         let newName = document.querySelector("#newTblName").value;
+        if(newName===''){
+            props.showAlert('New name cannot be empty!','danger');
+        }
         document.querySelector("#newTblName").value = '';
         let all_tbls = tbls;
         all_tbls[selections.selectedTbl].name = newName;
