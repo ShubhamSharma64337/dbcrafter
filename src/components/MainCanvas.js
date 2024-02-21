@@ -175,6 +175,27 @@ export default function MainCanvas(props) {
             }
             index += 1;
         }
+
+        //this finds linked tables and calls drawArrow function to show their links
+        for(let tbl of tbls){
+            for(let field of tbl.fields){
+                if(field.isFKey){
+                    let second_tbl = tbls.find((tbl)=> tbl.name === field.refTbl);
+                    drawArrow(tbl,second_tbl);
+                }
+            }
+        }
+    }
+
+    //this function is used to draw arrows between tables linked with foreign keys
+    function drawArrow(tbl1,tbl2){
+        const canvas = document.getElementById("canvas");
+        const ctxt = canvas.getContext("2d");
+        ctxt.strokeStyle = 'orange';
+        ctxt.beginPath();
+        ctxt.moveTo(tbl1.x+tbl1.w, tbl1.y+ (commonProps.rh + commonProps.rh*tbl1.fields.length)*0.5);
+        ctxt.lineTo(tbl2.x,tbl2.y+(commonProps.rh + commonProps.rh*tbl2.fields.length)*0.5);
+        ctxt.stroke();
     }
 
     //adds fields to the selectedTblIndex table
