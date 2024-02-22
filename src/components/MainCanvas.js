@@ -8,8 +8,6 @@ export default function MainCanvas(props) {
     //      x - x coordinate of top left point of the table
     //      y - y coordinate of the top left point of the table
     //      w - width of the table
-    //      h - height of the table
-    //      rh - row height
     //      fields - this is an array of objects, each of which is a field of the table
     const [tbls, setTbls] = useState([{ name: 'Table1', x: 20, y: 20, w: 150, pKey: 'id', fields: [{ name: 'id', type: 'INT', isFKey: null, refTbl: null, refField: null}] }]);
     const [commonProps, setCommonProps] = useState({rh: 20});
@@ -19,10 +17,10 @@ export default function MainCanvas(props) {
     const [selections, setSelections] = useState({ selectedTbl: 0, is_dragging: false });
     // useEffect is used to trigger draw function every single time the component is rendered, mainly to run draw the first time this component is loaded
     useEffect(draw);
-    let startX; //these are used to determine initial position of pointer (useful in implementing drag and drop)
-    let startY; //when dragging a table. It needs to be global because
-    //initially, the values will be set by handleMouseDown and then modified
-    //by tblDragHandler
+    const [start, setStart] = useState({startX: null, startY: null});
+    //these are used to determine initial position of pointer (useful in implementing drag and drop)
+    //when dragging a table.
+
     //this function checks if the value of arguments x,y lies in the table
     //represented by tbl argument and returns true or false accordingly
     function isPointerInTbl(x, y, tbl) {
@@ -41,6 +39,7 @@ export default function MainCanvas(props) {
     // tables in the state and sets the selectedTblIndex state variable
     // to the index of the table on which mouse button is down
     function handleMouseDown(event) {
+        
         event.preventDefault();
         if(!tbls){
             return;
@@ -50,26 +49,23 @@ export default function MainCanvas(props) {
         //and subtract them from the clientX and clientY values.
         let clientX_correct = event.clientX - event.target.getBoundingClientRect().left;
         let clientY_correct = event.clientY - event.target.getBoundingClientRect().top;
-        startX = parseInt(clientX_correct);
-        startY = parseInt(clientY_correct);
+        let mystart = {...start};
+        mystart.startX = parseInt(clientX_correct);
+        mystart.startY = parseInt(clientY_correct);
+        setStart(mystart);
         let index_clicked = 0;
-        let sel = selections;
         for (let tb of tbls) {
             if (isPointerInTbl(clientX_correct, clientY_correct, tb)) {
-                sel.is_dragging = true;
-                sel.selectedTbl = index_clicked;
-                setSelections(sel);
+                setSelections({selectedTbl: index_clicked, is_dragging: true});
             }
             index_clicked += 1;
         }
-        draw();
     }
 
     //this function sets the is_dragging value in selections state variable to false when the mouse button is lifted up
     function handleMouseUp(event) {
         event.preventDefault();
-        let sel = selections;
-        sel.is_dragging = false;
+        let sel = {...selections, is_dragging: false};
         setSelections(sel);
     }
 
@@ -86,16 +82,21 @@ export default function MainCanvas(props) {
             let mouseX = parseInt(clientX_correct);
             let mouseY = parseInt(clientY_correct);
 
-            let dx = mouseX - startX;
-            let dy = mouseY - startY;
-            let all_tbls = tbls;
-            all_tbls[selections.selectedTbl].x += dx;
-            all_tbls[selections.selectedTbl].y += dy;
+            let dx = mouseX - start.startX;
+            let dy = mouseY - start.startY;
+            let all_tbls = tbls.map((tbl, index) => { //this is the actual correct way to copy the array of objects
+                if(index === selections.selectedTbl){ //we cannot just use [...tbls] here because we want to modify objects inside it
+                    return {...tbl, x: tbl.x+=dx, y: tbl.y+=dy}; //and using the spread operator causes a shallow copy in which inner object's ref is copied
+                }                                     //this is very necessary to perform copying like this to avoid mutation and future problems like non-updation due to reference of object passed to setState being same as the old one
+                else{
+                    return tbl;
+                }
+            })
             setTbls(all_tbls);
-
-            draw();
-            startX = mouseX;
-            startY = mouseY;
+            let newstart = {...start};
+            newstart.startX = mouseX;
+            newstart.startY = mouseY;
+            setStart(newstart);
         }
     }
 
@@ -226,7 +227,17 @@ export default function MainCanvas(props) {
                 return;
             }
         }
-        let all_tbls = tbls;
+        let all_tbls = tbls.map((tbl,index) => {            //performing deeper copy of the tbls state object
+                if(index === selections.selectedTbl){
+                    return {...tbl, fields: tbl.fields.map(
+                        (row)=>{
+                            return row
+                        }
+                    )}
+                } else {
+                    return tbl;
+                }
+        });
         if(pkey){
             all_tbls[selections.selectedTbl].pKey = key;
         }
@@ -238,7 +249,6 @@ export default function MainCanvas(props) {
         }
         all_tbls[selections.selectedTbl].fields.push({ name: key, type: val, isFKey: isFKey, refTbl: refTblName, refField: refFieldName});
         setTbls(all_tbls);
-        draw();
     }
 
     //deletes fields from the selectedTblIndex table
@@ -246,7 +256,17 @@ export default function MainCanvas(props) {
         if(!tbls){
             return;
         }
-        let all_tbls = tbls;
+        let all_tbls = tbls.map((tbl,index) => {            //performing deeper copy of the tbls state object
+            if(index === selections.selectedTbl){
+                return {...tbl, fields: tbl.fields.map(
+                    (row)=>{
+                        return row
+                    }
+                )}
+            } else {
+                return tbl;
+            }
+        });
         let field_name = document.querySelector("#delFieldName").value;
         let element = all_tbls[selections.selectedTbl].fields.find(function(element){
             return element.name === field_name;
@@ -261,12 +281,11 @@ export default function MainCanvas(props) {
         }
         all_tbls[selections.selectedTbl].fields.splice(del_index,1);
         setTbls(all_tbls);
-        draw();
     }
 
     //this function is used to add new table to the canvas
     function addTbl() {
-        let all_tbls = tbls;
+        let all_tbls = [...tbls];
         let tblName = document.querySelector("#tblName").value;
         if(tblName===''){
             props.showAlert('Table name cannot be empty!','danger');
@@ -294,7 +313,6 @@ export default function MainCanvas(props) {
         sel.selectedTbl = all_tbls.length - 1;
         setTbls(all_tbls);
         setSelections(sel);
-        draw();
     }
 
     //this function finds a place in canvas such that it does not collapse with any previously drawn tables
@@ -302,11 +320,10 @@ export default function MainCanvas(props) {
         if(!tbls){
             return {x: 20, y: 20};
         }
-        let all_tbls = tbls;
         let rightMostX = 0;
         let rightMostY = 0;
         let rightEdge;
-        for(let tbl of all_tbls){
+        for(let tbl of tbls){
             rightEdge = tbl.x + tbl.w;
             if(rightEdge > rightMostX){
                 rightMostX = rightEdge;
@@ -321,10 +338,9 @@ export default function MainCanvas(props) {
         if(!tbls){
             return;
         }
-        let all_tbls = tbls;
+        let all_tbls = [...tbls];
         let current_count = tbls.length;
-        let current_selections = selections;
-        console.log(current_selections.selectedTbl);
+        let current_selections = {...selections};
         all_tbls.splice(current_selections.selectedTbl,1); //splice(index,number of items to be deleted)
 
        // if the table to be deleted is the last one, then, we will 
@@ -332,14 +348,12 @@ export default function MainCanvas(props) {
                 current_selections.selectedTbl -= 1;
             }
         
-
         setSelections(current_selections);
 
         if(all_tbls.length < 1){
             all_tbls = null;
         }
         setTbls(all_tbls);
-        draw();
     }
 
     
@@ -351,10 +365,11 @@ export default function MainCanvas(props) {
         }
         let new_pkey = document.querySelector('#pKeyField').value;
         document.querySelector('#pKeyField').value = '';
-        let all_tbls = tbls;
+        let all_tbls = tbls.map((tbl)=>{
+            return {...tbl};
+        });
         all_tbls[selections.selectedTbl].pKey = new_pkey;
         setTbls(all_tbls);
-        draw();
     }
 
     //this function renames the table
@@ -367,10 +382,9 @@ export default function MainCanvas(props) {
             props.showAlert('New name cannot be empty!','danger');
         }
         document.querySelector("#newTblName").value = '';
-        let all_tbls = tbls;
+        let all_tbls = [...tbls];
         all_tbls[selections.selectedTbl].name = newName;
         setTbls(all_tbls);
-        draw();
     }
 
     return (
