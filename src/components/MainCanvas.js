@@ -193,9 +193,30 @@ export default function MainCanvas(props) {
         const canvas = document.getElementById("canvas");
         const ctxt = canvas.getContext("2d");
         ctxt.strokeStyle = 'orange';
+        let tbl1_bottom = tbl1.y + commonProps.rh + commonProps.rh*tbl1.fields.length;
+        let tbl2_bottom = tbl2.y + commonProps.rh + commonProps.rh*tbl2.fields.length;
+        let tbl1_left = tbl1.x;
+        let tbl2_left = tbl2.x;
+        let tbl1_right = tbl1.x + tbl1.w;
+        let tbl2_right = tbl2.x + tbl2.w;
+        let tbl1_top = tbl1.y;
+        let tbl2_top = tbl2.y;
         ctxt.beginPath();
-        ctxt.moveTo(tbl1.x+tbl1.w, tbl1.y+ (commonProps.rh + commonProps.rh*tbl1.fields.length)*0.5);
-        ctxt.lineTo(tbl2.x,tbl2.y+(commonProps.rh + commonProps.rh*tbl2.fields.length)*0.5);
+        if(tbl2_top > tbl1_bottom){
+            ctxt.moveTo(tbl1.x + tbl1.w*0.5, tbl1_bottom);
+            ctxt.lineTo(tbl2.x + tbl2.w*0.5, tbl2_top);
+        } else if (tbl2_bottom < tbl1_top){
+            ctxt.moveTo(tbl1.x + tbl1.w*0.5, tbl1_top);
+            ctxt.lineTo(tbl2.x + tbl2.w*0.5, tbl2_bottom);
+        } else {
+            if(tbl2_right < tbl1_left){
+                ctxt.moveTo(tbl1.x, tbl1.y + (tbl1_bottom - tbl1_top)*0.5);
+                ctxt.lineTo(tbl2.x + tbl2.w, tbl2.y + (tbl2_bottom - tbl2_top)*0.5);
+            } else if(tbl2_right > tbl1_left){
+                ctxt.moveTo(tbl1.x + tbl1.w, tbl1.y + (tbl1_bottom-tbl1_top)*0.5);
+                ctxt.lineTo(tbl2.x, tbl2.y + (tbl2_bottom-tbl2_top)*0.5);
+            }
+        }
         ctxt.stroke();
     }
 
