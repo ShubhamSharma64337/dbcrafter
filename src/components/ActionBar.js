@@ -146,8 +146,8 @@ export default function ActionBar(props) {
     }
 
     return (
-        <div>
-            <div className='action-bar fixed-bottom d-flex justify-content-center align-items-center'>
+        <>
+            <div className='action-bar d-flex align-items-center position-absolute bottom-0'>
                 <ul className={`border border-warning my-3 p-0 bg-white rounded-3 d-flex align-items-center  ${hidden?'d-none':''}`} style={{ listStyle : 'none' }}>
                     <div className='action-button mx-2 my-0'>
                         <button className='btn' data-bs-target='#addTblModal' data-bs-toggle='modal' onClick={setAddTblModal}><i className="bi bi-file-plus-fill text-warning fs-3"></i></button>
@@ -346,6 +346,6 @@ export default function ActionBar(props) {
                     </div>
                 </div>
             </div>
-        </div>
+        </>
     )
 }

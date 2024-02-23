@@ -389,7 +389,7 @@ export default function MainCanvas(props) {
     }
 
     return (
-        <div className='canvas-div' style={{ backgroundImage: `url(${background})`}}>
+        <div className='canvas-div d-flex justify-content-center' style={{ backgroundImage: `url(${background})`}}>
             <canvas id='canvas' width={window.innerWidth} height={window.innerHeight} onMouseDown={handleMouseDown} onMouseMove={tblDragHandler} onMouseUp={handleMouseUp}></canvas>
             <ActionBar tbls = {tbls} selections={selections} addTbl = {addTbl} delTbl = {delTbl} delRow = {delRow} addRow = {addRow} renameTbl = {renameTbl} chgPKey = {chgPKey} showAlert={props.showAlert}/>
         </div>
