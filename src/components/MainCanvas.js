@@ -288,14 +288,14 @@ export default function MainCanvas(props) {
         let all_tbls = [...tbls];
         let tblName = document.querySelector("#tblName").value;
         if(tblName===''){
-            props.showAlert('Table name cannot be empty!','danger');
+            props.showAlert('Table name cannot be empty!','warning');
             return;
         }
         //checking if table name already exists
         if(all_tbls){
             for(let tbl of tbls){
                 if(tblName === tbl.name){
-                    props.showAlert('Table name already exists!','danger');
+                    props.showAlert('Table name already exists!','warning');
                     return;
                 }
             }
@@ -379,7 +379,8 @@ export default function MainCanvas(props) {
         }
         let newName = document.querySelector("#newTblName").value;
         if(newName===''){
-            props.showAlert('New name cannot be empty!','danger');
+            props.showAlert('New name cannot be empty!','warning');
+            return;
         }
         document.querySelector("#newTblName").value = '';
         let all_tbls = [...tbls];

@@ -60,9 +60,11 @@ export default function ActionBar(props) {
     //this function properly initializes/resets the Add New Row modal fields
     function setAddRowModal(){
         document.querySelector("#fieldName").value = '';
+        document.querySelector('#fieldType').value = 'NONE';
         document.querySelector('#isFKey').checked = false;
         document.querySelector('#isPKey').checked = false;
         document.querySelector('.fKeyInputs').classList.add('d-none');
+        document.querySelector('#refFieldName').value = 'NONE';
         document.querySelector('#refFieldName').disabled = true;
         if(props.tbls.length < 2){ //this condition disables the Foreign Key checkbox if there does not exist any other table
             document.querySelector('#isFKey').disabled = true;
