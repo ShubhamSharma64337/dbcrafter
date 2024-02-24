@@ -189,10 +189,12 @@ export default function MainCanvas(props) {
     }
 
     //this function is used to draw arrows between tables linked with foreign keys
+    //we will use bezier curves to draw smooth curves using control points
     function drawArrow(tbl1,tbl2){
         const canvas = document.getElementById("canvas");
         const ctxt = canvas.getContext("2d");
         ctxt.strokeStyle = 'orange';
+        ctxt.lineWidth = '2';
         let tbl1_bottom = tbl1.y + commonProps.rh + commonProps.rh*tbl1.fields.length;
         let tbl2_bottom = tbl2.y + commonProps.rh + commonProps.rh*tbl2.fields.length;
         let tbl1_left = tbl1.x;
@@ -201,20 +203,41 @@ export default function MainCanvas(props) {
         let tbl2_right = tbl2.x + tbl2.w;
         let tbl1_top = tbl1.y;
         let tbl2_top = tbl2.y;
+        let ctrl_dist, fromx, fromy, tox, toy; //ctrl_1 and ctrl_2 are used to calculate offsets for making control points
         ctxt.beginPath();
         if(tbl2_top > tbl1_bottom){
-            ctxt.moveTo(tbl1.x + tbl1.w*0.5, tbl1_bottom);
-            ctxt.lineTo(tbl2.x + tbl2.w*0.5, tbl2_top);
+            fromx = tbl1.x + tbl1.w*0.5;
+            fromy = tbl1_bottom;
+            tox = tbl2.x + tbl2.w*0.5;
+            toy = tbl2_top;
+            ctrl_dist = (toy-fromy)*0.5; //it is half of the vertical distance between tables
+            ctxt.moveTo(fromx, fromy);
+            ctxt.bezierCurveTo(fromx, fromy+ctrl_dist, tox, toy-ctrl_dist, tox, toy);
         } else if (tbl2_bottom < tbl1_top){
+            fromx = tbl1.x + tbl1.w*0.5;
+            fromy = tbl1_top;
+            tox = tbl2.x + tbl2.w*0.5;
+            toy = tbl2_bottom;
+            ctrl_dist = (fromy-toy)*0.5; //half of vertical distance between tables
             ctxt.moveTo(tbl1.x + tbl1.w*0.5, tbl1_top);
-            ctxt.lineTo(tbl2.x + tbl2.w*0.5, tbl2_bottom);
+            ctxt.bezierCurveTo(fromx, fromy - ctrl_dist, tox, toy + ctrl_dist, tox, toy);
         } else {
             if(tbl2_right < tbl1_left){
+                fromx = tbl1_left;
+                fromy = tbl1_top + (tbl1_bottom-tbl1_top)*0.5;
+                tox = tbl2_right;
+                toy = tbl2_top + (tbl2_bottom-tbl2_top)*0.5;
+                ctrl_dist = (fromx-tox)*0.5; //half of horizontal distance between tables
                 ctxt.moveTo(tbl1.x, tbl1.y + (tbl1_bottom - tbl1_top)*0.5);
-                ctxt.lineTo(tbl2.x + tbl2.w, tbl2.y + (tbl2_bottom - tbl2_top)*0.5);
-            } else if(tbl2_right > tbl1_left){
+                ctxt.bezierCurveTo(fromx - ctrl_dist, fromy,  tox + ctrl_dist, toy, tox, toy);
+            } else if(tbl2_left > tbl1_right){
+                fromx = tbl1_right;
+                fromy = tbl1.y + (tbl1_bottom-tbl1_top)*0.5;
+                tox = tbl2.x;
+                toy = tbl2_top + (tbl2_bottom-tbl2_top)*0.5;
+                ctrl_dist = (tox-fromx)*0.5; //half of horizontal distance between tables
                 ctxt.moveTo(tbl1.x + tbl1.w, tbl1.y + (tbl1_bottom-tbl1_top)*0.5);
-                ctxt.lineTo(tbl2.x, tbl2.y + (tbl2_bottom-tbl2_top)*0.5);
+                ctxt.bezierCurveTo(fromx + ctrl_dist, fromy,  tox - ctrl_dist, toy, tox, toy);
             }
         }
         ctxt.stroke();
