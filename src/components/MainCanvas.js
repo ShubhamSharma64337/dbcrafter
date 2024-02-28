@@ -358,14 +358,14 @@ export default function MainCanvas(props) {
 
     //this function is used to add new table to the canvas
     function addTbl() {
-        let all_tbls = [...tbls];
+        let all_tbls = tbls?[...tbls]:[]; //if we do not use conditional operator, [...tbls] will give null reference error
         let tblName = document.querySelector("#tblName").value;
         if(tblName===''){
             props.showAlert('Table name cannot be empty!','warning');
             return;
         }
         //checking if table name already exists
-        if(all_tbls){
+        if(tbls){
             for(let tbl of tbls){
                 if(tblName === tbl.name){
                     props.showAlert('Table name already exists!','warning');
