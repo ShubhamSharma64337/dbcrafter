@@ -1,14 +1,14 @@
 import React from 'react'
 import {useState} from 'react'
 import {Link} from 'react-router-dom'
-export default function LoginForm() {
+export default function LoginForm({theme}) {
   const [mail,setMail] = useState('');
   function handleLowerMail(event){
     setMail(event.target.value.toLowerCase());
   }
   return (
-    <div>
-        <form>
+    <div  className={`card ${theme==='dark'?'bg-dark shadow-lg text-light':'bg-light'}`} data-bs-theme={theme}>
+        <form className='p-5'>
         <div class="mb-3">
             <label for="exampleInputEmail1" class="form-label">Email address</label>
             <input type="email" value={mail} onChange={handleLowerMail} class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"/>

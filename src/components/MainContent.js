@@ -1,25 +1,17 @@
 import React from 'react'
-import LoginForm  from './LoginForm'
+import LoginForm from './LoginForm'
 import SignupForm from './SignupForm'
-export default function MainContent(props) {
-  return (
-        <div className='main-content container'>
-        <div className='main-container container row p-5'>
-            <div className='left p-5 col-12 col-md-5'>
-                <p className='h3'>
-                    Open Source relational database design tool built using ReactJS and HTML Canvas 
-                </p>
+export default function MainContent({type, theme}) {
+    return (
+            <div className={`row h-100 align-items-center justify-content-center pb-5 overflow-y-auto bg-${theme}`}>
+                <div className='left col-12 col-md-8'>
+                    <p className={`p-5 text-center fs-4 ${theme==='light'?'text-dark':'text-light'}`} >
+                        Open Source relational database design tool built using ReactJS and HTML Canvas. Create diagrams, use templates, export as SQL or image.
+                    </p>
+                </div>
+                <div className='right col-12 col-md-4 p-5'>
+                        {type === 'signup' ? <SignupForm theme={theme} /> : <LoginForm theme={theme}/>}
+                </div>
             </div>
-            <div className='center col-2 d-none d-md-flex justify-content-center'>
-                <div className='sep border-start'></div>
-            </div>
-            <div className='right p-5 col-12 col-md-5'>
-                <p>
-                    {props.type==='signup'?<SignupForm/>:<LoginForm/>}
-                </p>
-            </div>
-        </div>
-    </div>
-
-  )
+    )
 }

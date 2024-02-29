@@ -13,6 +13,7 @@ import {
 import { useState } from 'react';
 function App(){
   const [alert, setAlert] = useState(null);
+  const [theme, setTheme] = useState('dark');
   function showAlert(message, type){
     setAlert({message: message, type: type});
     setTimeout(() => {
@@ -23,18 +24,23 @@ function App(){
   function closeAlert(){
     setAlert(null);
   }
+
+  function toggleTheme(){
+    theme==='light'?setTheme('dark'):setTheme('light');
+  }
   return (
-    <><Router>
-      <Navbar title='Dbcrafter'/>
+    <div className='vh-100 vw-100' >
+      <Router>
+      <Navbar title='Dbcrafter' theme={theme} toggleTheme={toggleTheme}/>
       <Alert alert={alert} closeAlert={closeAlert}/>
         <Routes>
-          <Route exact path='/' element={<MainContent/>}/>
-          <Route exact path='/signup' element={<MainContent type='signup'/>}/>
+          <Route exact path='/' element={<MainContent theme={theme}/>}/>
+          <Route exact path='/signup' element={<MainContent type='signup' theme={theme}/>}/>
           <Route exact path='/craft' element={<MainCanvas showAlert={showAlert}  />}/>
-          <Route exact path='/about' element={<AboutContent/>}/>
+          <Route exact path='/about' element={<AboutContent theme={theme}/>}/>
         </Routes>
       </Router>
-    </> 
+    </div> 
   )
 }
 
