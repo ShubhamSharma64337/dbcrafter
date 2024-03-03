@@ -148,28 +148,28 @@ export default function ActionBar(props) {
     return (
         <>
             <div className='action-bar d-flex align-items-center position-absolute bottom-0'>
-                <ul className={`border border-warning my-3 p-0 bg-white rounded-3 d-flex align-items-center  ${hidden?'d-none':''}`} style={{ listStyle : 'none' }}>
+                <ul className={`border border-end-0 shadow my-3 p-0 ${props.theme==='dark'?'bg-dark':'bg-white'} transition rounded-3 d-flex align-items-center  ${hidden?'d-none':''}`} style={{ listStyle : 'none' }}>
                     <div className='action-button mx-2 my-0'>
-                        <button className='btn' data-bs-target='#addTblModal' data-bs-toggle='modal' onClick={setAddTblModal}><i className="bi bi-file-plus-fill text-warning fs-3"></i></button>
+                        <button className='btn' data-bs-target='#addTblModal' data-bs-toggle='modal' onClick={setAddTblModal}><i className="bi bi-file-plus-fill text-primary fs-3"></i></button>
                     </div>
                     <div className='action-button mx-2 my-0'>
-                        <button className='btn' data-bs-target={props.tbls?'#delTblModal':undefined} data-bs-toggle={props.tbls?'modal':undefined} onClick={props.tbls?undefined:noTblError}><i className="bi bi-file-minus-fill fs-3 text-warning"></i></button>
+                        <button className='btn' data-bs-target={props.tbls?'#delTblModal':undefined} data-bs-toggle={props.tbls?'modal':undefined} onClick={props.tbls?undefined:noTblError}><i className="bi bi-file-minus-fill fs-3 text-primary"></i></button>
                     </div>
                     <div className='action-button mx-2 my-0'>
-                        <button className='btn' data-bs-target={props.tbls?'#addRowModal':undefined} data-bs-toggle={props.tbls?'modal':undefined} onClick={props.tbls?setAddRowModal:noTblError}><i className="bi bi-node-plus-fill fs-3 text-warning"></i></button>
+                        <button className='btn' data-bs-target={props.tbls?'#addRowModal':undefined} data-bs-toggle={props.tbls?'modal':undefined} onClick={props.tbls?setAddRowModal:noTblError}><i className="bi bi-node-plus-fill fs-3 text-primary"></i></button>
                     </div>
                     <div className='action-button mx-2 my-0'>
-                        <button className='btn' data-bs-target={props.tbls?'#delRowModal':undefined} data-bs-toggle={props.tbls?'modal':undefined} onClick={props.tbls?setDelRowModal:noTblError}><i className="bi bi-node-minus-fill fs-3 text-warning"></i></button>
+                        <button className='btn' data-bs-target={props.tbls?'#delRowModal':undefined} data-bs-toggle={props.tbls?'modal':undefined} onClick={props.tbls?setDelRowModal:noTblError}><i className="bi bi-node-minus-fill fs-3 text-primary"></i></button>
                     </div>
                     <div className='action-button mx-2 my-0'>
-                        <button className='btn' data-bs-target={props.tbls?'#chgPKeyModal':undefined} data-bs-toggle={props.tbls?'modal':undefined} onClick={props.tbls?setChgPKeyModal:noTblError}><i className="bi bi-key-fill fs-3 text-warning"></i></button>
+                        <button className='btn' data-bs-target={props.tbls?'#chgPKeyModal':undefined} data-bs-toggle={props.tbls?'modal':undefined} onClick={props.tbls?setChgPKeyModal:noTblError}><i className="bi bi-key-fill fs-3 text-primary"></i></button>
                     </div>
                     <div className='action-button mx-2 my-0'>
-                        <button className='btn' data-bs-target={props.tbls?'#renameModal':undefined} data-bs-toggle={props.tbls?'modal':undefined} onClick={props.tbls?setRenameModal:noTblError}><i className="bi bi-input-cursor-text fs-3 text-warning"></i></button>
+                        <button className='btn' data-bs-target={props.tbls?'#renameModal':undefined} data-bs-toggle={props.tbls?'modal':undefined} onClick={props.tbls?setRenameModal:noTblError}><i className="bi bi-input-cursor-text fs-3 text-primary"></i></button>
                     </div>
                 </ul>
                 <div className='pullBtn'>
-                    <i className={`bi bi-caret-${hidden?"up":"down"}-square-fill text-warning fs-5 my-0`} onClick={toggleHidden}></i>
+                    <i className={`bi px-1 ${hidden?'rounded-top':'rounded-end'}  bg-${props.theme} shadow bi-caret-${hidden?"up":"down"}-fill text-primary fs-5 my-0`} onClick={toggleHidden}></i>
                 </div>
             </div>
             <div className="modal fade" id="addTblModal" data-bs-keyboard="false" tabIndex="-1" aria-labelledby="addTblModalLabel" aria-hidden="true">

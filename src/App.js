@@ -36,7 +36,7 @@ function App(){
         <Routes>
           <Route exact path='/' element={<MainContent theme={theme}/>}/>
           <Route exact path='/signup' element={<MainContent type='signup' theme={theme}/>}/>
-          <Route exact path='/craft' element={<MainCanvas showAlert={showAlert}  />}/>
+          <Route exact path='/craft' element={<MainCanvas showAlert={showAlert} theme={theme} />}/>
           <Route exact path='/about' element={<AboutContent theme={theme}/>}/>
         </Routes>
       </Router>
