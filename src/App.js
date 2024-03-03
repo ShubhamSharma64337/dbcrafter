@@ -13,7 +13,7 @@ import {
 import { useState } from 'react';
 function App(){
   const [alert, setAlert] = useState(null);
-  const [theme, setTheme] = useState('dark');
+  const [theme, setTheme] = useState('light');
   function showAlert(message, type){
     setAlert({message: message, type: type});
     setTimeout(() => {
