@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { useState } from 'react';
-import background from './../assets/graph-paper.svg';
+import background from '/graph-paper.svg';
 import ActionBar from './ActionBar';
 export default function MainCanvas(props) {
     // tbls is an array of objects, each object represents a table on the canvas

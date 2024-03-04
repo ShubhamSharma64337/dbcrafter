@@ -1,8 +1,8 @@
-# React + Vite
+# Dbcraftr
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+To run on a development server - 
+    1. Clone the repository
+    2. Execute <b>'npm install'</b> to install the required packages
+    3. Execute <b>'npm run dev'</b> to run the webapp
 
-Currently, two official plugins are available:
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
