@@ -6,7 +6,7 @@ export default function Navbar({title, theme, toggleTheme}) {
         <div>
             <nav className='navbar navbar-expand-lg bg-body-tertiary shadow-sm' data-bs-theme={theme==='dark'?'dark':''}>
                 <div className="container-fluid">
-                    <Link className="navbar-brand d-flex align-items-center text-primary fw-bold" to="/"><i className="bi bi-database fs-3 text-primary mx-1"></i>{title}</Link>
+                    <Link className="navbar-brand d-flex align-items-center text-primary fw-bold" to="/"><i className="bi bi-database text-primary mx-1"></i>{title}</Link>
                     <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                         <span className="navbar-toggler-icon"></span>
                     </button>
