@@ -4,8 +4,8 @@ export default function ThemeButton({theme}) {
   return (
     <div>
         {theme==='dark'?
-            <i class="bi bi-sun-fill"></i>:
-            <i class="bi bi-moon-stars-fill"></i>    
+            <i className="bi bi-sun-fill"></i>:
+            <i className="bi bi-moon-stars-fill"></i>    
         }
     </div>
   )
