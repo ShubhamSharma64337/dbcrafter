@@ -1,9 +1,9 @@
 import './App.css';
-import Navbar from './components/Navbar.js'
-import MainContent from './components/MainContent';
-import MainCanvas from './components/MainCanvas.js';
-import AboutContent from './components/AboutContent.js';
-import Alert from './components/Alert.js';
+import Navbar from './components/Navbar.jsx'
+import MainContent from './components/MainContent.jsx';
+import MainCanvas from './components/MainCanvas.jsx';
+import AboutContent from './components/AboutContent.jsx';
+import Alert from './components/Alert.jsx';
 import {
   BrowserRouter as Router,
   Routes,
