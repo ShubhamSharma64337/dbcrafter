@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react'
 import { useState } from 'react';
 import background from '/graph-paper.svg';
+import backgroundDark from '/graph-paper-dark.svg';
 import ActionBar from './ActionBar';
 export default function MainCanvas(props) {
     // tbls is an array of objects, each object represents a table on the canvas
@@ -505,7 +506,7 @@ export default function MainCanvas(props) {
     }
 
     return (
-        <div className='canvas-div d-flex justify-content-center' style={{ backgroundImage: `url(${background})`}}>
+        <div className={`canvas-div d-flex justify-content-center ${props.theme==='dark'?'bg-dark':''}`} style={props.theme==='dark'?{ backgroundImage: `url(${backgroundDark})`}:{ backgroundImage: `url(${background})`}}>
             <canvas id='canvas' width={window.innerWidth} height={window.innerHeight} onMouseDown={handleMouseDown} onMouseMove={tblDragHandler} onMouseUp={handleMouseUp}></canvas>
             <ActionBar tbls = {tbls} selections={selections} addTbl = {addTbl} delTbl = {delTbl} delRow = {delRow} addRow = {addRow} renameTbl = {renameTbl} chgPKey = {chgPKey} showAlert={props.showAlert} theme={props.theme}/>
         </div>
