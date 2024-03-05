@@ -124,7 +124,7 @@ export default function MainCanvas(props) {
 
             ctxt.strokeStyle = "grey";
             if (index === selections.selectedTbl) {
-                ctxt.strokeStyle = 'orange';
+                ctxt.strokeStyle = '#0d6efd'; //this is actually bootstrap primary color
             }
             ctxt.strokeRect(tbl.x, tbl.y, tbl.w, tbl_height); //drawing the outer rectangle
             //The origin for the text to be drawn is at the bottom left corner of the string
@@ -133,7 +133,7 @@ export default function MainCanvas(props) {
             ctxt.textAlign = 'center'; //this makes sure that the x,y coordinates supplied to fillText lie at center of the text
 
             if (index === selections.selectedTbl) { //this chooses the header bg color
-                ctxt.fillStyle = 'orange';
+                ctxt.fillStyle = '#0d6efd';
             }else{
                 ctxt.fillStyle = 'grey';
             }
@@ -162,7 +162,7 @@ export default function MainCanvas(props) {
                 ctxt.stroke();
                 //filling the text
                 if(tbl.pKey === row.name){
-                    ctxt.fillStyle = 'orange';
+                    ctxt.fillStyle = '#0d6efd';
                     ctxt.fillText(row.name , tbl.x + 3, tbl.y + 16 + commonProps.rh * (row_index));
                     ctxt.fillStyle = 'black';
                 } else {
@@ -193,8 +193,8 @@ export default function MainCanvas(props) {
     function drawArrow(tbl1,tbl2){
         const canvas = document.getElementById("canvas");
         const ctxt = canvas.getContext("2d");
-        ctxt.strokeStyle = 'orange';
-        ctxt.fillStyle = 'orange';
+        ctxt.strokeStyle = '#0d6efd';
+        ctxt.fillStyle = '#0d6efd';
         ctxt.lineWidth = '2';
         let tbl1_bottom = tbl1.y + commonProps.rh + commonProps.rh*tbl1.fields.length;
         let tbl2_bottom = tbl2.y + commonProps.rh + commonProps.rh*tbl2.fields.length;
