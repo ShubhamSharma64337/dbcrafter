@@ -14,7 +14,7 @@ export default function LoginForm({theme, showAlert}) {
     fdobj.forEach(function(value, key){
       fdata[key] = value;
     })
-    fetch('http://localhost:3000/login', {
+    fetch('http://localhost:3000/signin', {
       method: 'POST',
       headers: {         
         'Content-Type': 'application/json',
@@ -34,7 +34,7 @@ export default function LoginForm({theme, showAlert}) {
         <form className='p-5'>
           <div className="mb-3">
               <label htmlFor="loginName" className="form-label">Email address</label>
-              <input type="email" value={mail} onChange={handleLowerMail} className="form-control" id="loginName" name="username" placeholder='abc@xyz.com'/>
+              <input type="email" value={mail} onChange={handleLowerMail} className="form-control" id="loginName" name="email" placeholder='abc@xyz.com'/>
               <div id="emailHelp" className="form-text">We'll never share your email with anyone else.</div>
           </div>
           <div className="mb-3">
