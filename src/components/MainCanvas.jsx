@@ -411,7 +411,31 @@ export default function MainCanvas(props) {
         if(!tbls){
             return;
         }
-        let all_tbls = [...tbls];
+        let all_tbls = tbls.map((tbl) => {            //performing deeper copy of the tbls state object
+            return {...tbl, fields: tbl.fields.map(
+                (row)=>{
+                    return { ...row }
+                }
+                )}
+        });
+
+        //adding code to detect if any other table references this table, we need to delete the reference in the referencing table
+        let old_name = all_tbls[selections.selectedTbl].name;
+        let tblindex = 0;
+        for(let tbl of all_tbls){ //of, not in :( wasted a lot of time due to this
+            let rowindex = 0;
+            for(let row of tbl.fields){
+                if(row.refTbl === old_name){
+                    all_tbls[tblindex].fields[rowindex].isFKey = null;
+                    all_tbls[tblindex].fields[rowindex].refTbl = null;
+                    all_tbls[tblindex].fields[rowindex].refField = null;
+
+                }
+                rowindex+=1;
+            }
+            tblindex+=1;
+        }
+
         let current_count = tbls.length;
         let current_selections = {...selections};
         all_tbls.splice(current_selections.selectedTbl,1); //splice(index,number of items to be deleted)
@@ -456,7 +480,26 @@ export default function MainCanvas(props) {
             return;
         }
         document.querySelector("#newTblName").value = '';
-        let all_tbls = [...tbls];
+        let all_tbls = tbls.map((tbl) => {            //performing deeper copy of the tbls state object
+                return {...tbl, fields: tbl.fields.map(
+                    (row)=>{
+                        return { ...row }
+                    }
+                )}
+        });
+        //adding code to detect if any other table references this table, we need to change the name in the referencing table
+        let old_name = all_tbls[selections.selectedTbl].name;
+        let tblindex = 0;
+        for(let tbl of all_tbls){ //of, not in :( wasted a lot of time due to this
+            let rowindex = 0;
+            for(let row of tbl.fields){
+                if(row.refTbl === old_name){
+                    all_tbls[tblindex].fields[rowindex].refTbl = newName;
+                }
+                rowindex+=1;
+            }
+            tblindex+=1;
+        }
         all_tbls[selections.selectedTbl].name = newName;
         setTbls(all_tbls);
     }

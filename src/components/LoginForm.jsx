@@ -22,9 +22,9 @@ export default function LoginForm({theme, showAlert}) {
       body: JSON.stringify(fdata)
     })
     .then(response => response.json()) //response.json() or response.text() provides the 'data'
-    .then(data => showAlert(data.message, data.authenticated?'success':'danger'))
+    .then(data => showAlert(data.message, data.success?'success':'danger'))
     .catch((error)=>{
-      showAlert(error.message, 'danger')
+      showAlert('An error occured while trying to access the backend API', 'danger')
       console.log(error)
     })
   }
