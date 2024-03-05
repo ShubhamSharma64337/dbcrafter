@@ -34,8 +34,8 @@ function App(){
       <Navbar title='Dbcrafter' theme={theme} toggleTheme={toggleTheme}/>
       <Alert alert={alert} closeAlert={closeAlert}/>
         <Routes>
-          <Route exact path='/' element={<MainContent theme={theme}/>}/>
-          <Route exact path='/signup' element={<MainContent type='signup' theme={theme}/>}/>
+          <Route exact path='/' element={<MainContent theme={theme} showAlert={showAlert}/>}/>
+          <Route exact path='/signup' element={<MainContent type='signup' theme={theme} showAlert={showAlert}/>}/>
           <Route exact path='/craft' element={<MainCanvas showAlert={showAlert} theme={theme} />}/>
           <Route exact path='/about' element={<AboutContent theme={theme}/>}/>
         </Routes>

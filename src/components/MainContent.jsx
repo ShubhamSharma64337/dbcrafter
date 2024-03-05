@@ -1,7 +1,7 @@
 import React from 'react'
 import LoginForm from './LoginForm'
 import SignupForm from './SignupForm'
-export default function MainContent({type, theme}) {
+export default function MainContent({type, theme, showAlert}) {
     return (
             <div className={`row h-100 align-items-center justify-content-center pb-5 overflow-y-auto bg-${theme}`}>
                 <div className='left col-12 col-md-8'>
@@ -10,7 +10,7 @@ export default function MainContent({type, theme}) {
                     </p>
                 </div>
                 <div className='right col-12 col-md-4 p-5'>
-                        {type === 'signup' ? <SignupForm theme={theme} /> : <LoginForm theme={theme}/>}
+                        {type === 'signup' ? <SignupForm theme={theme} showAlert={showAlert}/> : <LoginForm theme={theme} showAlert={showAlert}/>}
                 </div>
             </div>
     )

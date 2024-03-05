@@ -2,13 +2,13 @@ import React from 'react'
 
 export default function Alert(props) {
     return (
-        props.alert && <div class="toast-container position-fixed top-0 end-0 p-3">
-                            <div class="toast d-block">
-                                <div class={`toast-header bg-${props.alert.type}`}>
-                                        <strong class="me-auto">Alert</strong>
-                                        <button type="button" class="btn-close" onClick={props.closeAlert}></button>
+        props.alert && <div className="toast-container position-fixed top-0 end-0 p-3">
+                            <div className="toast d-block">
+                                <div className={`toast-header bg-${props.alert.type}`}>
+                                        <strong className="me-auto text-white">Alert</strong>
+                                        <button type="button" className="btn-close" onClick={props.closeAlert}></button>
                                 </div>
-                                <div class="toast-body">
+                                <div className="toast-body">
                                     {props.alert.message}
                                 </div>
                             </div>
