@@ -69,8 +69,8 @@ export default function Navbar({title, theme, toggleTheme, showAlert, authInfo, 
                                 <button className={`btn btn-${theme} dropdown-toggle`} data-bs-toggle="dropdown" aria-expanded="false">
                                     {authInfo?authInfo:'username'}
                                 </button>
-                                <ul className={`dropdown-menu dropdown-menu-end dropdown-menu-${theme.type}`}>
-                                    <li className="btn" onClick={logout}>Logout</li>
+                                <ul onClick={logout} className={`dropdown-menu dropdown-menu-end dropdown-menu-${theme.type}`}>
+                                    <li className="btn w-100" >Logout</li>
                                 </ul>
                             </li>
                         </ul>

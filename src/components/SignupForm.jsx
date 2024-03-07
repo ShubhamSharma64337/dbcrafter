@@ -1,8 +1,9 @@
 import React from 'react'
 import {useState} from 'react'
-import {Link} from 'react-router-dom'
+import {Link, useNavigate} from 'react-router-dom'
 export default function SignupForm({theme, showAlert}) {
   const [mail,setMail] = useState('');
+  const navigate = useNavigate();
   function handleLowerMail(event){
     setMail(event.target.value.toLowerCase());
   }
@@ -21,7 +22,12 @@ export default function SignupForm({theme, showAlert}) {
       body: JSON.stringify(fdata)
     })
     .then(response => response.json()) //response.json() or response.text() provides the 'data'
-    .then(data => showAlert(data.message, data.success?'success':'danger'))
+    .then((data) => {
+      showAlert(data.message, data.success?'success':'danger')
+      if(data.success){
+        navigate('/')
+      }
+    })
     .catch((error)=>{
       showAlert('An error occured while trying to access the backend API', 'danger')
       console.log(error)
@@ -48,7 +54,7 @@ export default function SignupForm({theme, showAlert}) {
               <label className="form-check-label" htmlFor="exampleCheck1">I agree to terms and conditions</label>
           </div>
           <div className="mt-5">
-            <div className="btn btn-primary w-100 py-1 d-flex align-items-center justify-content-center" onClick={signup}>Sign Up<i className="bi bi-arrow-right fs-5 mx-2"></i></div>
+            <button type="button" className="btn btn-primary w-100 py-1 d-flex align-items-center justify-content-center" onClick={signup}>Sign Up<i className="bi bi-arrow-right fs-5 mx-2"></i></button>
           </div>
           <div className="my-3">
             <Link className='link-secondary' to='/'>Already have an account?</Link>

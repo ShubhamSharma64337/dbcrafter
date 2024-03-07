@@ -10,7 +10,7 @@ export default function MainContent({type, theme, showAlert, authInfo}) {
                     </p>
                 </div>
                 <div className={`right col col-md-4 p-5 ${authInfo?'d-none':''}`}>
-                        {type === 'signup' ? <SignupForm theme={theme} showAlert={showAlert}/> : <LoginForm theme={theme} showAlert={showAlert}/>}
+                        {type === 'signup' ? <SignupForm theme={theme} showAlert={showAlert} authInfo={authInfo}/> : <LoginForm theme={theme} showAlert={showAlert}/>}
                 </div>
             </div>
     )

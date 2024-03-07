@@ -48,7 +48,7 @@ export default function LoginForm({theme, showAlert}) {
               <label className="form-check-label" htmlFor="exampleCheck1">Remember Me</label>
           </div>
           <div className='mt-5'>
-            <div className="btn btn-primary w-100 py-1 d-flex align-items-center justify-content-center" onClick={login}>Login <i className="bi bi-arrow-right fs-5 mx-2"></i></div>
+            <button type="button" className="btn btn-primary w-100 py-1 d-flex align-items-center justify-content-center" onClick={login}>Login <i className="bi bi-arrow-right fs-5 mx-2"></i></button>
           </div>
           <div className='mt-3'>
             <Link className='link-secondary' to='/signup'>Don't have an account?</Link>
