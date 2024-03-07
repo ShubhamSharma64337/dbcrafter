@@ -1,7 +1,48 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from "react-router-dom";
 import ThemeButton from './ThemeButton';
-export default function Navbar({title, theme, toggleTheme}) {
+export default function Navbar({title, theme, toggleTheme, showAlert, authInfo, setAuthInfo}) {
+
+    function login(){
+
+        fetch('http://localhost:3000/loginstatus', {
+          method: 'GET',
+          headers: {         
+            'Content-Type': 'application/json',
+          },
+          credentials: 'include', //this must be set in order to save the received session-cookie,
+          //also, after setting credentials to include, cors options must be set to allow credentials and origin from this domain
+        })
+        .then(response => response.json()) //response.json() or response.text() provides the 'data'
+        .then((data)=>{
+            if(data.user){
+                setAuthInfo(data.user);
+            } else {
+                setAuthInfo(null);
+            }
+        })
+        .catch((error)=>{
+          showAlert('An error occured while trying to access the backend API', 'danger')
+          console.log(error)
+        })
+      }
+    useEffect(login);
+    function logout(){
+        fetch('http://localhost:3000/logout', {
+          method: 'GET',
+          headers: {         
+            'Content-Type': 'application/json',
+          },
+          credentials: 'include', //this must be set in order to save the received session-cookie,
+          //also, after setting credentials to include, cors options must be set to allow credentials and origin from this domain
+        })
+        .then(response => response.json()) //response.json() or response.text() provides the 'data'
+        .then((data)=>{showAlert(data.message, 'success')})
+        .catch((error)=>{
+          showAlert('An error occured while trying to access the backend API', 'danger')
+          console.log(error)
+        })
+    }
     return (
         <div>
             <nav className='navbar navbar-expand-lg bg-body-tertiary shadow-sm' data-bs-theme={theme==='dark'?'dark':''}>
@@ -23,6 +64,14 @@ export default function Navbar({title, theme, toggleTheme}) {
                             </li>
                             <li className='nav-item mx-2'>
                                 <button className='nav-link' onClick={toggleTheme}><ThemeButton theme={theme}/></button>
+                            </li>
+                            <li className={`nav-item dropdown ${authInfo?'':'d-none'}`} data-bs-them={theme}>
+                                <button className={`btn btn-${theme} dropdown-toggle`} data-bs-toggle="dropdown" aria-expanded="false">
+                                    {authInfo?authInfo:'username'}
+                                </button>
+                                <ul className={`dropdown-menu dropdown-menu-end dropdown-menu-${theme.type}`}>
+                                    <li className="btn" onClick={logout}>Logout</li>
+                                </ul>
                             </li>
                         </ul>
                     </div>

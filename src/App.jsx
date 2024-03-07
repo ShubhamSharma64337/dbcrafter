@@ -12,13 +12,14 @@ import {
 } from "react-router-dom";
 import { useState } from 'react';
 function App(){
+  const [authInfo, setAuthInfo] = useState(null); //this stores whether user is logged in or not, if logged in, it contains the email
   const [alert, setAlert] = useState(null);
   const [theme, setTheme] = useState('light');
   function showAlert(message, type){
     setAlert({message: message, type: type});
     setTimeout(() => {
       setAlert(null);
-    }, 2000);
+    }, 3000);
   }
 
   function closeAlert(){
@@ -31,10 +32,10 @@ function App(){
   return (
     <div className='vh-100 vw-100' >
       <Router>
-      <Navbar title='Dbcrafter' theme={theme} toggleTheme={toggleTheme}/>
+      <Navbar title='Dbcrafter' theme={theme} toggleTheme={toggleTheme} showAlert={showAlert} authInfo = {authInfo} setAuthInfo={setAuthInfo}/>
       <Alert alert={alert} closeAlert={closeAlert}/>
         <Routes>
-          <Route exact path='/' element={<MainContent theme={theme} showAlert={showAlert}/>}/>
+          <Route exact path='/' element={<MainContent theme={theme} showAlert={showAlert} authInfo = {authInfo} />}/>
           <Route exact path='/signup' element={<MainContent type='signup' theme={theme} showAlert={showAlert}/>}/>
           <Route exact path='/craft' element={<MainCanvas showAlert={showAlert} theme={theme} />}/>
           <Route exact path='/about' element={<AboutContent theme={theme}/>}/>
