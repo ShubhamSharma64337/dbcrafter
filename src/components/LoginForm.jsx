@@ -19,6 +19,8 @@ export default function LoginForm({theme, showAlert}) {
       headers: {         
         'Content-Type': 'application/json',
       },
+      credentials: 'include', //this must be set in order to save the received session-cookie,
+      //also, after setting credentials to include, cors options must be set to allow credentials and origin from this domain
       body: JSON.stringify(fdata)
     })
     .then(response => response.json()) //response.json() or response.text() provides the 'data'
