@@ -2,11 +2,8 @@ import React from 'react'
 import {useState} from 'react'
 import {Link, useNavigate} from 'react-router-dom'
 export default function SignupForm({theme, showAlert}) {
-  const [mail,setMail] = useState('');
   const navigate = useNavigate();
-  function handleLowerMail(event){
-    setMail(event.target.value.toLowerCase());
-  }
+
   //signup function handles click event on signup button and uses fetch api to signup into the account
   function signup(){
     let fdobj = new FormData(document.querySelector('form')) //this retrieves only those inputs which have a name value
@@ -38,7 +35,7 @@ export default function SignupForm({theme, showAlert}) {
         <form className='p-5'>
           <div className="mb-3">
               <label htmlFor="signupEmail" className="form-label">Email address</label>
-              <input type="email" name='email' value={mail} onChange={handleLowerMail} className="form-control" id="signupEmail" aria-describedby="emailHelp" placeholder='abc@xyz.com'/>
+              <input type="email" name='email' className="form-control" id="signupEmail" aria-describedby="emailHelp" placeholder='abc@xyz.com'/>
               <div id="emailHelp" className="form-text">We'll never share your email with anyone else.</div>
           </div>
           <div className="mb-3">
