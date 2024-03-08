@@ -2,9 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { Link } from "react-router-dom";
 import ThemeButton from './ThemeButton';
 export default function Navbar({title, theme, toggleTheme, showAlert, authInfo, setAuthInfo}) {
-
+    const [collapsed, setCollapsed] = useState(true);
+    function toggleCollapsed(){
+        collapsed?setCollapsed(false):setCollapsed(true);   
+    }
     function login(){
-
         fetch('http://localhost:3000/loginstatus', {
           method: 'GET',
           headers: {         
@@ -44,39 +46,41 @@ export default function Navbar({title, theme, toggleTheme, showAlert, authInfo, 
         })
     }
     return (
-        <div>
-            <nav className='navbar navbar-expand-lg bg-body-tertiary shadow-sm' data-bs-theme={theme==='dark'?'dark':''}>
-                <div className="container-fluid">
-                    <Link className="navbar-brand d-flex align-items-center text-primary fw-bold" to="/"><i className="bi bi-database text-primary mx-1"></i>{title}</Link>
-                    <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                        <span className="navbar-toggler-icon"></span>
+
+                <div className="navbar shadow flex justify-between items-center px-2 py-3 relative top-0 w-full">
+                    <Link className="logo text-xl font-medium" to="/"><i className="bi bi-database text-primary mx-1"></i>{title}</Link>
+                    <ul className={`${collapsed?'scale-0':'scale-100'} transition flex flex-col absolute shadow bg-white text-center top-full left-0 w-full md:w-min md:static md:flex-row md:shadow-none md:scale-100`}>
+                        <li className="mx-2 my-2 md:my-0">
+                            <Link className="transition px-1.5 py-1 rounded hover:bg-slate-200" to="/">Home</Link>
+                        </li>
+                        <li className="mx-2 my-2 md:my-0">
+                            <Link className="transition px-1.5 py-1 rounded hover:bg-slate-200"  to="/craft">Craft</Link>
+                        </li>
+                        <li className="mx-2 my-2 md:my-0">
+                            <Link className="transition px-1.5 py-1 rounded hover:bg-slate-200" to="/about">About</Link>
+                        </li>
+                        <li className="mx-2 my-2 md:my-0">
+                            <button onClick={toggleTheme}><ThemeButton theme={theme}/></button>
+                        </li>
+                        <li className="hidden">
+                            <button className="">
+                                {authInfo?authInfo:'username'}
+                            </button>
+                            <ul onClick={logout} className="">
+                                <li className="" >Logout</li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <button id="menu-close-button" className={`md:hidden`} onClick={toggleCollapsed}>
+                        {!collapsed ? <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
+                        </svg> :
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+                            </svg>}
+
                     </button>
-                    <div className="collapse navbar-collapse" id="navbarSupportedContent">
-                        <ul className="navbar-nav ms-auto mb-2 mb-lg-0 align-items-center">
-                            <li className="nav-item mx-2">
-                                <Link className={`nav-link`} to="/">Home</Link>
-                            </li>
-                            <li className="nav-item mx-2">
-                                <Link  className={`nav-link`} to="/craft">Craft</Link>
-                            </li>
-                            <li className="nav-item mx-2">
-                                <Link className={`nav-link`} to="/about">About</Link>
-                            </li>
-                            <li className='nav-item mx-2'>
-                                <button className='nav-link' onClick={toggleTheme}><ThemeButton theme={theme}/></button>
-                            </li>
-                            <li className={`nav-item dropdown ${authInfo?'':'d-none'}`} data-bs-them={theme}>
-                                <button className={`btn btn-${theme} dropdown-toggle`} data-bs-toggle="dropdown" aria-expanded="false">
-                                    {authInfo?authInfo:'username'}
-                                </button>
-                                <ul onClick={logout} className={`dropdown-menu dropdown-menu-end dropdown-menu-${theme.type}`}>
-                                    <li className="btn w-100" >Logout</li>
-                                </ul>
-                            </li>
-                        </ul>
-                    </div>
+
                 </div>
-            </nav>
-        </div>
     )
 }

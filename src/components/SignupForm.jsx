@@ -31,32 +31,32 @@ export default function SignupForm({theme, showAlert}) {
     })
   }
   return (
-    <div className={`card shadow border-1 ${theme==='dark'?'bg-dark shadow-lg text-light':'bg-light'}`} data-bs-theme={theme}>
-        <form className='p-5'>
-          <div className="mb-3">
-              <label htmlFor="signupEmail" className="form-label">Email address</label>
-              <input type="email" name='email' className="form-control" id="signupEmail" aria-describedby="emailHelp" placeholder='abc@xyz.com'/>
-              <div id="emailHelp" className="form-text">We'll never share your email with anyone else.</div>
+
+        <form className="shadow border p-10">
+          <div className="my-5">
+              <label htmlFor="signupEmail" className="block">Email address</label>
+              <input type="email" name='email' className="border p-2 w-full outline-blue-700" id="signupEmail" aria-describedby="emailHelp" placeholder='abc@xyz.com'/>
+              <div id="emailHelp" className="text-sm text-slate-500">We'll never share your email with anyone else.</div>
           </div>
-          <div className="mb-3">
-              <label htmlFor="signupPassword" className="form-label">Password</label>
-              <input name='password' type="password" className="form-control" id="signupPassword" placeholder='Enter a password'/>
+          <div className="my-5">
+              <label htmlFor="signupPassword" className="block">Password</label>
+              <input name='password' type="password" className="border p-2 w-full outline-blue-700" id="signupPassword" placeholder='Enter a password'/>
           </div>
-          <div className="mb-3">
-              <label htmlFor="signupConfirmPassword" className="form-label">Confirm Password</label>
-              <input name="confirmPassword" type="password" className="form-control" id="signupConfirmPassword" placeholder='Re-enter the password'/>
+          <div className="my-5">
+              <label htmlFor="signupConfirmPassword" className="block">Confirm Password</label>
+              <input name="confirmPassword" type="password" className="border p-2 w-full outline-blue-700" id="signupConfirmPassword" placeholder='Re-enter the password'/>
           </div>
-          <div className="mb-3 form-check">
-              <input type="checkbox" className="form-check-input" id="exampleCheck1"/>
-              <label className="form-check-label" htmlFor="exampleCheck1">I agree to terms and conditions</label>
+          <div className="my-5 flex items-center">
+              <input type="checkbox" className="w-4 h-4" id="termsCheck"/>
+              <label className="ms-2" htmlFor="termsCheck">I agree to terms and conditions</label>
           </div>
-          <div className="mt-5">
-            <button type="button" className="btn btn-primary w-100 py-1 d-flex align-items-center justify-content-center" onClick={signup}>Sign Up<i className="bi bi-arrow-right fs-5 mx-2"></i></button>
+          <div className="my-5">
+            <button type="button" className="w-full bg-blue-700 text-white p-2 rounded transition hover:scale-95" onClick={signup}>Sign Up<i className="bi bi-arrow-right fs-5 mx-2"></i></button>
           </div>
-          <div className="my-3">
-            <Link className='link-secondary' to='/'>Already have an account?</Link>
+          <div className="my-5">
+            <Link className="underline text-slate-500" to='/'>Already have an account?</Link>
           </div>
         </form>
-    </div>
+
   )
 }

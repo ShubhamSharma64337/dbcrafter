@@ -32,28 +32,26 @@ export default function LoginForm({theme, showAlert}) {
   }
 
   return (
-    <div  className={`card border-1 shadow ${theme==='dark'?'bg-dark shadow-lg text-light':'bg-light'}`} data-bs-theme={theme}>
-        <form className='p-5'>
-          <div className="mb-3">
-              <label htmlFor="loginName" className="form-label">Email address</label>
-              <input type="email" value={mail} onChange={handleLowerMail} className="form-control" id="loginName" name="email" placeholder='abc@xyz.com'/>
-              <div id="emailHelp" className="form-text">We'll never share your email with anyone else.</div>
+        <form className="shadow border p-10">
+          <div className="my-5">
+              <label htmlFor="loginName" className="block">Email address</label>
+              <input type="email" value={mail} onChange={handleLowerMail} className="border p-2 w-full out outline-blue-700" id="loginName" name="email" placeholder='abc@xyz.com'/>
+              <div id="emailHelp" className="text-sm text-slate-500">We'll never share your email with anyone else.</div>
           </div>
-          <div className="mb-3">
-              <label htmlFor="loginPassword" className="form-label">Password</label>
-              <input type="password" className="form-control" id="loginPassword" placeholder='Enter your password' name="password"/>
+          <div className="my-5">
+              <label htmlFor="loginPassword" className="block">Password</label>
+              <input type="password" className="border p-2 w-full outline-blue-700" id="loginPassword" placeholder='Enter your password' name="password"/>
           </div>
-          <div className="mb-3 form-check">
-              <input type="checkbox" className="form-check-input" id="exampleCheck1"/>
-              <label className="form-check-label" htmlFor="exampleCheck1">Remember Me</label>
+          <div className="my-5 flex items-center">
+              <input type="checkbox" className="w-4 h-4" id="rememberCheck"/>
+              <label className="ms-2" htmlFor="rememberCheck">Remember Me</label>
           </div>
-          <div className='mt-5'>
-            <button type="button" className="btn btn-primary w-100 py-1 d-flex align-items-center justify-content-center" onClick={login}>Login <i className="bi bi-arrow-right fs-5 mx-2"></i></button>
+          <div className="my-5">
+            <button type="button" className="w-full bg-blue-700 p-2 rounded text-white transition hover:scale-95" onClick={login}>Login <i className="bi bi-arrow-right fs-5 mx-2"></i></button>
           </div>
-          <div className='mt-3'>
-            <Link className='link-secondary' to='/signup'>Don't have an account?</Link>
+          <div className="my-5">
+            <Link className="underline text-slate-500" to='/signup'>Don't have an account?</Link>
           </div>
         </form>
-    </div>
   )
 }

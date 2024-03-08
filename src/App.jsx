@@ -30,7 +30,7 @@ function App(){
     theme==='light'?setTheme('dark'):setTheme('light');
   }
   return (
-    <div className='vh-100 vw-100' >
+    <div>
       <Router>
       <Navbar title='Dbcrafter' theme={theme} toggleTheme={toggleTheme} showAlert={showAlert} authInfo = {authInfo} setAuthInfo={setAuthInfo}/>
       <Alert alert={alert} closeAlert={closeAlert}/>
