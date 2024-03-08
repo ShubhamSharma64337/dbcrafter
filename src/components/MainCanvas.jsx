@@ -3,6 +3,7 @@ import { useState } from 'react';
 import background from '/graph-paper.svg';
 import backgroundDark from '/graph-paper-dark.svg';
 import ActionBar from './ActionBar';
+
 export default function MainCanvas(props) {
     // tbls is an array of objects, each object represents a table on the canvas
     // each object has following members - 
@@ -106,6 +107,7 @@ export default function MainCanvas(props) {
     function draw() {
         const canvas = document.getElementById("canvas");
         const ctxt = canvas.getContext("2d");
+        
         //setting width and height properly
         const nav_height = document.querySelector(".navbar").clientHeight;
         ctxt.canvas.height = window.innerHeight - nav_height;
@@ -148,19 +150,21 @@ export default function MainCanvas(props) {
             
 
             //creating the column seperator
-            ctxt.beginPath();
-            ctxt.moveTo(tbl.x + tbl.w * 0.5, tbl.y + commonProps.rh);
-            ctxt.lineTo(tbl.x + tbl.w * 0.5, tbl.y + tbl_height);
-            ctxt.stroke();
+            // ctxt.beginPath();
+            // ctxt.moveTo(tbl.x + tbl.w * 0.5, tbl.y + commonProps.rh);
+            // ctxt.lineTo(tbl.x + tbl.w * 0.5, tbl.y + tbl_height);
+            // ctxt.stroke();
 
             //now creating all other fields and their upper row borders
             let row_index = 1;
             for (let row of tbl.fields) {
                 // creating the upper border
                 ctxt.beginPath();
+                ctxt.strokeStyle = 'grey';
                 ctxt.moveTo(tbl.x, tbl.y + commonProps.rh * (row_index));
                 ctxt.lineTo(tbl.x + tbl.w, tbl.y + commonProps.rh * (row_index))
                 ctxt.stroke();
+                ctxt.strokeStyle = 'black';
                 //filling the text
                 if(tbl.pKey === row.name){
                     ctxt.fillStyle = '#0d6efd';
@@ -322,7 +326,28 @@ export default function MainCanvas(props) {
             }
         }
         all_tbls[selections.selectedTbl].fields.push({ name: key, type: val, isFKey: isFKey, refTbl: refTblName, refField: refFieldName});
+        
+        //updating table width
+        let canvas = document.getElementById('canvas');
+        let ctxt = canvas.getContext("2d");
+        let max_fname_length = 100;
+        let max_ftype_length = 50;
+        for(let tbl of all_tbls){
+            for(let field of tbl.fields){
+                var textMetrics = ctxt.measureText(field.name);
+                if(textMetrics.width>max_fname_length){
+                    max_fname_length = textMetrics.width;
+                }
+                textMetrics = ctxt.measureText(field.type);
+                if(textMetrics.width>max_ftype_length){
+                    max_ftype_length = textMetrics.width;
+                }
+            }
+            all_tbls[selections.selectedTbl].w = max_fname_length + max_ftype_length + 5;
+        }
+
         setTbls(all_tbls);
+        
     }
 
     //deletes fields from the selectedTblIndex table
@@ -354,6 +379,27 @@ export default function MainCanvas(props) {
             all_tbls[selections.selectedTbl].pKey = null;
         }
         all_tbls[selections.selectedTbl].fields.splice(del_index,1);
+
+        //updating table widths
+        //updating table width
+        let canvas = document.getElementById('canvas');
+        let ctxt = canvas.getContext("2d");
+        let max_fname_length = 100;
+        let max_ftype_length = 50;
+        for(let tbl of all_tbls){
+            for(let field of tbl.fields){
+                var textMetrics = ctxt.measureText(field.name);
+                if(textMetrics.width>max_fname_length){
+                    max_fname_length = textMetrics.width;
+                }
+                textMetrics = ctxt.measureText(field.type);
+                if(textMetrics.width>max_ftype_length){
+                    max_ftype_length = textMetrics.width;
+                }
+            }
+            all_tbls[selections.selectedTbl].w = max_fname_length + max_ftype_length + 5;
+        }
+        
         setTbls(all_tbls);
     }
 
