@@ -1,14 +1,14 @@
 import React from 'react'
 
-export default function Alert(props) {
-    return (
-        props.alert && <div className="toast-container position-fixed bottom-0 start-0 p-3">
-                            <div className="toast d-block ">
-                                <div className={`py-3 px-3 rounded d-flex justify-around align-items-center bg-${props.alert.type}`}>
-                                        <strong className="me-auto text-light fs-5">{props.alert.message}</strong>
-                                        <button type="button" className="btn-close font-medium" onClick={props.closeAlert}></button>
-                                </div>
+export default function Alert({alert,closeAlert}) {
+    return (    
+                            <div className={`${alert?'right-2':'-right-full'} bg-red-500 shadow transition-all fixed top-2 px-4 py-3 rounded-md flex justify-between items-center text-white`}>
+                                    <p className="text-lg">{alert?alert.message:''}</p>
+                                    <button type="button" className="ms-3" onClick={alert?closeAlert:undefined}>
+                                        <svg xmlns="http://www.w3.or    /2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={4} stroke="currentColor" className="w-6 h-6">
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
+                                        </svg>
+                                    </button>
                             </div>
-                        </div>
-    )
+    )                       
 }
