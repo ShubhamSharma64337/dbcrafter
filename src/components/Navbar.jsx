@@ -47,7 +47,7 @@ export default function Navbar({title, theme, toggleTheme, showAlert, authInfo, 
     }
     return (
 
-                <div className={`navbar  ${theme==='dark'?'bg-black text-white':'bg-white'} transition shadow flex justify-between items-center px-2 py-3 relative top-0 w-full`}>
+                <div className={`navbar  ${theme==='dark'?'bg-black text-white':'bg-white'} transition shadow flex justify-between items-center px-2 py-3 relative w-full`}>
                     <Link className="logo text-xl font-medium" to="/"><i className="bi bi-database text-primary mx-1"></i>{title}</Link>
                     <ul className={`${collapsed?'scale-0':'scale-100'} transition-transform flex flex-col absolute top-full shadow bg-inherit text-center left-0 w-full md:w-min md:static md:flex-row md:shadow-none md:scale-100`}>
                         <li className="mx-2 my-2 md:my-0">

@@ -3,8 +3,9 @@ import { useState } from 'react';
 import background from '/graph-paper.svg';
 import backgroundDark from '/graph-paper-dark.svg';
 import ActionBar from './ActionBar';
-
+import Modal from './Modal';
 export default function MainCanvas(props) {
+    const [modalShow, setModalShow] = useState(false);
     // tbls is an array of objects, each object represents a table on the canvas
     // each object has following members - 
     //      x - x coordinate of top left point of the table
@@ -110,7 +111,7 @@ export default function MainCanvas(props) {
         
         //setting width and height properly
         const nav_height = document.querySelector(".navbar").clientHeight;
-        ctxt.canvas.height = window.innerHeight - nav_height;
+        ctxt.canvas.height = window.innerHeight - nav_height - 0.1;
         ctxt.canvas.width = window.innerWidth;
         ctxt.font = '16px Segoe UI';
         ctxt.clearRect(0, 0, canvas.width, canvas.height);
@@ -551,10 +552,22 @@ export default function MainCanvas(props) {
         setTbls(all_tbls);
     }
 
+    function toggleModal(){
+        modalShow?setModalShow(false):setModalShow(true);
+    }
+
     return (
-        <div className={`canvas-div d-flex justify-content-center ${props.theme==='dark'?'bg-dark':''}`} style={props.theme==='dark'?{ backgroundImage: `url(${backgroundDark})`}:{ backgroundImage: `url(${background})`}}>
-            <canvas id='canvas' width={window.innerWidth} height={window.innerHeight} onMouseDown={handleMouseDown} onMouseMove={tblDragHandler} onMouseUp={handleMouseUp}></canvas>
-            <ActionBar tbls = {tbls} selections={selections} addTbl = {addTbl} delTbl = {delTbl} delRow = {delRow} addRow = {addRow} renameTbl = {renameTbl} chgPKey = {chgPKey} showAlert={props.showAlert} theme={props.theme}/>
-        </div>
+
+            <div className="canvas-div" style={props.theme==='dark'?{ backgroundImage: `url(${backgroundDark})`}:{ backgroundImage: `url(${background})`}}>
+                <canvas id='canvas' width={window.innerWidth} height={window.innerHeight} onMouseDown={handleMouseDown} onMouseMove={tblDragHandler} onMouseUp={handleMouseUp}></canvas>
+                <button type='button' className='bg-blue-500 p-3 text-white rounded-full fixed bottom-4 right-4' onClick={toggleModal}>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                    </svg>
+
+                </button>
+                <Modal show={modalShow} toggleModal={toggleModal} tbl={tbls[selections.selectedTbl]}/>
+            </div>
+
     )
 }
