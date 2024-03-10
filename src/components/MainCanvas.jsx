@@ -407,26 +407,36 @@ export default function MainCanvas(props) {
     //this function is used to add new table to the canvas
     function addTbl(newTbl) {
         let all_tbls = tbls?[...tbls]:[]; //if we do not use conditional operator, [...tbls] will give null reference error
-        // let tblName = document.querySelector("#tblName").value;
-        // if(newTbl.name===''){
-        //     props.showAlert('Table name cannot be empty!','warning');
-        //     return;
-        // }
+        
+        //checking if table name is empty
+        if(newTbl.name === ''){
+            props.showAlert("Table name cannot be empty!","danger");
+            return 1;
+        }
         //checking if table name already exists
         if(tbls){
             for(let tbl of tbls){
                 if(newTbl.name === tbl.name){
                     props.showAlert('Table name already exists!','warning');
-                    return;
+                    return 1;
                 }
             }
+        }
+        
+        let fieldNames = []
+        for(let field of newTbl.fields){
+            fieldNames.push(field.name);
+        }
+        let fieldNamesSet = new Set(fieldNames);
+        if(fieldNames.length !== fieldNamesSet.size){
+            props.showAlert('Duplicate field names are not allowed!','warning');
+            return 1;
         }
         // document.querySelector("#tblName").value = '';
         let new_element = null;
         if(!all_tbls){ //checking if there does not exist any prior table
             all_tbls = [{...newTbl, x: 50, y: 50, w: 150}];
         }else{
-            console.log('adding another');
             let coords = nonCollapseFinder();
             new_element = { ...newTbl, x: coords.x, y: coords.y, w:150};
             all_tbls.push(new_element);
@@ -435,6 +445,7 @@ export default function MainCanvas(props) {
         sel.selectedTbl = all_tbls.length - 1;
         setTbls(all_tbls);
         setSelections(sel);
+        return 0;
     }
 
     //this function finds a place in canvas such that it does not collapse with any previously drawn tables
@@ -580,7 +591,7 @@ export default function MainCanvas(props) {
                         </svg>
                     </button>
                 </div>
-                <Modal show={modalShow} toggleModal={toggleModal} tbl={tbls?tbls[selections.selectedTbl]:null} addTable={addTbl}/>
+                <Modal show={modalShow} toggleModal={toggleModal} tbls={tbls?tbls:null} addTable={addTbl} showAlert={props.showAlert}/>
             </div>
 
     )

@@ -2,10 +2,10 @@ import { func } from 'prop-types'
 import React, { useState } from 'react'
 
 
-export default function Modal({show, toggleModal, addTable, delCanvasTable}) {
+export default function Modal({show, toggleModal, addTable, tbls, showAlert}) {
   const [maxIndex, setMaxIndex] = useState(0);
-  const [newTbl, setNewTbl] = useState({name: 'table', pKey: 'field0', fields: [
-    {name: 'id', type: 'INT', isFKey: false, refTbl: '', refField: ''}
+  const [newTbl, setNewTbl] = useState({name: 'table', pKey: 'id', fields: [
+    {name: 'id', type: 'INT', isFKey: false, refTbl: 'NONE', refField: 'NONE'}
   ]})
 
   function handleNameChange(e){ //table name change handler
@@ -17,7 +17,7 @@ export default function Modal({show, toggleModal, addTable, delCanvasTable}) {
       return {...element}
     })}
     const insertIndex = parseInt(e.currentTarget.dataset.rowindex) + 1;
-    tableCopy.fields.splice(insertIndex,0, {name: 'field'+(maxIndex+1), type: 'INT', isFKey: false, refTbl: '', refField: ''})
+    tableCopy.fields.splice(insertIndex,0, {name: 'field'+(maxIndex+1), type: 'INT', isFKey: false, refTbl: 'NONE', refField: 'NONE'})
     setNewTbl(tableCopy);
     setMaxIndex(maxIndex+1);
   }
@@ -26,18 +26,27 @@ export default function Modal({show, toggleModal, addTable, delCanvasTable}) {
     let tableCopy = {...newTbl, fields: newTbl.fields.map((element, index)=>{
       return {...element}
     })}
+    if(tableCopy.fields.length<2){
+      showAlert("Table must have at least one row!","danger");
+      return;
+    }
     tableCopy.fields.splice(parseInt(e.currentTarget.dataset.rowindex),1)
     setNewTbl(tableCopy);
   }
+
   function handleChange(e){
     const name = e.currentTarget.name;
     const value = e.currentTarget.value;
     const rowindex = parseInt(e.currentTarget.dataset.rowindex);
     let tableCopy = {}
     if(e.currentTarget.name==='isFKey'){ //to handle change in fkey checkbox
+
       let checked = e.currentTarget.checked;
       tableCopy = {...newTbl, fields: newTbl.fields.map((element, index)=>{
         if(index === rowindex){
+          if(checked === false){
+            return {...element, [name]:checked, refTbl: 'NONE', refField: 'NONE'}
+          }
           return {...element, [name]: checked};
         } else {
           return {...element};
@@ -58,25 +67,57 @@ export default function Modal({show, toggleModal, addTable, delCanvasTable}) {
     setNewTbl(tableCopy);
   }
 
-  function handleSelect(e){
-    const name = e.target.name;
-    const value = e.target.value;
-    const rowindex = parseInt(e.currentTarget.dataset.rowindex);
-    let tableCopy = {...newTbl, fields: newTbl.fields.map((element, index)=>{
-      if(index === rowindex){
-        return {...element, [name]: value};
-      } else {
-        return {...element};
+  function handleSelect(e){ //this function handles change in selection of all the select lists
+    const name = e.currentTarget.name; //retrieving the name value of the select list, this will be same as the key in the newTbl dictionary
+    const value = e.currentTarget.value; //retrieving the value of the select field
+    const rowindex = parseInt(e.currentTarget.dataset.rowindex); //retrieving the field index using the data attribute of the select input
+    if(name==='refTbl'){ //if the user has just changed the refTbl select option, we need to populate the corresponding refField select input with field names
+      let refField = document.getElementsByClassName('refFieldInput')[rowindex];
+      let reqTbl = e => e.name === value;
+      let tblIndex = tbls.findIndex(reqTbl);
+      if(value!=='NONE'){
+        while (refField.options.length > 0) {
+          refField.remove(0);
+        }
+        refField.add(new Option("NONE","NONE"), undefined);
+        for(let field of tbls[tblIndex].fields){
+          refField.add(new Option(field.name,field.name), undefined)
+        }
       }
+    } 
+    let tableCopy = {...newTbl, fields: newTbl.fields.map((element, index)=>{ //now starting actually modifying the select field
+        if(index === rowindex){
+          return {...element, [name]: value};
+        } else {
+          return {...element};
+        }
+      
     })}
     setNewTbl(tableCopy);
   }
 
-  function addTbl(e){
-    addTable(newTbl);
+  function addTbl(){
+    for(let field of newTbl.fields){
+      if(field.isFKey){
+        if(field.refTbl==='NONE' || field.refField==='NONE'){
+          showAlert("You must set referenced table and field if you have checked Foreign key!","warning");
+          return;
+        }
+      }
+    }
+    let res = addTable(newTbl);
+    if(res!==0){
+      return;
+    }
     toggleModal();
-    setNewTbl({name: 'table', pKey: 'field0', fields: [{name: 'id', type: 'INT', isFKey: false, refTbl: '', refField: ''}]})
+    setNewTbl({name: 'table', pKey: 'id', fields: [{name: 'id', type: 'INT', isFKey: false, refTbl: '', refField: ''}]})
     setMaxIndex(0)
+  }
+
+  function closeModal(){
+    setNewTbl({name: 'table', pKey: 'id', fields: [{name: 'id', type: 'INT', isFKey: false, refTbl: '', refField: ''}]})
+    setMaxIndex(0)
+    toggleModal(0)
   }
 
 
@@ -85,7 +126,7 @@ export default function Modal({show, toggleModal, addTable, delCanvasTable}) {
         <div className="modal bg-white rounded">
             {/* Modal Header */}
             <div className="modal-header flex justify-between items-center border-blue-800 border-b-2 p-3">
-              <button type="button" className="p-2 rounded-full transition-colors bg-slate-200 hover:bg-red-300" onClick={toggleModal}>
+              <button type="button" className="p-2 rounded-full transition-colors bg-slate-200 hover:bg-red-300" onClick={closeModal}>
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
                 </svg>
@@ -139,17 +180,16 @@ export default function Modal({show, toggleModal, addTable, delCanvasTable}) {
                             <input name='isFKey' type='checkbox' className='border p-2 w-5 h-5' checked={newTbl.fields[index].isFKey} data-rowindex={index} onChange={handleChange}></input>
                           </td>
                           <td>
-                            <select name='refTbl' className='border py-2 px-3' value={element.refTbl} data-rowindex={index} onChange={handleSelect}>
-                              <option>table1</option>
-                              <option>table2</option>
-                              <option>table3</option>
+                            <select name='refTbl' className={`border py-2 px-3`} value={element.refTbl} data-rowindex={index} onChange={handleSelect} disabled={!element.isFKey}>
+                              <option value="NONE">NONE</option>
+                              {tbls && tbls.map((element, index)=>{
+                                return <option key={index}>{element.name}</option>
+                              })}
                             </select>
                           </td>
                           <td>
-                            <select name='refField' className='border py-2 px-3' value={element.refField} data-rowindex={index} onChange={handleSelect}>
-                              <option>field1</option>
-                              <option>field2</option>
-                              <option>field3</option>
+                            <select name='refField' className='refFieldInput border py-2 px-3' disabled={element.refTbl==='NONE'?true:false} value={element.refTbl==='NONE'?'NONE':element.refField} data-rowindex={index} onChange={handleSelect}>
+                              <option value={'NONE'}>NONE</option>
                             </select>
                           </td>
                           <td>
