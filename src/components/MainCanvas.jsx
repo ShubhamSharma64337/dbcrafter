@@ -2,17 +2,18 @@ import React, { useEffect } from 'react'
 import { useState } from 'react';
 import background from '/graph-paper.svg';
 import backgroundDark from '/graph-paper-dark.svg';
-import ActionBar from './ActionBar';
 import Modal from './Modal';
+import EditModal from './EditModal';
 export default function MainCanvas(props) {
     const [modalShow, setModalShow] = useState(false);
+    const [editModalShow, setEditModalShow] = useState(false);
     // tbls is an array of objects, each object represents a table on the canvas
     // each object has following members - 
     //      x - x coordinate of top left point of the table
     //      y - y coordinate of the top left point of the table
     //      w - width of the table
     //      fields - this is an array of objects, each of which is a field of the table
-    const [tbls, setTbls] = useState([{ name: 'Table1', x: 20, y: 20, w: 150, pKey: 'id', fields: [{ name: 'id', type: 'INT', isFKey: null, refTbl: null, refField: null}] }]);
+    const [tbls, setTbls] = useState([{ name: 'Table1', x: 20, y: 20, w: 150, pKey: 'id', fields: [{ name: 'id', type: 'INT', isFKey: false, refTbl: 'NONE', refField: 'NONE'}] }]);
     const [commonProps, setCommonProps] = useState({rh: 20});
     //  selectedTbl is the index of the table which is currently selected
     //  is_dragging becomes true only when mousedown event is triggered on a particular table and is again set to false
@@ -530,43 +531,51 @@ export default function MainCanvas(props) {
         setTbls(all_tbls);
     }
 
-    //this function renames the table
-    function renameTbl(){
+    //this function edit the table
+    function editTbl(newTbl){
         if(!tbls){
+            props.showAlert("No tables exist!");
             return;
         }
-        let newName = document.querySelector("#newTblName").value;
-        if(newName===''){
+        if(newTbl.name===''){
             props.showAlert('New name cannot be empty!','warning');
             return;
         }
-        document.querySelector("#newTblName").value = '';
         let all_tbls = tbls.map((tbl) => {            //performing deeper copy of the tbls state object
                 return {...tbl, fields: tbl.fields.map(
-                    (row)=>{
-                        return { ...row }
+                    (field, index)=>{
+                        return { ...field }
                     }
                 )}
         });
         //adding code to detect if any other table references this table, we need to change the name in the referencing table
-        let old_name = all_tbls[selections.selectedTbl].name;
+        let old_tbl = all_tbls[selections.selectedTbl];
         let tblindex = 0;
         for(let tbl of all_tbls){ //of, not in :( wasted a lot of time due to this
             let rowindex = 0;
             for(let row of tbl.fields){
-                if(row.refTbl === old_name){
-                    all_tbls[tblindex].fields[rowindex].refTbl = newName;
+                if(row.refTbl === old_tbl.name){
+                    all_tbls[tblindex].fields[rowindex].refTbl = newTbl.name;
                 }
                 rowindex+=1;
             }
             tblindex+=1;
         }
-        all_tbls[selections.selectedTbl].name = newName;
+        all_tbls[selections.selectedTbl].name = newTbl.name;
+        all_tbls[selections.selectedTbl].fields = newTbl.fields;
+        all_tbls[selections.selectedTbl].pKey = newTbl.pKey;
+        all_tbls[selections.selectedTbl].x = old_tbl.x;
+        all_tbls[selections.selectedTbl].y = old_tbl.y;
+        all_tbls[selections.selectedTbl].w = old_tbl.w;
+        props.showAlert("Updated table!");
         setTbls(all_tbls);
     }
 
     function toggleModal(){
         modalShow?setModalShow(false):setModalShow(true);
+    }
+    function toggleEditModal(){
+        editModalShow?setEditModalShow(false):setEditModalShow(true);
     }
 
     return (
@@ -574,7 +583,7 @@ export default function MainCanvas(props) {
             <div className="canvas-div" style={props.theme==='dark'?{ backgroundImage: `url(${backgroundDark})`}:{ backgroundImage: `url(${background})`}}>
                 <canvas id='canvas' width={window.innerWidth} height={window.innerHeight} onMouseDown={handleMouseDown} onMouseMove={tblDragHandler} onMouseUp={handleMouseUp}></canvas>
                 <div className="flex flex-col  fixed bottom-4 right-4 gap-5">
-                    <button type='button' className='bg-blue-700 shadow-lg p-3 text-white rounded-full' onClick={toggleModal}>
+                    <button type='button' className='bg-blue-700 shadow-lg p-3 text-white rounded-full' onClick={tbls?toggleEditModal:()=>{props.showAlert("No tables exist!","danger")}}>
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
                             <path strokeLinecap="round" strokeLinejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125" />
                         </svg>
@@ -592,6 +601,8 @@ export default function MainCanvas(props) {
                     </button>
                 </div>
                 <Modal show={modalShow} toggleModal={toggleModal} tbls={tbls?tbls:null} addTable={addTbl} showAlert={props.showAlert}/>
+                <EditModal table={tbls?tbls[selections.selectedTbl]:null} editShow={editModalShow} toggleEditModal={toggleEditModal} tbls={tbls?tbls:null} showAlert={props.showAlert} editTbl={editTbl}/>
+                
             </div>
 
     )
