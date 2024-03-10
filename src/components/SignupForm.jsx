@@ -32,26 +32,26 @@ export default function SignupForm({theme, showAlert}) {
   }
   return (
 
-        <form className="shadow border p-10">
+        <form className="shadow-lg border p-10 bg-white rounded">
           <div className="my-5">
               <label htmlFor="signupEmail" className="block">Email address</label>
-              <input type="email" name='email' className="border p-2 w-full outline-blue-700" id="signupEmail" aria-describedby="emailHelp" placeholder='abc@xyz.com'/>
+              <input type="email" name='email' className="border-2 border-slate-300 bg-slate-50 p-2 w-full outline-blue-700 hover:bg-slate-200 transition focus:bg-white" id="signupEmail" aria-describedby="emailHelp" placeholder='abc@xyz.com'/>
               <div id="emailHelp" className="text-sm text-slate-500">We'll never share your email with anyone else.</div>
           </div>
           <div className="my-5">
               <label htmlFor="signupPassword" className="block">Password</label>
-              <input name='password' type="password" className="border p-2 w-full outline-blue-700" id="signupPassword" placeholder='Enter a password'/>
+              <input name='password' type="password" className="border-2 border-slate-300 bg-slate-50 p-2 w-full outline-blue-700 hover:bg-slate-200 transition focus:bg-white" id="signupPassword" placeholder='Enter a password'/>
           </div>
           <div className="my-5">
               <label htmlFor="signupConfirmPassword" className="block">Confirm Password</label>
-              <input name="confirmPassword" type="password" className="border p-2 w-full outline-blue-700" id="signupConfirmPassword" placeholder='Re-enter the password'/>
+              <input name="confirmPassword" type="password" className="border-2 border-slate-300 bg-slate-50 p-2 w-full outline-blue-700 hover:bg-slate-200 transition focus:bg-white" id="signupConfirmPassword" placeholder='Re-enter the password'/>
           </div>
           <div className="my-5 flex items-center">
               <input type="checkbox" className="w-4 h-4" id="termsCheck"/>
               <label className="ms-2" htmlFor="termsCheck">I agree to terms and conditions</label>
           </div>
           <div className="my-5">
-            <button type="button" className="flex justify-center items-center w-full bg-blue-700 text-white p-2 rounded transition hover:scale-95" onClick={signup}>
+            <button type="button" className="flex justify-center items-center w-full bg-blue-700 text-white p-2 rounded transition hover:bg-blue-600" onClick={signup}>
               Sign Up
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 ms-2">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M17.25 8.25 21 12m0 0-3.75 3.75M21 12H3" />
@@ -59,7 +59,7 @@ export default function SignupForm({theme, showAlert}) {
             </button>
           </div>
           <div className="my-5">
-            <Link className="underline text-slate-500" to='/'>Already have an account?</Link>
+            <Link className="text-blue-700 hover:underline" to='/'>Already have an account?</Link>
           </div>
         </form>
 

@@ -32,7 +32,7 @@ function App(){
   return (
     <div>
       <Router>
-      <Navbar title='Dbcrafter' theme={theme} toggleTheme={toggleTheme} showAlert={showAlert} authInfo = {authInfo} setAuthInfo={setAuthInfo}/>
+      <Navbar title='DBCRAFTER' theme={theme} alert={alert} toggleTheme={toggleTheme} showAlert={showAlert} authInfo = {authInfo} setAuthInfo={setAuthInfo}/>
       <Alert alert={alert} closeAlert={closeAlert}/>
         <Routes>
           <Route exact path='/' element={<MainContent theme={theme} showAlert={showAlert} authInfo={authInfo} />}/>
