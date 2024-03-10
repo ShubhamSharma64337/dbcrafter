@@ -2,10 +2,10 @@ import { func } from 'prop-types'
 import React, { useState } from 'react'
 
 
-export default function Modal({show, toggleModal}) {
+export default function Modal({show, toggleModal, addTable, delCanvasTable}) {
   const [maxIndex, setMaxIndex] = useState(0);
-  const [newTbl, setNewTbl] = useState({name: 'table', fields: [
-    {name: 'field0', type: '', isFKey: null, refTbl: '', refField: ''}
+  const [newTbl, setNewTbl] = useState({name: 'table', pKey: 'field0', fields: [
+    {name: 'id', type: 'INT', isFKey: false, refTbl: '', refField: ''}
   ]})
 
   function handleNameChange(e){ //table name change handler
@@ -17,7 +17,7 @@ export default function Modal({show, toggleModal}) {
       return {...element}
     })}
     const insertIndex = parseInt(e.currentTarget.dataset.rowindex) + 1;
-    tableCopy.fields.splice(insertIndex,0, {name: 'field'+(maxIndex+1), type: '', isFKey: null, refTbl: '', refField: ''})
+    tableCopy.fields.splice(insertIndex,0, {name: 'field'+(maxIndex+1), type: 'INT', isFKey: false, refTbl: '', refField: ''})
     setNewTbl(tableCopy);
     setMaxIndex(maxIndex+1);
   }
@@ -72,15 +72,36 @@ export default function Modal({show, toggleModal}) {
     setNewTbl(tableCopy);
   }
 
-  function handleCheck(e){
-
+  function addTbl(e){
+    addTable(newTbl);
+    toggleModal();
+    setNewTbl({name: 'table', pKey: 'field0', fields: [{name: 'id', type: 'INT', isFKey: false, refTbl: '', refField: ''}]})
+    setMaxIndex(0)
   }
 
 
   return (
-    show && <div className="overlay fixed justify-center flex items-center top-0 w-screen h-screen bg-black bg-opacity-35" id="addTblModal" data-modal-id="addTblModal">
-        <div className="modal-body bg-white p-5 rounded h-4/5 overflow-y-auto">
-                <form className="flex flex-col">
+    show && <div className="overlay overflow-auto fixed justify-start md:justify-center  flex items-start pt-5 top-0 w-screen h-screen bg-black bg-opacity-35" id="addTblModal" data-modal-id="addTblModal">
+        <div className="modal bg-white rounded">
+            {/* Modal Header */}
+            <div className="modal-header flex justify-between items-center border-blue-800 border-b-2 p-3">
+              <button type="button" className="p-2 rounded-full transition-colors bg-slate-200 hover:bg-red-300" onClick={toggleModal}>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
+                </svg>
+              </button>
+              <p className='text-center text-lg font-medium '>Add New Table</p>
+              <button className="bg-slate-200 p-2 rounded-full  transition-colors hover:bg-blue-300" type='button' onClick={addTbl}>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="m5.25 4.5 7.5 7.5-7.5 7.5m6-15 7.5 7.5-7.5 7.5" />
+                </svg>
+              </button>
+
+            </div>
+
+            {/* Modal Body */}
+            <div className="modal-body p-5">
+            <form className="flex flex-col overflow-auto">
                     <div className="formItem mb-3">
                         <label className='block' htmlFor='tableName'>Table Name</label>
                         <input name='tblName' id='tableName' className="border p-2" value={newTbl.name} onChange={handleNameChange} type='text' placeholder='Enter the table name'></input>
@@ -149,11 +170,8 @@ export default function Modal({show, toggleModal}) {
                         })}
                       </tbody>
                     </table>
-                    <div className="formItem mt-3 flex justify-between">
-                        <button type="button" className="bg-red-700 p-2 rounded text-white" onClick={toggleModal}>Cancel</button>
-                        <button className="bg-blue-700 p-2 rounded text-white" type='submit'>Add Table</button>
-                    </div>
                 </form>
+            </div>
         </div>
     </div>
   )
