@@ -27,6 +27,7 @@ export default function MainCanvas(props) {
     //these are used to determine initial position of pointer (useful in implementing drag and drop)
     //when dragging a table.
 
+    const [scale, setScale] = useState(1);
     //this function checks if the value of arguments x,y lies in the table
     //represented by tbl argument and returns true or false accordingly
     function isPointerInTbl(x, y, tbl) {
@@ -53,8 +54,9 @@ export default function MainCanvas(props) {
         //By default the clientY and clientX values will be relative to whole document
         //therefore we need to get offsets of the canvas relative to document
         //and subtract them from the clientX and clientY values.
-        let clientX_correct = event.clientX - event.target.getBoundingClientRect().left - offset.x;
-        let clientY_correct = event.clientY - event.target.getBoundingClientRect().top - offset.y;
+        let clientX_correct = (event.clientX - event.target.getBoundingClientRect().left)/scale - offset.x; //do not divide offset by scale as it is already
+        //calculated after dividing the pointer location by the scale
+        let clientY_correct = (event.clientY - event.target.getBoundingClientRect().top)/scale - offset.y;
         let mystart = {...start};
         mystart.startX = parseInt(clientX_correct);
         mystart.startY = parseInt(clientY_correct);
@@ -84,15 +86,15 @@ export default function MainCanvas(props) {
 
         if (!(selections.is_dragging)) {
             if(isPanning){ //if this is placed outside this outer condition, trying to move table causes panning, yet to find out why?
-                let clientX_correct = event.clientX - event.target.getBoundingClientRect().left - offset.x;
-                let clientY_correct = event.clientY - event.target.getBoundingClientRect().top - offset.y;
+                let clientX_correct = (event.clientX - event.target.getBoundingClientRect().left)/scale - offset.x;
+                let clientY_correct = (event.clientY - event.target.getBoundingClientRect().top)/scale - offset.y;
                 let mouseX = parseInt(clientX_correct);
                 let mouseY = parseInt(clientY_correct);
                 let dx = mouseX - start.startX;
                 let dy = mouseY - start.startY;
                 let newOffset = {...offset}
-                newOffset.x += dx*0.5;
-                newOffset.y += dy*0.5;
+                newOffset.x += dx * 0.5;
+                newOffset.y += dy * 0.5;
                 setOffset(newOffset)
                 let newstart = {...start};
                 newstart.startX = mouseX;
@@ -104,8 +106,8 @@ export default function MainCanvas(props) {
         }
         else {
             event.preventDefault();
-            let clientX_correct = event.clientX - event.target.getBoundingClientRect().left - offset.x;
-            let clientY_correct = event.clientY - event.target.getBoundingClientRect().top - offset.y;
+            let clientX_correct = (event.clientX - event.target.getBoundingClientRect().left)/scale - offset.x;
+            let clientY_correct = (event.clientY - event.target.getBoundingClientRect().top)/scale - offset.y;
             let mouseX = parseInt(clientX_correct);
             let mouseY = parseInt(clientY_correct);
 
@@ -139,7 +141,7 @@ export default function MainCanvas(props) {
         ctxt.canvas.width = window.innerWidth;
         ctxt.font = '16px Segoe UI';
         ctxt.clearRect(0, 0, canvas.width, canvas.height);
-        
+        ctxt.scale(scale, scale);
         ctxt.translate(offset.x,offset.y);
         if(!tbls){
             return;
@@ -665,6 +667,21 @@ export default function MainCanvas(props) {
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
                             <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                         </svg>
+                    </button>
+                </div>
+                <div className="flex  fixed bottom-4 left-4 gap-5">
+                    <button type='button' className='bg-blue-700 shadow-lg p-3 text-white transition-transform rounded-full hover:scale-110' onClick={()=>{setScale(scale*1.25)}}>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607ZM10.5 7.5v6m3-3h-6" />
+                        </svg>
+
+                    </button>
+                    <button type='button' className='bg-blue-700 shadow-lg p-3 text-white transition-transform rounded-full hover:scale-110' onClick={()=>{setScale(scale/1.25)}}>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607ZM13.5 10.5h-6" />
+                        </svg>
+
+
                     </button>
                 </div>
                 <Modal show={modalShow} toggleModal={toggleModal} tbls={tbls?tbls:null} addTable={addTbl} showAlert={props.showAlert}/>
