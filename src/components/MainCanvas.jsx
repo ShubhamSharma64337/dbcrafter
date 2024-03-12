@@ -7,6 +7,8 @@ import EditModal from './EditModal';
 export default function MainCanvas(props) {
     const [modalShow, setModalShow] = useState(false);
     const [editModalShow, setEditModalShow] = useState(false);
+    const [offset, setOffset] = useState({x: 0, y:0});
+    const [isPanning, setIsPanning] = useState(false)
     // tbls is an array of objects, each object represents a table on the canvas
     // each object has following members - 
     //      x - x coordinate of top left point of the table
@@ -51,8 +53,8 @@ export default function MainCanvas(props) {
         //By default the clientY and clientX values will be relative to whole document
         //therefore we need to get offsets of the canvas relative to document
         //and subtract them from the clientX and clientY values.
-        let clientX_correct = event.clientX - event.target.getBoundingClientRect().left;
-        let clientY_correct = event.clientY - event.target.getBoundingClientRect().top;
+        let clientX_correct = event.clientX - event.target.getBoundingClientRect().left - offset.x;
+        let clientY_correct = event.clientY - event.target.getBoundingClientRect().top - offset.y;
         let mystart = {...start};
         mystart.startX = parseInt(clientX_correct);
         mystart.startY = parseInt(clientY_correct);
@@ -64,6 +66,9 @@ export default function MainCanvas(props) {
             }
             index_clicked += 1;
         }
+        if(!(selections.is_dragging)){
+            setIsPanning(true);
+        }
     }
 
     //this function sets the is_dragging value in selections state variable to false when the mouse button is lifted up
@@ -71,18 +76,36 @@ export default function MainCanvas(props) {
         event.preventDefault();
         let sel = {...selections, is_dragging: false};
         setSelections(sel);
+        setIsPanning(false);
     }
 
     //implements drag and drop
     function tblDragHandler(event) {
 
         if (!(selections.is_dragging)) {
+            if(isPanning){ //if this is placed outside this outer condition, trying to move table causes panning, yet to find out why?
+                let clientX_correct = event.clientX - event.target.getBoundingClientRect().left - offset.x;
+                let clientY_correct = event.clientY - event.target.getBoundingClientRect().top - offset.y;
+                let mouseX = parseInt(clientX_correct);
+                let mouseY = parseInt(clientY_correct);
+                let dx = mouseX - start.startX;
+                let dy = mouseY - start.startY;
+                let newOffset = {...offset}
+                newOffset.x += dx*0.5;
+                newOffset.y += dy*0.5;
+                setOffset(newOffset)
+                let newstart = {...start};
+                newstart.startX = mouseX;
+                newstart.startY = mouseY;
+                setStart(newstart);
+                return;
+            }
             return;
         }
         else {
             event.preventDefault();
-            let clientX_correct = event.clientX - event.target.getBoundingClientRect().left;
-            let clientY_correct = event.clientY - event.target.getBoundingClientRect().top;
+            let clientX_correct = event.clientX - event.target.getBoundingClientRect().left - offset.x;
+            let clientY_correct = event.clientY - event.target.getBoundingClientRect().top - offset.y;
             let mouseX = parseInt(clientX_correct);
             let mouseY = parseInt(clientY_correct);
 
@@ -116,11 +139,15 @@ export default function MainCanvas(props) {
         ctxt.canvas.width = window.innerWidth;
         ctxt.font = '16px Segoe UI';
         ctxt.clearRect(0, 0, canvas.width, canvas.height);
+        
+        ctxt.translate(offset.x,offset.y);
         if(!tbls){
             return;
         }
+        
         let index = 0;
         for (let tbl of tbls) {
+            
             //filling background of table with white color
             ctxt.fillStyle = 'white';
             let tbl_height = commonProps.rh + commonProps.rh * tbl.fields.length;
