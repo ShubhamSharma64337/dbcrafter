@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import ThemeButton from './ThemeButton';
 export default function Navbar({title, theme, toggleTheme, showAlert, authInfo, setAuthInfo}) {
+      const navigate = useNavigate();
+
     const [collapsed, setCollapsed] = useState(true);
     function toggleCollapsed(){
         collapsed?setCollapsed(false):setCollapsed(true);   
@@ -39,7 +41,14 @@ export default function Navbar({title, theme, toggleTheme, showAlert, authInfo, 
           //also, after setting credentials to include, cors options must be set to allow credentials and origin from this domain
         })
         .then(response => response.json()) //response.json() or response.text() provides the 'data'
-        .then((data)=>{showAlert(data.message, 'success')})
+        .then((data)=>{
+            if(data.success){
+                showAlert(data.message, 'success')
+                navigate('/');
+            } else {
+                showAlert(data.message, 'danger');
+            }
+        })
         .catch((error)=>{
           showAlert('An error occured while trying to access the backend API', 'danger')
           console.log(error)
@@ -60,6 +69,9 @@ export default function Navbar({title, theme, toggleTheme, showAlert, authInfo, 
                         </li>
                         <li className="mx-2 my-2 md:my-0">
                             <Link className="transition px-1.5 py-1 rounded hover:bg-slate-200"  to="/craft">Craft</Link>
+                        </li>
+                        <li className={`mx-2 my-2 md:my-0 ${authInfo?'':'hidden'}`}>
+                            <Link className={`transition px-1.5 py-1 rounded hover:bg-slate-200`}  to="/diagrams">Diagrams</Link>
                         </li>
                         <li className="mx-2 my-2 md:my-0">
                             <Link className="transition px-1.5 py-1 rounded hover:bg-slate-200" to="/about">About</Link>
