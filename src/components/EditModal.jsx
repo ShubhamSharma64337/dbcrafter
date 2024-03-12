@@ -1,8 +1,6 @@
-import { func } from 'prop-types'
 import React, { useEffect, useState } from 'react'
 
-
-export default function EditModal({table, editShow, toggleEditModal, addTable, tbls, showAlert, editTbl}) {
+export default function EditModal({table, editShow, toggleEditModal, addTable, tbls, showAlert, updateTbl}) {
   const [maxIndex, setMaxIndex] = useState(0);
   const [updatedTbl, setUpdatedTbl] = useState({...table})
 
@@ -123,7 +121,7 @@ export default function EditModal({table, editShow, toggleEditModal, addTable, t
   }
 
   function editTable(){
-    editTbl(updatedTbl);
+    updateTbl(updatedTbl);
     toggleEditModal();
   }
   return (

@@ -1,8 +1,7 @@
-import { func } from 'prop-types'
 import React, { useState } from 'react'
 
 
-export default function Modal({show, toggleModal, addTable, tbls, showAlert}) {
+export default function CreateTableModal({show, toggleCreateModal, addTable, tbls, showAlert}) {
   const [maxIndex, setMaxIndex] = useState(0);
   const [newTbl, setNewTbl] = useState({name: 'table', pKey: 'id', fields: [
     {name: 'id', type: 'INT', isFKey: false, refTbl: 'NONE', refField: 'NONE'}
@@ -113,7 +112,7 @@ export default function Modal({show, toggleModal, addTable, tbls, showAlert}) {
     if(res!==0){
       return;
     }
-    toggleModal();
+    toggleCreateModal();
     setNewTbl({name: 'table', pKey: 'id', fields: [{name: 'id', type: 'INT', isFKey: false, refTbl: '', refField: ''}]})
     setMaxIndex(0)
   }
@@ -121,7 +120,7 @@ export default function Modal({show, toggleModal, addTable, tbls, showAlert}) {
   function closeModal(){
     setNewTbl({name: 'table', pKey: 'id', fields: [{name: 'id', type: 'INT', isFKey: false, refTbl: '', refField: ''}]})
     setMaxIndex(0)
-    toggleModal(0)
+    toggleCreateModal(0)
   }
 
 

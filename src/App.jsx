@@ -5,18 +5,18 @@ import MainCanvas from './components/MainCanvas.jsx';
 import AboutContent from './components/AboutContent.jsx';
 import Alert from './components/Alert.jsx';
 import Diagrams from './components/Diagrams.jsx';
-
+import { useState } from 'react';
 import {
   BrowserRouter as Router,
   Routes,
   Route,
-
 } from "react-router-dom";
-import { useState } from 'react';
+
 function App(){
   const [authInfo, setAuthInfo] = useState(null); //this stores whether user is logged in or not, if logged in, it contains the email
   const [alert, setAlert] = useState(null);
   const [theme, setTheme] = useState('light');
+  
   function showAlert(message, type){
     setAlert({message: message, type: type});
     setTimeout(() => {

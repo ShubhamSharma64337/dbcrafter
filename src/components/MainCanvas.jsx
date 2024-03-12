@@ -2,32 +2,32 @@ import React, { useEffect } from 'react'
 import { useState } from 'react';
 import background from '/graph-paper.svg';
 import backgroundDark from '/graph-paper-dark.svg';
-import Modal from './Modal';
+import CreateTableModal from './CreateTableModal';
 import EditModal from './EditModal';
+
 export default function MainCanvas(props) {
-    const [modalShow, setModalShow] = useState(false);
-    const [editModalShow, setEditModalShow] = useState(false);
-    const [offset, setOffset] = useState({x: 0, y:0});
-    const [isPanning, setIsPanning] = useState(false)
-    // tbls is an array of objects, each object represents a table on the canvas
-    // each object has following members - 
-    //      x - x coordinate of top left point of the table
-    //      y - y coordinate of the top left point of the table
-    //      w - width of the table
-    //      fields - this is an array of objects, each of which is a field of the table
+    const [createTableModalShow, setCreateTableModalShow] = useState(false); //this is used to show or hide add table modal
+    const [editTableModalShow, setEditTableModalShow] = useState(false); //this is used to show or hide edit table modal
+    const [offset, setOffset] = useState({x: 0, y:0}); //this is used to pan the canvas by translating the origin by offset
+    const [isPanning, setIsPanning] = useState(false) //this is used to check if user has clicked ang is dragging on the canvas (i.e not the table)
     const [tbls, setTbls] = useState([{ name: 'Table1', x: 20, y: 20, w: 150, pKey: 'id', fields: [{ name: 'id', type: 'INT', isFKey: false, refTbl: 'NONE', refField: 'NONE'}] }]);
-    const [commonProps, setCommonProps] = useState({rh: 20});
+    const [commonProps, setCommonProps] = useState({rh: 20}); //this specifies the row height of the tables
+
     //  selectedTbl is the index of the table which is currently selected
     //  is_dragging becomes true only when mousedown event is triggered on a particular table and is again set to false
     //  when the mouseup event is triggered
     const [selections, setSelections] = useState({ selectedTbl: 0, is_dragging: false });
+
     // useEffect is used to trigger draw function every single time the component is rendered, mainly to run draw the first time this component is loaded
     useEffect(draw);
-    const [start, setStart] = useState({startX: null, startY: null});
+
     //these are used to determine initial position of pointer (useful in implementing drag and drop)
     //when dragging a table.
+    const [start, setStart] = useState({startX: null, startY: null});
 
+    //this is used to remember the zoom state
     const [scale, setScale] = useState(1);
+
     //this function checks if the value of arguments x,y lies in the table
     //represented by tbl argument and returns true or false accordingly
     function isPointerInTbl(x, y, tbl) {
@@ -37,9 +37,9 @@ export default function MainCanvas(props) {
         let tbl_height = commonProps.rh +  commonProps.rh * tbl.fields.length;
         let bottom = tbl.y + tbl_height;
         if (x >= left && x <= right && y >= top && y <= bottom) {
-            return true;
+            return true; //pointer is in tbl
         }
-        return false;
+        return false; //pointer is not in tbl
     }
 
     //handleMouseDown checks if the click on canvas is on any of the 
@@ -52,7 +52,7 @@ export default function MainCanvas(props) {
             return;
         }
         //By default the clientY and clientX values will be relative to whole document
-        //therefore we need to get offsets of the canvas relative to document
+        //therefore we need to get offsets of the canvas relative to document(navbar height needs to be subtracted for example)
         //and subtract them from the clientX and clientY values.
         let clientX_correct = (event.clientX - event.target.getBoundingClientRect().left)/scale - offset.x; //do not divide offset by scale as it is already
         //calculated after dividing the pointer location by the scale
@@ -82,7 +82,7 @@ export default function MainCanvas(props) {
     }
 
     //implements drag and drop
-    function tblDragHandler(event) {
+    function dragHandler(event) {
 
         if (!(selections.is_dragging)) {
             if(isPanning){ //if this is placed outside this outer condition, trying to move table causes panning, yet to find out why?
@@ -178,13 +178,6 @@ export default function MainCanvas(props) {
             ctxt.fillStyle = 'black';
 
             ctxt.textAlign = 'left';
-            
-
-            //creating the column seperator
-            // ctxt.beginPath();
-            // ctxt.moveTo(tbl.x + tbl.w * 0.5, tbl.y + commonProps.rh);
-            // ctxt.lineTo(tbl.x + tbl.w * 0.5, tbl.y + tbl_height);
-            // ctxt.stroke();
 
             //now creating all other fields and their upper row borders
             let row_index = 1;
@@ -306,132 +299,6 @@ export default function MainCanvas(props) {
         ctxt.stroke();
         ctxt.fillStyle = 'black';
         ctxt.strokeStyle = 'black';
-    }
-
-    //adds fields to the selectedTblIndex table
-    function addRow() {
-        if(!tbls){
-            props.showAlert('No tables exist!','warning');
-            return;
-        }
-        let key = document.querySelector("#fieldName").value;
-        let val = document.querySelector("#fieldType").value;
-        let pkey = document.querySelector("#isPKey").checked;
-        let isFKey = document.querySelector("#isFKey").checked;
-        let refTblName = document.querySelector("#refTblName").value;
-        let refFieldName = document.querySelector("#refFieldName").value;
-        if(key === ''){
-            props.showAlert('Field name cannot be empty!','warning');
-            return;
-        }
-        if(val === 'NONE'){
-            props.showAlert('Datatype selected is invalid','warning');
-            return;
-        }
-        document.querySelector("#fieldName").value = '';
-        document.querySelector("#fieldType").value = 'NONE';
-        for(let field of tbls[selections.selectedTbl].fields){ //do not add duplicate field names
-            if(field.name === key){
-                props.showAlert('A field with same name already exists!','warning');
-                return;
-            }
-        }
-        let all_tbls = tbls.map((tbl,index) => {            //performing deeper copy of the tbls state object
-                if(index === selections.selectedTbl){
-                    return {...tbl, fields: tbl.fields.map(
-                        (row)=>{
-                            return row
-                        }
-                    )}
-                } else {
-                    return tbl;
-                }
-        });
-        if(pkey){
-            all_tbls[selections.selectedTbl].pKey = key;
-        }
-        if(isFKey){
-            if(refTblName==='NONE' || refFieldName === 'NONE'){
-                props.showAlert('Referenced Table or Field cannot be NONE','warning');
-                return;
-            }
-        }
-        all_tbls[selections.selectedTbl].fields.push({ name: key, type: val, isFKey: isFKey, refTbl: refTblName, refField: refFieldName});
-        
-        //updating table width
-        let canvas = document.getElementById('canvas');
-        let ctxt = canvas.getContext("2d");
-        let max_fname_length = 100;
-        let max_ftype_length = 50;
-        for(let tbl of all_tbls){
-            for(let field of tbl.fields){
-                var textMetrics = ctxt.measureText(field.name);
-                if(textMetrics.width>max_fname_length){
-                    max_fname_length = textMetrics.width;
-                }
-                textMetrics = ctxt.measureText(field.type);
-                if(textMetrics.width>max_ftype_length){
-                    max_ftype_length = textMetrics.width;
-                }
-            }
-            all_tbls[selections.selectedTbl].w = max_fname_length + max_ftype_length + 5;
-        }
-
-        setTbls(all_tbls);
-        
-    }
-
-    //deletes fields from the selectedTblIndex table
-    function delRow() {
-        if(!tbls){
-            return;
-        }
-        let all_tbls = tbls.map((tbl,index) => {            //performing deeper copy of the tbls state object
-            if(index === selections.selectedTbl){
-                return {...tbl, fields: tbl.fields.map(
-                    (row)=>{
-                        return row
-                    }
-                )}
-            } else {
-                return tbl;
-            }
-        });
-        let field_name = document.querySelector("#delFieldName").value;
-        let element = all_tbls[selections.selectedTbl].fields.find(function(element){
-            return element.name === field_name;
-        });
-        let del_index = all_tbls[selections.selectedTbl].fields.indexOf(element);
-        if(del_index<0 || field_name === all_tbls[selections.selectedTbl].pKey){ //do not delete if element does not exist or if field is primary key
-            props.showAlert('You cannot delete the primary key attribute','warning');
-            return;
-        }
-        if(field_name === all_tbls[selections.selectedTbl].pKey){
-            all_tbls[selections.selectedTbl].pKey = null;
-        }
-        all_tbls[selections.selectedTbl].fields.splice(del_index,1);
-
-        //updating table widths
-        //updating table width
-        let canvas = document.getElementById('canvas');
-        let ctxt = canvas.getContext("2d");
-        let max_fname_length = 100;
-        let max_ftype_length = 50;
-        for(let tbl of all_tbls){
-            for(let field of tbl.fields){
-                var textMetrics = ctxt.measureText(field.name);
-                if(textMetrics.width>max_fname_length){
-                    max_fname_length = textMetrics.width;
-                }
-                textMetrics = ctxt.measureText(field.type);
-                if(textMetrics.width>max_ftype_length){
-                    max_ftype_length = textMetrics.width;
-                }
-            }
-            all_tbls[selections.selectedTbl].w = max_fname_length + max_ftype_length + 5;
-        }
-        
-        setTbls(all_tbls);
     }
 
     //this function is used to add new table to the canvas
@@ -564,24 +431,8 @@ export default function MainCanvas(props) {
         setTbls(all_tbls);
     }
 
-    
-
-    //this changes the primary key
-    function chgPKey(){
-        if(!tbls){
-            return;
-        }
-        let new_pkey = document.querySelector('#pKeyField').value;
-        document.querySelector('#pKeyField').value = '';
-        let all_tbls = tbls.map((tbl)=>{
-            return {...tbl};
-        });
-        all_tbls[selections.selectedTbl].pKey = new_pkey;
-        setTbls(all_tbls);
-    }
-
-    //this function edit the table
-    function editTbl(newTbl){
+    //this function edits the table
+    function updateTbl(newTbl){
         if(!tbls){
             props.showAlert("No tables exist!");
             return;
@@ -640,17 +491,17 @@ export default function MainCanvas(props) {
         setTbls(all_tbls);
     }
 
-    function toggleModal(){
-        modalShow?setModalShow(false):setModalShow(true);
+    function toggleCreateModal(){
+        createTableModalShow?setCreateTableModalShow(false):setCreateTableModalShow(true);
     }
     function toggleEditModal(){
-        editModalShow?setEditModalShow(false):setEditModalShow(true);
+        editTableModalShow?setEditTableModalShow(false):setEditTableModalShow(true);
     }
 
     return (
 
             <div className="canvas-div" style={props.theme==='dark'?{ backgroundImage: `url(${backgroundDark})`}:{ backgroundImage: `url(${background})`}}>
-                <canvas id='canvas' width={window.innerWidth} height={window.innerHeight} onMouseDown={handleMouseDown} onMouseMove={tblDragHandler} onMouseUp={handleMouseUp}></canvas>
+                <canvas id='canvas' width={window.innerWidth} height={window.innerHeight} onMouseDown={handleMouseDown} onMouseMove={dragHandler} onMouseUp={handleMouseUp}></canvas>
                 <div className="flex flex-col  fixed bottom-4 right-4 gap-5">
                     <button type='button' className='bg-blue-700 shadow-lg p-3 text-white transition-transform rounded-full hover:scale-110' onClick={delTbl}>
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
@@ -661,9 +512,8 @@ export default function MainCanvas(props) {
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
                             <path strokeLinecap="round" strokeLinejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125" />
                         </svg>
-
                     </button>
-                    <button type='button' className='bg-blue-700 shadow-lg p-3 text-white transition-transform rounded-full hover:scale-110' onClick={toggleModal}>
+                    <button type='button' className='bg-blue-700 shadow-lg p-3 text-white transition-transform rounded-full hover:scale-110' onClick={toggleCreateModal}>
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
                             <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                         </svg>
@@ -674,18 +524,16 @@ export default function MainCanvas(props) {
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
                             <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607ZM10.5 7.5v6m3-3h-6" />
                         </svg>
-
                     </button>
                     <button type='button' className='bg-blue-700 shadow-lg p-3 text-white transition-transform rounded-full hover:scale-110' onClick={()=>{setScale(scale/1.25)}}>
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
                             <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607ZM13.5 10.5h-6" />
                         </svg>
-
-
                     </button>
                 </div>
-                <Modal show={modalShow} toggleModal={toggleModal} tbls={tbls?tbls:null} addTable={addTbl} showAlert={props.showAlert}/>
-                <EditModal table={tbls?tbls[selections.selectedTbl]:null} editShow={editModalShow} toggleEditModal={toggleEditModal} tbls={tbls?tbls:null} showAlert={props.showAlert} editTbl={editTbl}/>
+
+                <CreateTableModal show={createTableModalShow} toggleCreateModal={toggleCreateModal} tbls={tbls?tbls:null} addTable={addTbl} showAlert={props.showAlert}/>
+                <EditModal table={tbls?tbls[selections.selectedTbl]:null} editShow={editTableModalShow} toggleEditModal={toggleEditModal} tbls={tbls?tbls:null} showAlert={props.showAlert} updateTbl={updateTbl}/>
                 
             </div>
 
