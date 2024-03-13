@@ -10,7 +10,7 @@ export default function MainCanvas(props) {
     const [editTableModalShow, setEditTableModalShow] = useState(false); //this is used to show or hide edit table modal
     const [offset, setOffset] = useState({x: 0, y:0}); //this is used to pan the canvas by translating the origin by offset
     const [isPanning, setIsPanning] = useState(false) //this is used to check if user has clicked ang is dragging on the canvas (i.e not the table)
-    const [tbls, setTbls] = useState([{ name: 'Table1', x: 20, y: 20, w: 150, pKey: 'id', fields: [{ name: 'id', type: 'INT', isFKey: false, refTbl: 'NONE', refField: 'NONE'}] }]);
+    const [diagram, setDiagram] = useState({name: 'defaultDiagram', tbls: [{ name: 'Table1', x: 20, y: 20, w: 150, pKey: 'id', fields: [{ name: 'id', type: 'INT', isFKey: false, refTbl: 'NONE', refField: 'NONE'}] }]});
     const [commonProps, setCommonProps] = useState({rh: 20}); //this specifies the row height of the tables
 
     //  selectedTbl is the index of the table which is currently selected
@@ -48,7 +48,7 @@ export default function MainCanvas(props) {
     function handleMouseDown(event) {
         
         event.preventDefault();
-        if(!tbls){
+        if(!diagram.tbls){
             return;
         }
         //By default the clientY and clientX values will be relative to whole document
@@ -62,7 +62,7 @@ export default function MainCanvas(props) {
         mystart.startY = parseInt(clientY_correct);
         setStart(mystart);
         let index_clicked = 0;
-        for (let tb of tbls) {
+        for (let tb of diagram.tbls) {
             if (isPointerInTbl(clientX_correct, clientY_correct, tb)) {
                 setSelections({selectedTbl: index_clicked, is_dragging: true});
             }
@@ -113,7 +113,7 @@ export default function MainCanvas(props) {
 
             let dx = mouseX - start.startX;
             let dy = mouseY - start.startY;
-            let all_tbls = tbls.map((tbl, index) => { //this is the actual correct way to copy the array of objects
+            let all_tbls = diagram.tbls.map((tbl, index) => { //this is the actual correct way to copy the array of objects
                 if(index === selections.selectedTbl){ //we cannot just use [...tbls] here because we want to modify objects inside it
                     return {...tbl, x: tbl.x+=dx, y: tbl.y+=dy}; //and using the spread operator causes a shallow copy in which inner object's ref is copied
                 }                                     //this is very necessary to perform copying like this to avoid mutation and future problems like non-updation due to reference of object passed to setState being same as the old one
@@ -121,7 +121,7 @@ export default function MainCanvas(props) {
                     return tbl;
                 }
             })
-            setTbls(all_tbls);
+            setDiagram({...diagram, tbls: all_tbls});
             let newstart = {...start};
             newstart.startX = mouseX;
             newstart.startY = mouseY;
@@ -143,12 +143,12 @@ export default function MainCanvas(props) {
         ctxt.clearRect(0, 0, canvas.width, canvas.height);
         ctxt.scale(scale, scale);
         ctxt.translate(offset.x,offset.y);
-        if(!tbls){
+        if(!diagram.tbls){
             return;
         }
         
         let index = 0;
-        for (let tbl of tbls) {
+        for (let tbl of diagram.tbls) {
             
             //filling background of table with white color
             ctxt.fillStyle = 'white';
@@ -207,10 +207,10 @@ export default function MainCanvas(props) {
         }
 
         //this finds linked tables and calls drawArrow function to show their links
-        for(let tbl of tbls){
+        for(let tbl of diagram.tbls){
             for(let field of tbl.fields){
                 if(field.isFKey){
-                    let second_tbl = tbls.find((tbl)=> tbl.name === field.refTbl);
+                    let second_tbl = diagram.tbls.find((tbl)=> tbl.name === field.refTbl);
                     drawArrow(tbl,second_tbl);
                 }
             }
@@ -303,7 +303,7 @@ export default function MainCanvas(props) {
 
     //this function is used to add new table to the canvas
     function addTbl(newTbl) {
-        let all_tbls = tbls?[...tbls]:[]; //if we do not use conditional operator, [...tbls] will give null reference error
+        let all_tbls = diagram.tbls?[...diagram.tbls]:[]; //if we do not use conditional operator, [...tbls] will give null reference error
         
         //checking if table name is empty
         if(newTbl.name === ''){
@@ -311,8 +311,8 @@ export default function MainCanvas(props) {
             return 1;
         }
         //checking if table name already exists
-        if(tbls){
-            for(let tbl of tbls){
+        if(diagram.tbls){
+            for(let tbl of diagram.tbls){
                 if(newTbl.name === tbl.name){
                     props.showAlert('Table name already exists!','warning');
                     return 1;
@@ -360,20 +360,20 @@ export default function MainCanvas(props) {
             all_tbls[selections.selectedTbl].w = max_fname_length + max_ftype_length + 5;
         }
 
-        setTbls(all_tbls);
+        setDiagram({...diagram, tbls: all_tbls});
         setSelections(sel);
         return 0;
     }
 
     //this function finds a place in canvas such that it does not collapse with any previously drawn tables
     function nonCollapseFinder(){
-        if(!tbls){
+        if(!diagram.tbls){
             return {x: 20, y: 20};
         }
         let rightMostX = 0;
         let rightMostY = 0;
         let rightEdge;
-        for(let tbl of tbls){
+        for(let tbl of diagram.tbls){
             rightEdge = tbl.x + tbl.w;
             if(rightEdge > rightMostX){
                 rightMostX = rightEdge;
@@ -385,11 +385,11 @@ export default function MainCanvas(props) {
 
     //delete the selected table
     function delTbl(){
-        if(!tbls){
+        if(!diagram.tbls){
             props.showAlert("No tables exist", "danger");
             return;
         }
-        let all_tbls = tbls.map((tbl) => {            //performing deeper copy of the tbls state object
+        let all_tbls = diagram.tbls.map((tbl) => {            //performing deeper copy of the tbls state object
             return {...tbl, fields: tbl.fields.map(
                 (row)=>{
                     return { ...row }
@@ -414,7 +414,7 @@ export default function MainCanvas(props) {
             tblindex+=1;
         }
 
-        let current_count = tbls.length;
+        let current_count = diagram.tbls.length;
         let current_selections = {...selections};
         all_tbls.splice(current_selections.selectedTbl,1); //splice(index,number of items to be deleted)
 
@@ -428,12 +428,12 @@ export default function MainCanvas(props) {
         if(all_tbls.length < 1){
             all_tbls = null;
         }
-        setTbls(all_tbls);
+        setDiagram({...diagram, tbls: all_tbls});
     }
 
     //this function edits the table
     function updateTbl(newTbl){
-        if(!tbls){
+        if(!diagram.tbls){
             props.showAlert("No tables exist!");
             return;
         }
@@ -441,7 +441,7 @@ export default function MainCanvas(props) {
             props.showAlert('New name cannot be empty!','warning');
             return;
         }
-        let all_tbls = tbls.map((tbl) => {            //performing deeper copy of the tbls state object
+        let all_tbls = diagram.tbls.map((tbl) => {            //performing deeper copy of the tbls state object
                 return {...tbl, fields: tbl.fields.map(
                     (field, index)=>{
                         return { ...field }
@@ -488,7 +488,7 @@ export default function MainCanvas(props) {
         }
 
         props.showAlert("Updated table!");
-        setTbls(all_tbls);
+        setDiagram({...diagram, tbls: all_tbls});
     }
 
     function toggleCreateModal(){
@@ -508,7 +508,7 @@ export default function MainCanvas(props) {
                             <path strokeLinecap="round" strokeLinejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
                         </svg>
                     </button>
-                    <button type='button' className='bg-blue-700 shadow-lg p-3 text-white transition-transform rounded-full hover:scale-110' onClick={tbls?toggleEditModal:()=>{props.showAlert("No tables exist!","danger")}}>
+                    <button type='button' className='bg-blue-700 shadow-lg p-3 text-white transition-transform rounded-full hover:scale-110' onClick={diagram.tbls?toggleEditModal:()=>{props.showAlert("No tables exist!","danger")}}>
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
                             <path strokeLinecap="round" strokeLinejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125" />
                         </svg>
@@ -532,9 +532,8 @@ export default function MainCanvas(props) {
                     </button>
                 </div>
 
-                <CreateTableModal show={createTableModalShow} toggleCreateModal={toggleCreateModal} tbls={tbls?tbls:null} addTable={addTbl} showAlert={props.showAlert}/>
-                <EditModal table={tbls?tbls[selections.selectedTbl]:null} editShow={editTableModalShow} toggleEditModal={toggleEditModal} tbls={tbls?tbls:null} showAlert={props.showAlert} updateTbl={updateTbl}/>
-                
+                <CreateTableModal show={createTableModalShow} toggleCreateModal={toggleCreateModal} tbls={diagram.tbls?diagram.tbls:null} addTable={addTbl} showAlert={props.showAlert}/>
+                <EditModal table={diagram.tbls?diagram.tbls[selections.selectedTbl]:null} editShow={editTableModalShow} toggleEditModal={toggleEditModal} tbls={diagram.tbls?diagram.tbls:null} showAlert={props.showAlert} updateTbl={updateTbl}/>
             </div>
 
     )
