@@ -4,13 +4,15 @@ import background from '/graph-paper.svg';
 import backgroundDark from '/graph-paper-dark.svg';
 import CreateTableModal from './CreateTableModal';
 import EditModal from './EditModal';
+import CreateDiagramModal from './CreateDiagramModal';
 
 export default function MainCanvas(props) {
     const [createTableModalShow, setCreateTableModalShow] = useState(false); //this is used to show or hide add table modal
     const [editTableModalShow, setEditTableModalShow] = useState(false); //this is used to show or hide edit table modal
+    const [createDiagramModalShow, setCreateDiagramModalShow] = useState(false); //this is used to show or hide the create diagram modal
     const [offset, setOffset] = useState({x: 0, y:0}); //this is used to pan the canvas by translating the origin by offset
     const [isPanning, setIsPanning] = useState(false) //this is used to check if user has clicked ang is dragging on the canvas (i.e not the table)
-    const [diagram, setDiagram] = useState({name: 'defaultDiagram', tbls: [{ name: 'Table1', x: 20, y: 20, w: 150, pKey: 'id', fields: [{ name: 'id', type: 'INT', isFKey: false, refTbl: 'NONE', refField: 'NONE'}] }]});
+    const [diagram, setDiagram] = useState({name: null, tbls: [{ name: 'Table1', x: 20, y: 20, w: 150, pKey: 'id', fields: [{ name: 'id', type: 'INT', isFKey: false, refTbl: 'NONE', refField: 'NONE'}] }]});
     const [commonProps, setCommonProps] = useState({rh: 20}); //this specifies the row height of the tables
 
     //  selectedTbl is the index of the table which is currently selected
@@ -497,12 +499,19 @@ export default function MainCanvas(props) {
     function toggleEditModal(){
         editTableModalShow?setEditTableModalShow(false):setEditTableModalShow(true);
     }
+    function toggleCreateDiagramModal(){
+        createDiagramModalShow?setCreateDiagramModalShow(false):setCreateDiagramModalShow(true);
+    }
 
     return (
-
             <div className="canvas-div" style={props.theme==='dark'?{ backgroundImage: `url(${backgroundDark})`}:{ backgroundImage: `url(${background})`}}>
                 <canvas id='canvas' width={window.innerWidth} height={window.innerHeight} onMouseDown={handleMouseDown} onMouseMove={dragHandler} onMouseUp={handleMouseUp}></canvas>
                 <div className="flex flex-col  fixed bottom-4 right-4 gap-5">
+                <button type='button' className={`bg-blue-700 shadow-lg p-3 text-white transition-transform rounded-full hover:scale-110 ${props.authInfo?'':'hidden'}`} onClick={toggleCreateDiagramModal}>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 3.75V16.5L12 14.25 7.5 16.5V3.75m9 0H18A2.25 2.25 0 0 1 20.25 6v12A2.25 2.25 0 0 1 18 20.25H6A2.25 2.25 0 0 1 3.75 18V6A2.25 2.25 0 0 1 6 3.75h1.5m9 0h-9" />
+                        </svg>
+                    </button>
                     <button type='button' className='bg-blue-700 shadow-lg p-3 text-white transition-transform rounded-full hover:scale-110' onClick={delTbl}>
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
                             <path strokeLinecap="round" strokeLinejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
@@ -518,6 +527,7 @@ export default function MainCanvas(props) {
                             <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                         </svg>
                     </button>
+                   
                 </div>
                 <div className="flex  fixed bottom-4 left-4 gap-5">
                     <button type='button' className='bg-blue-700 shadow-lg p-3 text-white transition-transform rounded-full hover:scale-110' onClick={()=>{setScale(scale*1.25)}}>
@@ -534,6 +544,7 @@ export default function MainCanvas(props) {
 
                 <CreateTableModal show={createTableModalShow} toggleCreateModal={toggleCreateModal} tbls={diagram.tbls?diagram.tbls:null} addTable={addTbl} showAlert={props.showAlert}/>
                 <EditModal table={diagram.tbls?diagram.tbls[selections.selectedTbl]:null} editShow={editTableModalShow} toggleEditModal={toggleEditModal} tbls={diagram.tbls?diagram.tbls:null} showAlert={props.showAlert} updateTbl={updateTbl}/>
+                <CreateDiagramModal diagram={diagram} createDiagramModalShow={createDiagramModalShow} toggleModal={toggleCreateDiagramModal} showAlert={props.showAlert}></CreateDiagramModal>
             </div>
 
     )
