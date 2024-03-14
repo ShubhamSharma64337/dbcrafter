@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 
-export default function CreateDiagramModal({diagram, createDiagramModalShow, toggleModal, showAlert}) {
+export default function CreateDiagramModal({diagram, createDiagramModalShow, toggleModal, showAlert, setDiagram}) {
   const [diagramName, setDiagramName] = useState(null);
   useEffect(()=>{
     setDiagramName(diagram.name);
@@ -24,8 +24,13 @@ export default function CreateDiagramModal({diagram, createDiagramModalShow, tog
     })
     .then(response => response.json()) //response.json() or response.text() provides the 'data'
     .then((data) => {
+        if(data.success){
+          setDiagram({...diagram, name: diagramName})
+          showAlert(data.message, 'success');
+          toggleModal();
+        } else {
         showAlert(data.message, 'success');
-        toggleModal();
+        }
     })
     .catch((error)=>{
       showAlert('An error occured while trying to access the backend API', 'danger')
