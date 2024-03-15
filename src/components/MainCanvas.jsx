@@ -21,7 +21,6 @@ export default function MainCanvas({showAlert, theme, authInfo, diagram, setDiag
 
     // useEffect is used to trigger draw function every single time the component is rendered, mainly to run draw the first time this component is loaded
     useEffect(draw);
-
     //these are used to determine initial position of pointer (useful in implementing drag and drop)
     //when dragging a table.
     const [start, setStart] = useState({startX: null, startY: null});

@@ -5,7 +5,7 @@ import MainCanvas from './components/MainCanvas.jsx';
 import AboutContent from './components/AboutContent.jsx';
 import Alert from './components/Alert.jsx';
 import Diagrams from './components/Diagrams.jsx';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   BrowserRouter as Router,
   Routes,
@@ -18,6 +18,16 @@ function App(){
   const [theme, setTheme] = useState('light');
   const [diagram, setDiagram] = useState({name: null, tbls: [{ name: 'Table1', x: 20, y: 20, w: 150, pKey: 'id', fields: [{ name: 'id', type: 'INT', isFKey: false, refTbl: 'NONE', refField: 'NONE'}] }]});
 
+  //the below code makes sure that the diagram state variable is reset everytime a user logs out, so that
+  //if the user logs out without making changes, and then logs in again and tries to save a new diagramm, if the 
+  //diagram is not reset, it will contain the name of the diagram the user was editing earlier, due to which
+  //the same diagram will be updated. So, we reset the state so that if the user logs in again and goes to craft page, a 
+  //new diagram object is created. 
+  useEffect(()=>{
+    if(!authInfo){
+      setDiagram({name: null, tbls: [{ name: 'Table1', x: 20, y: 20, w: 150, pKey: 'id', fields: [{ name: 'id', type: 'INT', isFKey: false, refTbl: 'NONE', refField: 'NONE'}] }]})
+    }
+  }, [authInfo])
   function showAlert(message, type){
     setAlert({message: message, type: type});
     setTimeout(() => {
