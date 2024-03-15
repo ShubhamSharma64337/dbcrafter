@@ -502,6 +502,30 @@ export default function MainCanvas({showAlert, theme, authInfo, diagram, setDiag
         createDiagramModalShow?setCreateDiagramModalShow(false):setCreateDiagramModalShow(true);
     }
 
+    function saveDiagram() {
+        fetch('http://localhost:3000/user/savediagram', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            credentials: 'include', //this must be set in order to save the received session-cookie,
+            //also, after setting credentials to include, cors options must be set to allow credentials and origin from this domain
+            body: JSON.stringify(diagram)
+        })
+            .then(response => response.json()) //response.json() or response.text() provides the 'data'
+            .then((data) => {
+                if (data.success) {
+                    showAlert(data.message, 'success');
+                } else {
+                    showAlert(data.message, 'success');
+                }
+            })
+            .catch((error) => {
+                showAlert('An error occured while trying to access the backend API', 'danger')
+                console.log(error)
+            })
+    }
+    
     return (
             <div className="canvas-div" style={theme==='dark'?{ backgroundImage: `url(${backgroundDark})`}:{ backgroundImage: `url(${background})`}}>
                 <canvas id='canvas' width={window.innerWidth} height={window.innerHeight} onMouseDown={handleMouseDown} onMouseMove={dragHandler} onMouseUp={handleMouseUp}></canvas>
@@ -512,7 +536,7 @@ export default function MainCanvas({showAlert, theme, authInfo, diagram, setDiag
                         </svg>
 
                     </button>
-                    <button type='button' className={`bg-blue-700 shadow-lg p-3 text-white transition-transform rounded-full hover:scale-110 ${authInfo ? '' : 'hidden'}`} onClick={toggleCreateDiagramModal}>
+                    <button type='button' className={`bg-blue-700 shadow-lg p-3 text-white transition-transform rounded-full hover:scale-110 ${authInfo ? '' : 'hidden'}`} onClick={diagram.name?saveDiagram:toggleCreateDiagramModal}>
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
                             <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 3.75V16.5L12 14.25 7.5 16.5V3.75m9 0H18A2.25 2.25 0 0 1 20.25 6v12A2.25 2.25 0 0 1 18 20.25H6A2.25 2.25 0 0 1 3.75 18V6A2.25 2.25 0 0 1 6 3.75h1.5m9 0h-9" />
                         </svg>

@@ -11,6 +11,11 @@ export default function CreateDiagramModal({diagram, createDiagramModalShow, tog
   }
 
   function createDiagram(){
+    if(/^\s*$/.test(diagramName) || diagramName==null){
+      showAlert("Diagram name cannot be empty!","danger");
+      return;
+    }
+
     let diagramCopy = {...diagram};
     diagramCopy.name = diagramName;
     fetch('http://localhost:3000/user/creatediagram', {
