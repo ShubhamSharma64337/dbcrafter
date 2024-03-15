@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import ThemeButton from './ThemeButton';
 export default function Navbar({title, theme, toggleTheme, showAlert, authInfo, setAuthInfo}) {
-      const navigate = useNavigate();
-
+    const navigate = useNavigate();
+    const {pathname} = useLocation();
     const [collapsed, setCollapsed] = useState(true);
     function toggleCollapsed(){
         collapsed?setCollapsed(false):setCollapsed(true);   
@@ -53,6 +53,9 @@ export default function Navbar({title, theme, toggleTheme, showAlert, authInfo, 
           showAlert('An error occured while trying to access the backend API', 'danger')
           console.log(error)
         })
+    }
+    if(pathname === '/craft'){
+        return;
     }
     return (
 

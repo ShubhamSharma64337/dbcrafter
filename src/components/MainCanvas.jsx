@@ -5,7 +5,7 @@ import backgroundDark from '/graph-paper-dark.svg';
 import CreateTableModal from './CreateTableModal';
 import EditModal from './EditModal';
 import CreateDiagramModal from './CreateDiagramModal';
-
+import { Link } from 'react-router-dom';
 export default function MainCanvas({showAlert, theme, authInfo, diagram, setDiagram}) {
     const [createTableModalShow, setCreateTableModalShow] = useState(false); //this is used to show or hide add table modal
     const [editTableModalShow, setEditTableModalShow] = useState(false); //this is used to show or hide edit table modal
@@ -137,8 +137,8 @@ export default function MainCanvas({showAlert, theme, authInfo, diagram, setDiag
         const ctxt = canvas.getContext("2d");
         
         //setting width and height properly
-        const nav_height = document.querySelector(".navbar").clientHeight;
-        ctxt.canvas.height = window.innerHeight - nav_height - 0.1;
+        // const nav_height = document.querySelector(".navbar").clientHeight;
+        ctxt.canvas.height = window.innerHeight - 0.1;
         ctxt.canvas.width = window.innerWidth;
         ctxt.font = '16px Segoe UI';
         ctxt.clearRect(0, 0, canvas.width, canvas.height);
@@ -525,17 +525,27 @@ export default function MainCanvas({showAlert, theme, authInfo, diagram, setDiag
                 console.log(error)
             })
     }
-    
+
     return (
-            <div className="canvas-div" style={theme==='dark'?{ backgroundImage: `url(${backgroundDark})`}:{ backgroundImage: `url(${background})`}}>
+            <div className="canvas-div flex justify-center" style={theme==='dark'?{ backgroundImage: `url(${backgroundDark})`}:{ backgroundImage: `url(${background})`}}>
+                <p className={`guestmode-alert bg-blue-500 shadow opacity-75 text-white text-center absolute w-full top-0 ${authInfo ? 'hidden scale-0' : ''}`}>You are accessing this page in guest mode, you will not be able to save any changes. To unlock all features, please create an account and sign in!</p>
                 <canvas id='canvas' width={window.innerWidth} height={window.innerHeight} onMouseDown={handleMouseDown} onMouseMove={dragHandler} onMouseUp={handleMouseUp}></canvas>
-                <div className="flex flex-col  fixed bottom-4 right-4 gap-5">
+                <div className="top-right-buttons flex flex-col fixed top-4 right-4 gap-5">
                     <button type='button' className={`bg-blue-700 flex shadow-lg p-3 text-white transition-transform rounded-full hover:scale-110 ${authInfo ? '' : 'hidden'}`} onClick={() => { setDiagram({ name: null, tbls: null }) }}>
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
                             <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                         </svg>
-
                     </button>
+                </div>
+                <div className="top-left-buttons flex flex-col fixed top-4 left-4 gap-5">
+                    <Link to={'/'} type='button' className={`bg-blue-700 flex shadow-lg p-3 text-white transition-transform rounded-full hover:scale-110`} onClick={() => { }}>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
+                        </svg>
+
+                    </Link>
+                </div>
+                <div className="bottom-right-buttons flex flex-col  fixed bottom-4 right-4 gap-5">
                     <button type='button' className={`bg-blue-700 shadow-lg p-3 text-white transition-transform rounded-full hover:scale-110 ${authInfo ? '' : 'hidden'}`} onClick={diagram.name?saveDiagram:toggleCreateDiagramModal}>
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
                             <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 3.75V16.5L12 14.25 7.5 16.5V3.75m9 0H18A2.25 2.25 0 0 1 20.25 6v12A2.25 2.25 0 0 1 18 20.25H6A2.25 2.25 0 0 1 3.75 18V6A2.25 2.25 0 0 1 6 3.75h1.5m9 0h-9" />
@@ -557,7 +567,7 @@ export default function MainCanvas({showAlert, theme, authInfo, diagram, setDiag
                         </svg>
                     </button>
                 </div>
-                <div className="flex  fixed bottom-4 left-4 gap-5">
+                <div className="bottom-left-buttons flex  fixed bottom-4 left-4 gap-5">
                     <button type='button' className='bg-blue-700 shadow-lg p-3 text-white transition-transform rounded-full hover:scale-110' onClick={()=>{setScale(scale-0.05)}}>
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
                             <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607ZM13.5 10.5h-6" />

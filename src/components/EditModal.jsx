@@ -121,6 +121,22 @@ export default function EditModal({table, editShow, toggleEditModal, addTable, t
   }
 
   function editTable(){
+    for(let field of updatedTbl.fields){
+      if(field.isFKey){
+        if(field.refTbl==='NONE' || field.refField==='NONE'){
+          showAlert("You must set referenced table and field if you have checked Foreign key!","warning");
+          return;
+        }
+      }
+      if(/^\s*$/.test(field.name)){
+        showAlert("Fieldname cannot be empty!","warning");
+        return;
+      }
+    }
+    if(/^\s*$/.test(updatedTbl.name)){
+      showAlert("Table name cannot be empty!","danger");
+      return;
+    }
     updateTbl(updatedTbl);
     toggleEditModal();
   }
