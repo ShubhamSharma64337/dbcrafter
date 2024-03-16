@@ -527,7 +527,7 @@ export default function MainCanvas({showAlert, theme, authInfo, diagram, setDiag
 
     return (
             <div className="canvas-div flex justify-center" style={theme==='dark'?{ backgroundImage: `url(${backgroundDark})`}:{ backgroundImage: `url(${background})`}}>
-                <p className={`guestmode-alert bg-blue-500 shadow opacity-75 text-white text-center absolute w-full top-0 ${authInfo ? 'hidden scale-0' : ''}`}>You are accessing this page in guest mode, you will not be able to save any changes. To unlock all features, please create an account and sign in!</p>
+                <p className={`guestmode-alert bg-blue-500 shadow opacity-75 text-white text-center absolute rounded-b px-1 py-0.5 top-0 ${authInfo ? 'hidden scale-0' : ''}`}>You are accessing this page in guest mode, you will not be able to save any changes. To unlock all features, please create an account and sign in!</p>
                 <canvas id='canvas' width={window.innerWidth} height={window.innerHeight} onMouseDown={handleMouseDown} onMouseMove={dragHandler} onMouseUp={handleMouseUp}></canvas>
                 <div className="top-right-buttons flex flex-col fixed top-4 right-4 gap-5">
                     <button type='button' className={`bg-blue-700 flex shadow-lg p-3 text-white transition-transform rounded-full hover:scale-110 ${authInfo ? '' : 'hidden'}`} onClick={() => { setDiagram({ name: null, tbls: null }) }}>

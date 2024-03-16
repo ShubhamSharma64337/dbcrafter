@@ -16,7 +16,7 @@ function App(){
   const [authInfo, setAuthInfo] = useState(null); //this stores whether user is logged in or not, if logged in, it contains the email
   const [alert, setAlert] = useState(null);
   const [theme, setTheme] = useState('light');
-  const [diagram, setDiagram] = useState({name: null, tbls: [{ name: 'Table1', x: 20, y: 20, w: 150, pKey: 'id', fields: [{ name: 'id', type: 'INT', isFKey: false, refTbl: 'NONE', refField: 'NONE'}] }]});
+  const [diagram, setDiagram] = useState({name: null, tbls: [{ name: 'Table1', x: 100, y: 100, w: 150, pKey: 'id', fields: [{ name: 'id', type: 'INT', isFKey: false, refTbl: 'NONE', refField: 'NONE'}] }]});
 
   //the below code makes sure that the diagram state variable is reset everytime a user logs out, so that
   //if the user logs out without making changes, and then logs in again and tries to save a new diagramm, if the 
@@ -25,7 +25,7 @@ function App(){
   //new diagram object is created. 
   useEffect(()=>{
     if(!authInfo){
-      setDiagram({name: null, tbls: [{ name: 'Table1', x: 20, y: 20, w: 150, pKey: 'id', fields: [{ name: 'id', type: 'INT', isFKey: false, refTbl: 'NONE', refField: 'NONE'}] }]})
+      setDiagram({name: null, tbls: [{ name: 'Table1', x: 100, y: 100, w: 150, pKey: 'id', fields: [{ name: 'id', type: 'INT', isFKey: false, refTbl: 'NONE', refField: 'NONE'}] }]})
     }
   }, [authInfo])
   function showAlert(message, type){
