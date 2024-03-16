@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from 'react'
 
-export default function EditModal({table, editShow, toggleEditModal, addTable, tbls, showAlert, updateTbl}) {
-  const [maxIndex, setMaxIndex] = useState(0);
-  const [updatedTbl, setUpdatedTbl] = useState({...table})
+export default function EditModal({table, editShow, toggleEditModal, tbls, showAlert, updateTbl}) {
+  const [maxIndex, setMaxIndex] = useState(0); //this keeps track about what name should be given to the new row being added in the modal
+  const [updatedTbl, setUpdatedTbl] = useState({...table}) //this actually stores all the details about the form in the modal which is used
+  //to update the table
 
   function handleNameChange(e){ //table name change handler
     setUpdatedTbl({...updatedTbl, name: e.target.value});
   }
 
-  useEffect(()=>{
+  useEffect(()=>{ //when user changes the selected table, the modal contents will be updated to that table's values
     setUpdatedTbl(table)
   }, [table])
 
@@ -96,28 +97,10 @@ export default function EditModal({table, editShow, toggleEditModal, addTable, t
     setUpdatedTbl(tableCopy);
   }
 
-  function addTbl(){
-    for(let field of updatedTbl.fields){
-      if(field.isFKey){
-        if(field.refTbl==='NONE' || field.refField==='NONE'){
-          showAlert("You must set referenced table and field if you have checked Foreign key!","warning");
-          return;
-        }
-      }
-    }
-    let res = addTable(updatedTbl);
-    if(res!==0){
-      return;
-    }
-    toggleEditModal();
-    setUpdatedTbl({name: 'table', pKey: 'id', fields: [{name: 'id', type: 'INT', isFKey: false, refTbl: '', refField: ''}]})
-    setMaxIndex(0)
-  }
-
   function closeEditModal(){
-    setUpdatedTbl({name: 'table', pKey: 'id', fields: [{name: 'id', type: 'INT', isFKey: false, refTbl: '', refField: ''}]})
-    setMaxIndex(0)
-    toggleEditModal(0)
+    setUpdatedTbl(table); //this must be done to discard changes made by the user in the edit modal before closing it
+    setMaxIndex(0);
+    toggleEditModal(0);
   }
 
   function editTable(){
@@ -180,7 +163,7 @@ export default function EditModal({table, editShow, toggleEditModal, addTable, t
                         {updatedTbl.fields.map((element, index)=>{
                           return <tr key={`row${index}`}>
                           <td>
-                            <input name='name' type='text' className='border p-2 outline-blue-700' value={updatedTbl.fields[index].name} data-rowindex={index} placeholder='Enter table name' onChange={handleChange}></input>
+                            <input name='name' type='text' className='border p-2 outline-blue-700' value={element.name} data-rowindex={index} placeholder='Enter table name' onChange={handleChange}></input>
                           </td>
                           <td>
                             <select name='type' className='border py-2 px-3 outline-blue-700' value={element.type} data-rowindex={index} onChange={handleSelect}>
@@ -196,19 +179,26 @@ export default function EditModal({table, editShow, toggleEditModal, addTable, t
                             <input name='pKey' type='checkbox' className='border p-2 w-5 h-5 accent-blue-700' checked={element.name===updatedTbl.pKey?true:false} data-rowindex={index} onChange={handleChange}></input>
                           </td>
                           <td>
-                            <input name='isFKey' type='checkbox' className='border p-2 w-5 h-5 accent-blue-700' checked={updatedTbl.fields[index].isFKey} data-rowindex={index} onChange={handleChange}></input>
+                            <input name='isFKey' type='checkbox' className='border p-2 w-5 h-5 accent-blue-700' checked={element.isFKey} data-rowindex={index} onChange={handleChange}></input>
                           </td>
                           <td>
                             <select name='refTbl' className={`border py-2 px-3 outline-blue-700`} value={element.refTbl} data-rowindex={index} onChange={handleSelect} disabled={!element.isFKey}>
                               <option value="NONE">NONE</option>
-                              {tbls && tbls.map((element, index)=>{
-                                return <option key={index}>{element.name}</option>
+                              {tbls && tbls.map((table, index)=>{
+                                return <option key={index}>{table.name}</option>
                               })}
                             </select>
                           </td>
                           <td>
                             <select name='refField' className='refFieldInput border py-2 px-3 outline-blue-700' disabled={element.refTbl==='NONE'?true:false} value={element.refTbl==='NONE'?'NONE':element.refField} data-rowindex={index} onChange={handleSelect}>
                               <option value={'NONE'}>NONE</option>
+                              {tbls && tbls.map((table, index)=>{
+                                if(table.name === element.refTbl){
+                                  return table.fields.map((field, index)=>{
+                                    return <option key={index}>{field.name}</option>
+                                  })
+                                }
+                              })}
                             </select>
                           </td>
                           <td>

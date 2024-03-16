@@ -113,12 +113,12 @@ export default function CreateTableModal({show, toggleCreateModal, addTable, tbl
       return;
     }
     toggleCreateModal();
-    setNewTbl({name: 'table', pKey: 'id', fields: [{name: 'id', type: 'INT', isFKey: false, refTbl: '', refField: ''}]})
+    setNewTbl({name: 'table', pKey: 'id', fields: [{name: 'id', type: 'INT', isFKey: false, refTbl: 'NONE', refField: 'NONE'}]})
     setMaxIndex(0)
   }
 
   function closeModal(){
-    setNewTbl({name: 'table', pKey: 'id', fields: [{name: 'id', type: 'INT', isFKey: false, refTbl: '', refField: ''}]})
+    setNewTbl({name: 'table', pKey: 'id', fields: [{name: 'id', type: 'INT', isFKey: false, refTbl: 'NONE', refField: 'NONE'}]})
     setMaxIndex(0)
     toggleCreateModal(0)
   }
