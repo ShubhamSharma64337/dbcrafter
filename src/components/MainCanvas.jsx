@@ -5,11 +5,13 @@ import backgroundDark from '/graph-paper-dark.svg';
 import CreateTableModal from './CreateTableModal';
 import EditModal from './EditModal';
 import CreateDiagramModal from './CreateDiagramModal';
+import SqlModal from './SqlModal';
 import { Link } from 'react-router-dom';
 export default function MainCanvas({showAlert, theme, authInfo, diagram, setDiagram}) {
     const [createTableModalShow, setCreateTableModalShow] = useState(false); //this is used to show or hide add table modal
     const [editTableModalShow, setEditTableModalShow] = useState(false); //this is used to show or hide edit table modal
     const [createDiagramModalShow, setCreateDiagramModalShow] = useState(false); //this is used to show or hide the create diagram modal
+    const [sqlModalShow, setSqlModalShow] = useState(false);
     const [offset, setOffset] = useState({x: 0, y:0}); //this is used to pan the canvas by translating the origin by offset
     const [isPanning, setIsPanning] = useState(false) //this is used to check if user has clicked ang is dragging on the canvas (i.e not the table)
     const [commonProps, setCommonProps] = useState({rh: 20}); //this specifies the row height of the tables
@@ -500,6 +502,9 @@ export default function MainCanvas({showAlert, theme, authInfo, diagram, setDiag
     function toggleCreateDiagramModal(){
         createDiagramModalShow?setCreateDiagramModalShow(false):setCreateDiagramModalShow(true);
     }
+    function toggleSqlModal(){
+        sqlModalShow?setSqlModalShow(false):setSqlModalShow(true);
+    }
 
     function saveDiagram() {
         fetch('http://localhost:3000/user/savediagram', {
@@ -544,7 +549,13 @@ export default function MainCanvas({showAlert, theme, authInfo, diagram, setDiag
 
                     </Link>
                 </div>
+                    
                 <div className="bottom-right-buttons flex flex-col  fixed bottom-4 right-4 gap-5">
+                    <button type='button' className={`bg-blue-700 shadow-lg p-3   text-white transition-transform rounded-full hover:scale-110 ${authInfo ? '' : 'hidden'}`} onClick={()=>{toggleSqlModal()}}>
+                        <svg height="24" width="24" className='w-6 h-6' xmlns="http://www.w3.org/2000/svg">
+                            <text x="0" fontSize="13" y="16" fill="white" fontWeight={'bold'}>SQL</text>
+                        </svg>
+                    </button>
                     <button type='button' className={`bg-blue-700 shadow-lg p-3 text-white transition-transform rounded-full hover:scale-110 ${authInfo ? '' : 'hidden'}`} onClick={diagram.name?saveDiagram:toggleCreateDiagramModal}>
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
                             <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 3.75V16.5L12 14.25 7.5 16.5V3.75m9 0H18A2.25 2.25 0 0 1 20.25 6v12A2.25 2.25 0 0 1 18 20.25H6A2.25 2.25 0 0 1 3.75 18V6A2.25 2.25 0 0 1 6 3.75h1.5m9 0h-9" />
@@ -582,6 +593,7 @@ export default function MainCanvas({showAlert, theme, authInfo, diagram, setDiag
                 <CreateTableModal show={createTableModalShow} toggleCreateModal={toggleCreateModal} tbls={diagram.tbls?diagram.tbls:null} addTable={addTbl} showAlert={showAlert}/>
                 <EditModal table={diagram.tbls?diagram.tbls[selections.selectedTbl]:null} editShow={editTableModalShow} toggleEditModal={toggleEditModal} tbls={diagram.tbls?diagram.tbls:null} showAlert={showAlert} updateTbl={updateTbl}/>
                 <CreateDiagramModal diagram={diagram} createDiagramModalShow={createDiagramModalShow} toggleModal={toggleCreateDiagramModal} showAlert={showAlert} setDiagram={setDiagram}></CreateDiagramModal>
+                <SqlModal diagram={diagram} show={sqlModalShow} toggleModal={toggleSqlModal}></SqlModal>
             </div>
 
     )
