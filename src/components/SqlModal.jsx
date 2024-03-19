@@ -14,6 +14,9 @@ export default function SqlModal({diagram, show,  toggleModal}) {
         if(table.pKey === field.name){
           stmt += " PRIMARY KEY";
         } else {
+          if(field.notNull){
+            stmt += " NOT NULL"
+          }
           if(field.isFKey){
             stmt += " REFERENCES " + field.refTbl +"(" + field.refField + ")";
           }
@@ -37,7 +40,7 @@ export default function SqlModal({diagram, show,  toggleModal}) {
                   <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
                 </svg>
               </button>
-              <p className='text-center text-lg font-medium '>Generated SQL</p>
+              <p className='text-center text-lg font-medium '>Auto-Generated SQL</p>
 
 
             </div>

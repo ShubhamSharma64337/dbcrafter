@@ -4,7 +4,7 @@ import React, { useState } from 'react'
 export default function CreateTableModal({show, toggleCreateModal, addTable, tbls, showAlert}) {
   const [maxIndex, setMaxIndex] = useState(0);
   const [newTbl, setNewTbl] = useState({name: 'table', pKey: 'id', fields: [
-    {name: 'id', type: 'INT', isFKey: false, refTbl: 'NONE', refField: 'NONE'}
+    {name: 'id', type: 'INT', notNull: false, isFKey: false, refTbl: 'NONE', refField: 'NONE'}
   ]})
 
   function handleNameChange(e){ //table name change handler
@@ -16,7 +16,7 @@ export default function CreateTableModal({show, toggleCreateModal, addTable, tbl
       return {...element}
     })}
     const insertIndex = parseInt(e.currentTarget.dataset.rowindex) + 1;
-    tableCopy.fields.splice(insertIndex,0, {name: 'field'+(maxIndex+1), type: 'INT', isFKey: false, refTbl: 'NONE', refField: 'NONE'})
+    tableCopy.fields.splice(insertIndex,0, {name: 'field'+(maxIndex+1), type: 'INT', notNull: false, isFKey: false, refTbl: 'NONE', refField: 'NONE'})
     setNewTbl(tableCopy);
     setMaxIndex(maxIndex+1);
   }
@@ -51,6 +51,15 @@ export default function CreateTableModal({show, toggleCreateModal, addTable, tbl
           return {...element};
         }
       })}
+    } else if (name === 'notNull'){
+      let checked = e.currentTarget.checked;
+      tableCopy = {...newTbl, fields: newTbl.fields.map((element, index)=>{
+        if(index === rowindex){
+          return {...element, [name]: checked};
+        } else {
+          return {...element};
+        }
+      })}
     } else if (name === 'pKey'){ //handle change in pkey checkbox
       let currentField = newTbl.fields[parseInt(e.currentTarget.dataset.rowindex)];
       tableCopy = {...newTbl, pKey: currentField.name}
@@ -70,20 +79,6 @@ export default function CreateTableModal({show, toggleCreateModal, addTable, tbl
     const name = e.currentTarget.name; //retrieving the name value of the select list, this will be same as the key in the newTbl dictionary
     const value = e.currentTarget.value; //retrieving the value of the select field
     const rowindex = parseInt(e.currentTarget.dataset.rowindex); //retrieving the field index using the data attribute of the select input
-    if(name==='refTbl'){ //if the user has just changed the refTbl select option, we need to populate the corresponding refField select input with field names
-      let refField = document.getElementsByClassName('refFieldInput')[rowindex];
-      let reqTbl = e => e.name === value;
-      let tblIndex = tbls.findIndex(reqTbl);
-      if(value!=='NONE'){
-        while (refField.options.length > 0) {
-          refField.remove(0);
-        }
-        refField.add(new Option("NONE","NONE"), undefined);
-        for(let field of tbls[tblIndex].fields){
-          refField.add(new Option(field.name,field.name), undefined)
-        }
-      }
-    } 
     let tableCopy = {...newTbl, fields: newTbl.fields.map((element, index)=>{ //now starting actually modifying the select field
         if(index === rowindex){
           return {...element, [name]: value};
@@ -113,12 +108,12 @@ export default function CreateTableModal({show, toggleCreateModal, addTable, tbl
       return;
     }
     toggleCreateModal();
-    setNewTbl({name: 'table', pKey: 'id', fields: [{name: 'id', type: 'INT', isFKey: false, refTbl: 'NONE', refField: 'NONE'}]})
+    setNewTbl({name: 'table', pKey: 'id', fields: [{name: 'id', type: 'INT', notNull: false, isFKey: false, refTbl: 'NONE', refField: 'NONE'}]})
     setMaxIndex(0)
   }
 
   function closeModal(){
-    setNewTbl({name: 'table', pKey: 'id', fields: [{name: 'id', type: 'INT', isFKey: false, refTbl: 'NONE', refField: 'NONE'}]})
+    setNewTbl({name: 'table', pKey: 'id', fields: [{name: 'id', type: 'INT', notNull: false, isFKey: false, refTbl: 'NONE', refField: 'NONE'}]})
     setMaxIndex(0)
     toggleCreateModal(0)
   }
@@ -156,6 +151,7 @@ export default function CreateTableModal({show, toggleCreateModal, addTable, tbl
                         <tr>
                           <th>Field name</th>
                           <th>Datatype</th>
+                          <th>Not Null</th>
                           <th>Primary Key</th>
                           <th>Foreign Key</th>
                           <th>Referenced Table</th>
@@ -177,6 +173,9 @@ export default function CreateTableModal({show, toggleCreateModal, addTable, tbl
                             </select>
                           </td>
                           <td>
+                            <input name='notNull' type='checkbox' className='border p-2 w-5 h-5 accent-blue-700' checked={newTbl.notNull} data-rowindex={index} onChange={handleChange}></input>
+                          </td>
+                          <td>
                             <input name='pKey' type='checkbox' className='border p-2 w-5 h-5 accent-blue-700' checked={element.name===newTbl.pKey?true:false} data-rowindex={index} onChange={handleChange}></input>
                           </td>
                           <td>
@@ -193,6 +192,13 @@ export default function CreateTableModal({show, toggleCreateModal, addTable, tbl
                           <td>
                             <select name='refField' className='refFieldInput border py-2 px-3 outline-blue-700' disabled={element.refTbl==='NONE'?true:false} value={element.refTbl==='NONE'?'NONE':element.refField} data-rowindex={index} onChange={handleSelect}>
                               <option value={'NONE'}>NONE</option>
+                              {tbls && tbls.map((table)=>{
+                                if(table.name === element.refTbl){
+                                  return table.fields.map((field, index)=>{
+                                    return <option key={index}>{field.name}</option>
+                                  })
+                                }
+                              })}
                             </select>
                           </td>
                           <td>

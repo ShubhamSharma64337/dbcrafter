@@ -18,7 +18,7 @@ export default function EditModal({table, editShow, toggleEditModal, tbls, showA
       return {...element}
     })}
     const insertIndex = parseInt(e.currentTarget.dataset.rowindex) + 1;
-    tableCopy.fields.splice(insertIndex,0, {name: 'field'+(maxIndex+1), type: 'INT', isFKey: false, refTbl: 'NONE', refField: 'NONE'})
+    tableCopy.fields.splice(insertIndex,0, {name: 'field'+(maxIndex+1), type: 'INT', notNull: false, isFKey: false, refTbl: 'NONE', refField: 'NONE'})
     setUpdatedTbl(tableCopy);
     setMaxIndex(maxIndex+1);
   }
@@ -41,7 +41,6 @@ export default function EditModal({table, editShow, toggleEditModal, tbls, showA
     const rowindex = parseInt(e.currentTarget.dataset.rowindex);
     let tableCopy = {}
     if(e.currentTarget.name==='isFKey'){ //to handle change in fkey checkbox
-
       let checked = e.currentTarget.checked;
       tableCopy = {...updatedTbl, fields: updatedTbl.fields.map((element, index)=>{
         if(index === rowindex){
@@ -53,6 +52,17 @@ export default function EditModal({table, editShow, toggleEditModal, tbls, showA
           return {...element};
         }
       })}
+    } else if (name === 'notNull'){ //handle change in notNull checkbox
+        let checked = e.currentTarget.checked;
+        tableCopy = {...updatedTbl, fields: updatedTbl.fields.map((element, index)=>{
+          if(index === rowindex){
+              return {...element, [name]:checked};
+          }
+          else {
+            return {...element };
+          }
+        })
+      } 
     } else if (name === 'pKey'){ //handle change in pkey checkbox
       let currentField = updatedTbl.fields[parseInt(e.currentTarget.dataset.rowindex)];
       tableCopy = {...updatedTbl, pKey: currentField.name}
@@ -72,20 +82,6 @@ export default function EditModal({table, editShow, toggleEditModal, tbls, showA
     const name = e.currentTarget.name; //retrieving the name value of the select list, this will be same as the key in the updatedTbl dictionary
     const value = e.currentTarget.value; //retrieving the value of the select field
     const rowindex = parseInt(e.currentTarget.dataset.rowindex); //retrieving the field index using the data attribute of the select input
-    if(name==='refTbl'){ //if the user has just changed the refTbl select option, we need to populate the corresponding refField select input with field names
-      let refField = document.getElementsByClassName('refFieldInput')[rowindex];
-      let reqTbl = e => e.name === value;
-      let tblIndex = tbls.findIndex(reqTbl);
-      if(value!=='NONE'){
-        while (refField.options.length > 0) {
-          refField.remove(0);
-        }
-        refField.add(new Option("NONE","NONE"), undefined);
-        for(let field of tbls[tblIndex].fields){
-          refField.add(new Option(field.name,field.name), undefined)
-        }
-      }
-    } 
     let tableCopy = {...updatedTbl, fields: updatedTbl.fields.map((element, index)=>{ //now starting actually modifying the select field
         if(index === rowindex){
           return {...element, [name]: value};
@@ -139,7 +135,6 @@ export default function EditModal({table, editShow, toggleEditModal, tbls, showA
                   <path strokeLinecap="round" strokeLinejoin="round" d="m5.25 4.5 7.5 7.5-7.5 7.5m6-15 7.5 7.5-7.5 7.5" />
                 </svg>
               </button>
-
             </div>
 
             {/* Modal Body */}
@@ -155,6 +150,7 @@ export default function EditModal({table, editShow, toggleEditModal, tbls, showA
                         <tr>
                           <th>Field name</th>
                           <th>Datatype</th>
+                          <th>Not Null</th>
                           <th>Primary Key</th>
                           <th>Foreign Key</th>
                           <th>Referenced Table</th>
@@ -176,6 +172,9 @@ export default function EditModal({table, editShow, toggleEditModal, tbls, showA
                             </select>
                           </td>
                           <td>
+                            <input name='notNull' type='checkbox' className='border p-2 w-5 h-5 accent-blue-700' checked={element.notNull} data-rowindex={index} onChange={handleChange}></input>
+                          </td>
+                          <td>
                             <input name='pKey' type='checkbox' className='border p-2 w-5 h-5 accent-blue-700' checked={element.name===updatedTbl.pKey?true:false} data-rowindex={index} onChange={handleChange}></input>
                           </td>
                           <td>
@@ -192,7 +191,7 @@ export default function EditModal({table, editShow, toggleEditModal, tbls, showA
                           <td>
                             <select name='refField' className='refFieldInput border py-2 px-3 outline-blue-700' disabled={element.refTbl==='NONE'?true:false} value={element.refTbl==='NONE'?'NONE':element.refField} data-rowindex={index} onChange={handleSelect}>
                               <option value={'NONE'}>NONE</option>
-                              {tbls && tbls.map((table, index)=>{
+                              {tbls && tbls.map((table)=>{
                                 if(table.name === element.refTbl){
                                   return table.fields.map((field, index)=>{
                                     return <option key={index}>{field.name}</option>
