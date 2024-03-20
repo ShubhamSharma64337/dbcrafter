@@ -18,7 +18,7 @@ export default function SqlModal({diagram, show,  toggleModal}) {
             stmt += " NOT NULL"
           }
           if(field.isFKey){
-            stmt += " REFERENCES " + field.refTbl +"(" + field.refField + ")";
+            stmt += " FOREIGN KEY REFERENCES " + field.refTbl +"(" + field.refField + ")";
           }
         }
         if(index !== table.fields.length - 1){ //this removes comma in case of last field
