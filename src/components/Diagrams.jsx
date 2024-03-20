@@ -94,10 +94,10 @@ export default function Diagrams({authInfo, showAlert, setDiagram}) {
         })
     }
     return (
-    diagrams ? <div className='flex gap-5 p-10 flex-col md:flex-row'>
+    diagrams ? <div className='p-5 grid gap-5 grid-cols-1 sm:grid-cols-4'>
         {diagrams.map((element, index)=>{
             return (
-            <div key={index} className="card rounded-lg border-2 border-blue-50 shadow-lg flex flex-col justify-center items-center transition overflow-hidden w-1/5 hover:shadow hover:border-2 hover:border-blue-400">
+            <div key={index} className="card rounded-lg border-2 border-blue-50 shadow-lg flex flex-col justify-center items-center transition overflow-hidden hover:shadow hover:border-2 hover:border-blue-400">
                 <div className="image flex justify-center items-center px-2 py-10 w-full">
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="text-blue-500 w-10 h-10">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M20.25 6.375c0 2.278-3.694 4.125-8.25 4.125S3.75 8.653 3.75 6.375m16.5 0c0-2.278-3.694-4.125-8.25-4.125S3.75 4.097 3.75 6.375m16.5 0v11.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125V6.375m16.5 0v3.75m-16.5-3.75v3.75m16.5 0v3.75C20.25 16.153 16.556 18 12 18s-8.25-1.847-8.25-4.125v-3.75m16.5 0c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125" />
