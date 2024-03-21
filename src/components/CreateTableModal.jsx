@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 
 
-export default function CreateTableModal({show, toggleCreateModal, addTable, tbls, showAlert}) {
+export default function CreateTableModal({show, toggleCreateModal, addTable, tbls, showAlert, dtypes}) {
   const [maxIndex, setMaxIndex] = useState(0);
   const [newTbl, setNewTbl] = useState({name: 'table', pKey: 'id', fields: [
     {name: 'id', type: 'INT', notNull: false, isFKey: false, refTbl: 'NONE', refField: 'NONE'}
@@ -164,12 +164,9 @@ export default function CreateTableModal({show, toggleCreateModal, addTable, tbl
                           </td>
                           <td>
                             <select name='type' className='border py-2 px-3 outline-blue-700' value={element.type} data-rowindex={index} onChange={handleSelect}>
-                              <option>INT</option>
-                              <option>CHAR</option>
-                              <option>VARCHAR</option>
-                              <option>BOOL</option>
-                              <option>FLOAT</option>
-                              <option>DATE</option>
+                              {dtypes.map((element)=>{
+                                return <option>{element}</option>
+                              })}
                             </select>
                           </td>
                           <td>

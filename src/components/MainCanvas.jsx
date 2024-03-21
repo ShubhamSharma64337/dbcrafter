@@ -7,7 +7,7 @@ import EditModal from './EditModal';
 import CreateDiagramModal from './CreateDiagramModal';
 import SqlModal from './SqlModal';
 import { Link } from 'react-router-dom';
-export default function MainCanvas({showAlert, theme, authInfo, diagram, setDiagram}) {
+export default function MainCanvas({showAlert, theme, authInfo, diagram, setDiagram, dtypes}) {
     const [createTableModalShow, setCreateTableModalShow] = useState(false); //this is used to show or hide add table modal
     const [editTableModalShow, setEditTableModalShow] = useState(false); //this is used to show or hide edit table modal
     const [createDiagramModalShow, setCreateDiagramModalShow] = useState(false); //this is used to show or hide the create diagram modal
@@ -594,8 +594,8 @@ export default function MainCanvas({showAlert, theme, authInfo, diagram, setDiag
                     </button>
                 </div>
 
-                <CreateTableModal show={createTableModalShow} toggleCreateModal={toggleCreateModal} tbls={diagram.tbls?diagram.tbls:null} addTable={addTbl} showAlert={showAlert}/>
-                <EditModal table={diagram.tbls?diagram.tbls[selections.selectedTbl]:null} editShow={editTableModalShow} toggleEditModal={toggleEditModal} tbls={diagram.tbls?diagram.tbls:null} showAlert={showAlert} updateTbl={updateTbl}/>
+                <CreateTableModal dtypes={dtypes} show={createTableModalShow} toggleCreateModal={toggleCreateModal} tbls={diagram.tbls?diagram.tbls:null} addTable={addTbl} showAlert={showAlert}/>
+                <EditModal dtypes={dtypes} table={diagram.tbls?diagram.tbls[selections.selectedTbl]:null} editShow={editTableModalShow} toggleEditModal={toggleEditModal} tbls={diagram.tbls?diagram.tbls:null} showAlert={showAlert} updateTbl={updateTbl}/>
                 <CreateDiagramModal diagram={diagram} createDiagramModalShow={createDiagramModalShow} toggleModal={toggleCreateDiagramModal} showAlert={showAlert} setDiagram={setDiagram}></CreateDiagramModal>
                 <SqlModal diagram={diagram} show={sqlModalShow} toggleModal={toggleSqlModal}></SqlModal>
             </div>

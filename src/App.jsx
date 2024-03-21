@@ -17,7 +17,8 @@ function App(){
   const [alert, setAlert] = useState(null);
   const [theme, setTheme] = useState('light');
   const [diagram, setDiagram] = useState({name: null, tbls: [{ name: 'Table1', x: 100, y: 100, w: 150, notNull: false, pKey: 'id', fields: [{ name: 'id', type: 'INT', isFKey: false, refTbl: 'NONE', refField: 'NONE'}] }]});
-
+  const dtypes = [
+    "CHAR","VARCHAR","BINARY","VARBINARY","TINYBLOB","TINYTEXT","TEXT","BLOB","MEDIUMTEXT","MEDIUMBLOB","LONGTEXT","LONGBLOB","TINYINT","BOOL","BOOLEAN","SMALLINT","MEDIUMINT","INT","INTEGER","BIGINT","FLOAT","DOUBLE","DECIMAL","DEC","ENUM","SET","DATE","DATETIME","TIMESTAMP","TIME","YEAR"];
   //the below code makes sure that the diagram state variable is reset everytime a user logs out, so that
   //if the user logs out without making changes, and then logs in again and tries to save a new diagramm, if the 
   //diagram is not reset, it will contain the name of the diagram the user was editing earlier, due to which
@@ -50,7 +51,7 @@ function App(){
         <Routes>
           <Route exact path='/' element={<MainContent theme={theme} showAlert={showAlert} authInfo={authInfo} />}/>
           <Route exact path='/signup' element={<MainContent type='signup' theme={theme} showAlert={showAlert} authInfo={authInfo}/>}/>
-          <Route exact path='/craft' element={<MainCanvas showAlert={showAlert} theme={theme} authInfo={authInfo} diagram={diagram} setDiagram={setDiagram}/>} />
+          <Route exact path='/craft' element={<MainCanvas dtypes={dtypes} showAlert={showAlert} theme={theme} authInfo={authInfo} diagram={diagram} setDiagram={setDiagram}/>} />
           <Route exact path='/diagrams' element={<Diagrams showAlert={showAlert} theme={theme} authInfo={authInfo} setDiagram={setDiagram}/>}/>
           <Route exact path='/about' element={<AboutContent theme={theme}/>}/>
         </Routes>

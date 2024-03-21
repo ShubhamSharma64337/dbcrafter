@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 
-export default function EditModal({table, editShow, toggleEditModal, tbls, showAlert, updateTbl}) {
+export default function EditModal({table, editShow, toggleEditModal, tbls, showAlert, updateTbl, dtypes}) {
   const [maxIndex, setMaxIndex] = useState(0); //this keeps track about what name should be given to the new row being added in the modal
   const [updatedTbl, setUpdatedTbl] = useState({...table}) //this actually stores all the details about the form in the modal which is used
   //to update the table
@@ -163,12 +163,9 @@ export default function EditModal({table, editShow, toggleEditModal, tbls, showA
                           </td>
                           <td>
                             <select name='type' className='border py-2 px-3 outline-blue-700' value={element.type} data-rowindex={index} onChange={handleSelect}>
-                              <option>INT</option>
-                              <option>CHAR</option>
-                              <option>VARCHAR</option>
-                              <option>BOOL</option>
-                              <option>FLOAT</option>
-                              <option>DATE</option>
+                              {dtypes.map((element)=>{
+                                return <option>{element}</option>
+                              })}
                             </select>
                           </td>
                           <td>
