@@ -155,16 +155,19 @@ export default function MainCanvas({showAlert, theme, authInfo, diagram, setDiag
             //filling background of table with white color
             ctxt.fillStyle = 'white';
             let tbl_height = commonProps.rh + commonProps.rh * tbl.fields.length;
-            ctxt.fillRect(tbl.x, tbl.y, tbl.w, tbl_height);
+
+            ctxt.shadowBlur = 20; //setting fill shadow
+            ctxt.shadowColor = "#d0d0d0";   
+            
+            ctxt.beginPath(); //now filling the rounded white background
+            ctxt.roundRect(tbl.x, tbl.y, tbl.w, tbl_height, 5);
+            ctxt.fill();
+
             ctxt.fillStyle = 'black';
+            
+            ctxt.shadowBlur = 0; //resetting fill shadow
 
-            ctxt.strokeStyle = "grey";
-            if (index === selections.selectedTbl) {
-                ctxt.strokeStyle = '#0d6efd'; //this is actually bootstrap primary color
-            }
-            ctxt.strokeRect(tbl.x, tbl.y, tbl.w, tbl_height); //drawing the outer rectangle
             //The origin for the text to be drawn is at the bottom left corner of the string
-
             //filling the header
             ctxt.textAlign = 'center'; //this makes sure that the x,y coordinates supplied to fillText lie at center of the text
 
@@ -173,7 +176,10 @@ export default function MainCanvas({showAlert, theme, authInfo, diagram, setDiag
             }else{
                 ctxt.fillStyle = 'grey';
             }
-            ctxt.fillRect(tbl.x, tbl.y, tbl.w, commonProps.rh);
+
+            ctxt.beginPath();
+            ctxt.roundRect(tbl.x, tbl.y, tbl.w, commonProps.rh, [5,5,0,0]); //we are making upper corners of header rounded
+            ctxt.fill();
 
             ctxt.fillStyle = 'white';
             ctxt.fillText(tbl.name, tbl.x + tbl.w * 0.5, tbl.y + 16);
@@ -185,12 +191,12 @@ export default function MainCanvas({showAlert, theme, authInfo, diagram, setDiag
             let row_index = 1;
             for (let row of tbl.fields) {
                 // creating the upper border
-                ctxt.beginPath();
-                ctxt.strokeStyle = 'grey';
-                ctxt.moveTo(tbl.x, tbl.y + commonProps.rh * (row_index));
-                ctxt.lineTo(tbl.x + tbl.w, tbl.y + commonProps.rh * (row_index))
-                ctxt.stroke();
-                ctxt.strokeStyle = 'black';
+                // ctxt.beginPath();
+                // ctxt.strokeStyle = 'grey';
+                // ctxt.moveTo(tbl.x, tbl.y + commonProps.rh * (row_index));
+                // ctxt.lineTo(tbl.x + tbl.w, tbl.y + commonProps.rh * (row_index))
+                // ctxt.stroke();
+                // ctxt.strokeStyle = 'black';
                 //filling the text
                 if(tbl.pKey === row.name){
                     ctxt.fillStyle = '#0d6efd';
