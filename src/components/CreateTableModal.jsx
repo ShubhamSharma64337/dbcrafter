@@ -91,6 +91,10 @@ export default function CreateTableModal({show, toggleCreateModal, addTable, tbl
   }
 
   function addTbl(){
+    if(!document.querySelector('form').checkValidity()){ //this is required because by default, unless form is submitted with submit button, validation is not triggered
+      document.querySelector('form').reportValidity();
+      return;
+    }
     for(let field of newTbl.fields){
       if(field.isFKey){
         if(field.refTbl==='NONE' || field.refField==='NONE'){
@@ -143,7 +147,7 @@ export default function CreateTableModal({show, toggleCreateModal, addTable, tbl
             <form className="flex flex-col overflow-auto">
                     <div className="formItem mb-3">
                         <label className='block' htmlFor='tableName'>Table Name</label>
-                        <input name='tblName' id='tableName' className="border p-2 outline-blue-700" value={newTbl.name} onChange={handleNameChange} type='text' placeholder='Enter the table name'></input>
+                        <input name='tblName' id='tableName' className="border p-2 outline-blue-700" value={newTbl.name}  onChange={handleNameChange} type='text' required={true} maxLength={64} placeholder='Enter the table name'></input>
                     </div>
                     <table className='text-center border' cellPadding={15} cellSpacing={5}>
                       
@@ -160,7 +164,7 @@ export default function CreateTableModal({show, toggleCreateModal, addTable, tbl
                         {newTbl.fields.map((element, index)=>{
                           return <tr key={`row${index}`}>
                           <td>
-                            <input name='name' type='text' className='border p-2 outline-blue-700' value={newTbl.fields[index].name} data-rowindex={index} placeholder='Enter table name' onChange={handleChange}></input>
+                            <input name='name' type='text' required={true} className='border p-2 outline-blue-700' value={newTbl.fields[index].name} data-rowindex={index} placeholder='Enter table name' onChange={handleChange}></input>
                           </td>
                           <td>
                             <select name='type' className='border py-2 px-3 outline-blue-700' value={element.type} data-rowindex={index} onChange={handleSelect}>

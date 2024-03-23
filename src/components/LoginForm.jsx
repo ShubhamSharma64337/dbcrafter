@@ -9,6 +9,10 @@ export default function LoginForm({theme, showAlert}) {
 
   //login function handles click event on login button and uses fetch api to login into the account
   function login(){
+    if(!document.querySelector('form').checkValidity()){ //this is required because by default, unless form is submitted with submit button, validation is not triggered
+      document.querySelector('form').reportValidity();
+      return;
+    }
     let fdobj = new FormData(document.querySelector('form')) //this retrieves only those inputs which have a name value
     let fdata = {}
     fdobj.forEach(function(value, key){
@@ -35,12 +39,12 @@ export default function LoginForm({theme, showAlert}) {
         <form className="shadow-lg rounded border p-10 bg-white">
           <div className="my-5">
               <label htmlFor="loginName" className="block">Email address</label>
-              <input type="email" value={mail} onChange={handleLowerMail} className="border-2 border-slate-300 bg-slate-50 p-2 w-full out outline-blue-700 hover:bg-slate-200 transition focus:bg-white" id="loginName" name="email" placeholder='abc@xyz.com'/>
+              <input type="email" value={mail} required={true} minLength={5} onChange={handleLowerMail} className="border-2 border-slate-300 bg-slate-50 p-2 w-full out outline-blue-700 hover:bg-slate-200 transition focus:bg-white" id="loginName" name="email" placeholder='abc@xyz.com'/>
               <div id="emailHelp" className="text-sm text-slate-500">We'll never share your email with anyone else.</div>
           </div>
           <div className="my-5">
               <label htmlFor="loginPassword" className="block">Password</label>
-              <input type="password" className="border-2 border-slate-300 bg-slate-50 p-2 w-full outline-blue-700 hover:bg-slate-200 transition focus:bg-white" id="loginPassword" placeholder='Enter your password' name="password"/>
+              <input type="password" required={true} minLength={6} className="border-2 border-slate-300 bg-slate-50 p-2 w-full outline-blue-700 hover:bg-slate-200 transition focus:bg-white" id="loginPassword" placeholder='Enter your password' name="password"/>
           </div>
           <div className="my-5 flex items-center">
               <input type="checkbox" className="w-4 h-4" id="rememberCheck"/>

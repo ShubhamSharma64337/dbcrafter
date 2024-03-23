@@ -11,6 +11,11 @@ export default function CreateDiagramModal({diagram, createDiagramModalShow, tog
   }
 
   function createDiagram(){
+    if(!document.querySelector('form').checkValidity()){ //this is required because by default, unless form is submitted with submit button, validation is not triggered
+      document.querySelector('form').reportValidity();
+      return;
+    }
+
     if(/^\s*$/.test(diagramName) || diagramName==null){
       showAlert("Diagram name cannot be empty!","danger");
       return;
@@ -66,7 +71,7 @@ export default function CreateDiagramModal({diagram, createDiagramModalShow, tog
             <form className="flex flex-col overflow-auto">
                     <div className="formItem mb-3">
                         {/* <label className='block' htmlFor='diagramName'>Diagram Name</label> */}
-                        <input name='diagramName' id='diagramName' value={diagramName?diagramName:''} onChange={handleChange} className="border p-2 w-full outline-blue-700" type='text' placeholder='Enter the diagram name'></input>
+                        <input required={true} name='diagramName' id='diagramName' value={diagramName?diagramName:''} onChange={handleChange} className="border p-2 w-full outline-blue-700" type='text' placeholder='Enter the diagram name'></input>
                     </div>
                     
                 </form>

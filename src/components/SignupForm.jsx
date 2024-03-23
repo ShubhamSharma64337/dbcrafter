@@ -11,11 +11,7 @@ export default function SignupForm({theme, showAlert, toggleTerms}) {
     fdobj.forEach(function(value, key){
       fdata[key] = value;
     })
-    if(!document.querySelector('#termsCheck').checked){ //checking if the terms are agreed by the user or not
-      showAlert('You must agree to the terms and conditions to continue!','danger');
-      return;
-    }
-    if(!document.querySelector('form').checkValidity()){
+    if(!document.querySelector('form').checkValidity()){ //this is required because by default, unless form is submitted with submit button, validation is not triggered
       document.querySelector('form').reportValidity();
       return;
     }
@@ -55,7 +51,7 @@ export default function SignupForm({theme, showAlert, toggleTerms}) {
               <input name="confirmPassword" type="password" required={true} minLength={6} className="border-2 border-slate-300 bg-slate-50 p-2 w-full outline-blue-700 hover:bg-slate-200 transition focus:bg-white" id="signupConfirmPassword" placeholder='Re-enter the password'/>
           </div>
           <div className="my-5 flex items-center">
-              <input type="checkbox" className="w-4 h-4" id="termsCheck"/>
+              <input type="checkbox" className="w-4 h-4" id="termsCheck" required={true}/>
               <label className="ms-2" htmlFor="termsCheck">I agree to terms and conditions</label>
               <button type='button' className='flex items-center ms-1' onClick={toggleTerms}>
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="mt-[4px] w-5 h-5">
