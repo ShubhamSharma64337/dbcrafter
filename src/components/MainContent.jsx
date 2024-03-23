@@ -1,8 +1,13 @@
-import React from 'react'
+import React, { useState } from 'react'
 import LoginForm from './LoginForm'
 import SignupForm from './SignupForm'
+import TermsModal from './TermsModal';
 
 export default function MainContent({type, theme, showAlert, authInfo}) {
+    const [showTerms, setShowTerms] = useState(false);
+    function toggleTerms(){
+        showTerms?setShowTerms(false):setShowTerms(true);
+    }
     return (
         <div className="flex flex-col justify-center items-center md:mt-20 md:flex-row">
                 <div className="left w-full p-10 md:w-2/3">
@@ -11,8 +16,9 @@ export default function MainContent({type, theme, showAlert, authInfo}) {
                     </p>
                 </div>
                 <div className={`right w-full p-10 md:w-1/3 ${authInfo?'hidden':''}`}>
-                        {type === 'signup' ? <SignupForm theme={theme} showAlert={showAlert} authInfo={authInfo}/> : <LoginForm theme={theme} showAlert={showAlert}/>}
+                        {type === 'signup' ? <SignupForm theme={theme} showAlert={showAlert} authInfo={authInfo}  toggleTerms={toggleTerms}/> : <LoginForm theme={theme} showAlert={showAlert}/>}
                 </div>
-            </div>
+                <TermsModal visible={showTerms} toggleTerms={toggleTerms}></TermsModal> 
+        </div>
     )
 }

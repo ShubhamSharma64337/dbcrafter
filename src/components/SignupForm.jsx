@@ -1,7 +1,7 @@
 import React from 'react'
-import {useState} from 'react'
 import {Link, useNavigate} from 'react-router-dom'
-export default function SignupForm({theme, showAlert}) {
+
+export default function SignupForm({theme, showAlert, toggleTerms}) {
   const navigate = useNavigate();
 
   //signup function handles click event on signup button and uses fetch api to signup into the account
@@ -11,6 +11,14 @@ export default function SignupForm({theme, showAlert}) {
     fdobj.forEach(function(value, key){
       fdata[key] = value;
     })
+    if(!document.querySelector('#termsCheck').checked){ //checking if the terms are agreed by the user or not
+      showAlert('You must agree to the terms and conditions to continue!','danger');
+      return;
+    }
+    if(!document.querySelector('form').checkValidity()){
+      document.querySelector('form').reportValidity();
+      return;
+    }
     fetch('http://localhost:3000/signup', {
       method: 'POST',
       headers: {         
@@ -35,20 +43,25 @@ export default function SignupForm({theme, showAlert}) {
         <form className="shadow-lg border p-10 bg-white rounded">
           <div className="my-5">
               <label htmlFor="signupEmail" className="block">Email address</label>
-              <input type="email" name='email' className="border-2 border-slate-300 bg-slate-50 p-2 w-full outline-blue-700 hover:bg-slate-200 transition focus:bg-white" id="signupEmail" aria-describedby="emailHelp" placeholder='abc@xyz.com'/>
+              <input type="email" required={true} name='email' minLength={5} className="border-2 border-slate-300 bg-slate-50 p-2 w-full outline-blue-700 hover:bg-slate-200 transition focus:bg-white" id="signupEmail" aria-describedby="emailHelp" placeholder='abc@xyz.com'/>
               <div id="emailHelp" className="text-sm text-slate-500">We'll never share your email with anyone else.</div>
           </div>
           <div className="my-5">
               <label htmlFor="signupPassword" className="block">Password</label>
-              <input name='password' type="password" className="border-2 border-slate-300 bg-slate-50 p-2 w-full outline-blue-700 hover:bg-slate-200 transition focus:bg-white" id="signupPassword" placeholder='Enter a password'/>
+              <input name='password' type="password" required={true} minLength={6} className="border-2 border-slate-300 bg-slate-50 p-2 w-full outline-blue-700 hover:bg-slate-200 transition focus:bg-white" id="signupPassword" placeholder='Enter a password'/>
           </div>
           <div className="my-5">
               <label htmlFor="signupConfirmPassword" className="block">Confirm Password</label>
-              <input name="confirmPassword" type="password" className="border-2 border-slate-300 bg-slate-50 p-2 w-full outline-blue-700 hover:bg-slate-200 transition focus:bg-white" id="signupConfirmPassword" placeholder='Re-enter the password'/>
+              <input name="confirmPassword" type="password" required={true} minLength={6} className="border-2 border-slate-300 bg-slate-50 p-2 w-full outline-blue-700 hover:bg-slate-200 transition focus:bg-white" id="signupConfirmPassword" placeholder='Re-enter the password'/>
           </div>
           <div className="my-5 flex items-center">
               <input type="checkbox" className="w-4 h-4" id="termsCheck"/>
               <label className="ms-2" htmlFor="termsCheck">I agree to terms and conditions</label>
+              <button type='button' className='flex items-center ms-1' onClick={toggleTerms}>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="mt-[4px] w-5 h-5">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z" />
+                </svg>
+              </button>
           </div>
           <div className="my-5">
             <button type="button" className="flex justify-center items-center w-full bg-blue-700 text-white p-2 rounded transition hover:bg-blue-600" onClick={signup}>
