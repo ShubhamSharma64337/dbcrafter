@@ -11,6 +11,8 @@ import {
   Routes,
   Route,
 } from "react-router-dom";
+import SignupForm from './components/SignupForm.jsx';
+import LoginForm from './components/LoginForm.jsx';
 
 function App(){
   const [authInfo, setAuthInfo] = useState(null); //this stores whether user is logged in or not, if logged in, it contains the email
@@ -50,7 +52,8 @@ function App(){
       <Alert alert={alert} closeAlert={closeAlert}/>
         <Routes>
           <Route exact path='/' element={<MainContent theme={theme} showAlert={showAlert} authInfo={authInfo} />}/>
-          <Route exact path='/signup' element={<MainContent type='signup' theme={theme} showAlert={showAlert} authInfo={authInfo}/>}/>
+          <Route exact path='/signup' element={<SignupForm showAlert={showAlert}/>}/>
+          <Route exact path='/login' element={<LoginForm showAlert={showAlert}/>}/>
           <Route exact path='/craft' element={<MainCanvas dtypes={dtypes} showAlert={showAlert} theme={theme} authInfo={authInfo} diagram={diagram} setDiagram={setDiagram}/>} />
           <Route exact path='/diagrams' element={<Diagrams showAlert={showAlert} theme={theme} authInfo={authInfo} setDiagram={setDiagram}/>}/>
           <Route exact path='/about' element={<AboutContent theme={theme}/>}/>

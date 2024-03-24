@@ -59,25 +59,25 @@ export default function Navbar({title, theme, toggleTheme, showAlert, authInfo, 
     }
     return (
 
-                <div className={`navbar  ${theme==='dark'?'bg-black text-white':'bg-white'} transition shadow flex justify-between items-center px-2 py-3 relative w-full`}>
-                    <Link className="logo text-xl font-bold flex items-center text-blue-700" to="/">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.8} stroke="currentColor" className="w-7 h-7">
+                <div className={`navbar  ${theme==='dark'?'bg-black text-white':'bg-white'} transition flex justify-between items-center px-4 py-5  relative w-full`}>
+                    <Link className="logo text-xl font-bold flex items-center " to="/">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.8} stroke="currentColor" className="text-blue-700 w-7 h-7 me-2">
                             <path strokeLinecap="round" strokeLinejoin="round" d="M20.25 6.375c0 2.278-3.694 4.125-8.25 4.125S3.75 8.653 3.75 6.375m16.5 0c0-2.278-3.694-4.125-8.25-4.125S3.75 4.097 3.75 6.375m16.5 0v11.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125V6.375m16.5 0v3.75m-16.5-3.75v3.75m16.5 0v3.75C20.25 16.153 16.556 18 12 18s-8.25-1.847-8.25-4.125v-3.75m16.5 0c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125" />
                         </svg>
                         {title}
                     </Link>
-                    <ul className={`${collapsed?'scale-0':'scale-100'} transition-transform flex flex-col absolute top-full shadow justify-center items-center bg-inherit text-center left-0 w-full md:w-min md:static md:flex-row md:shadow-none md:scale-100`}>
+                    <ul className={`${collapsed?'scale-0':'scale-100'} transition-transform flex flex-col absolute top-full shadow justify-center items-center bg-inherit text-center text-sm font-medium left-0 w-full md:w-min md:static md:flex-row md:shadow-none md:scale-100`}>
                         <li className="mx-2 my-2 md:my-0">
                             <Link className="transition px-1.5 py-1 rounded hover:bg-slate-200" to="/">Home</Link>
-                        </li>
-                        <li className="mx-2 my-2 md:my-0">
-                            <Link className="transition px-1.5 py-1 rounded hover:bg-slate-200"  to="/craft">Craft</Link>
                         </li>
                         <li className={`mx-2 my-2 md:my-0 ${authInfo?'':'hidden'}`}>
                             <Link className={`transition px-1.5 py-1 rounded hover:bg-slate-200`}  to="/diagrams">Diagrams</Link>
                         </li>
                         <li className="mx-2 my-2 md:my-0">
                             <Link className="transition px-1.5 py-1 rounded hover:bg-slate-200" to="/about">About</Link>
+                        </li>
+                        <li className={`mx-2 my-2 md:my-0 ${authInfo?'hidden':''}`}>
+                            <Link className="transition px-1.5 py-1 rounded hover:bg-slate-200" to="/login">Login</Link>
                         </li>
                         <li className="mx-2 my-2 md:my-0 flex items-center">
                             <button onClick={toggleTheme}><ThemeButton theme={theme}/></button>

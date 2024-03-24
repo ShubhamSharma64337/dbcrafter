@@ -1,9 +1,13 @@
-import React from 'react'
+import {React, useState} from 'react'
 import {Link, useNavigate} from 'react-router-dom'
+import TermsModal from './TermsModal';
 
-export default function SignupForm({theme, showAlert, toggleTerms}) {
+export default function SignupForm({showAlert}) {
   const navigate = useNavigate();
-
+  const [showTerms, setShowTerms] = useState(false);
+  function toggleTerms(){
+      showTerms?setShowTerms(false):setShowTerms(true);
+  }
   //signup function handles click event on signup button and uses fetch api to signup into the account
   function signup(){
     let fdobj = new FormData(document.querySelector('form')) //this retrieves only those inputs which have a name value
@@ -36,7 +40,8 @@ export default function SignupForm({theme, showAlert, toggleTerms}) {
   }
   return (
 
-        <form className="shadow-lg border p-10 bg-white rounded">
+        <div className='w-full flex justify-center p-10'>
+          <form className="shadow-lg w-4/5 sm:w-2/5 border p-10 bg-white rounded">
           <div className="my-5">
               <label htmlFor="signupEmail" className="block">Email address</label>
               <input type="email" required={true} name='email' minLength={5} className="border-2 border-slate-300 bg-slate-50 p-2 w-full outline-blue-700 hover:bg-slate-200 transition focus:bg-white" id="signupEmail" aria-describedby="emailHelp" placeholder='abc@xyz.com'/>
@@ -68,9 +73,11 @@ export default function SignupForm({theme, showAlert, toggleTerms}) {
             </button>
           </div>
           <div className="my-5">
-            <Link className="text-blue-700 hover:underline" to='/'>Already have an account?</Link>
+            <Link className="text-blue-700 hover:underline" to='/login'>Already have an account?</Link>
           </div>
+          <TermsModal visible={showTerms} toggleTerms={toggleTerms}></TermsModal> 
         </form>
+        </div>
 
   )
 }

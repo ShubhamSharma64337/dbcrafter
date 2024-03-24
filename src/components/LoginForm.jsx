@@ -1,8 +1,9 @@
 import React from 'react'
 import {useState} from 'react'
-import {Link} from 'react-router-dom'
-export default function LoginForm({theme, showAlert}) {
+import {Link, useNavigate} from 'react-router-dom'
+export default function LoginForm({showAlert}) {
   const [mail,setMail] = useState('');
+  const navigate = useNavigate();
   function handleLowerMail(event){
     setMail(event.target.value.toLowerCase());
   }
@@ -28,7 +29,12 @@ export default function LoginForm({theme, showAlert}) {
       body: JSON.stringify(fdata)
     })
     .then(response => response.json()) //response.json() or response.text() provides the 'data'
-    .then(data => showAlert(data.message, data.success?'success':'danger'))
+    .then((data) => {
+      if(data.success){
+        navigate('/');
+      }
+      showAlert(data.message, data.success?'success':'danger')
+    })
     .catch((error)=>{
       showAlert('An error occured while trying to access the backend API', 'danger')
       console.log(error)
@@ -36,7 +42,8 @@ export default function LoginForm({theme, showAlert}) {
   }
 
   return (
-        <form className="shadow-lg rounded border p-10 bg-white">
+        <div className="flex justify-center w-full p-10">
+          <form className="shadow-lg rounded w-full sm:w-2/5  border p-10 bg-white">
           <div className="my-5">
               <label htmlFor="loginName" className="block">Email address</label>
               <input type="email" value={mail} required={true} minLength={5} onChange={handleLowerMail} className="border-2 border-slate-300 bg-slate-50 p-2 w-full out outline-blue-700 hover:bg-slate-200 transition focus:bg-white" id="loginName" name="email" placeholder='abc@xyz.com'/>
@@ -62,5 +69,6 @@ export default function LoginForm({theme, showAlert}) {
             <Link className="hover:underline text-blue-700" to='/signup'>Don't have an account?</Link>
           </div>
         </form>
+        </div>
   )
 }
