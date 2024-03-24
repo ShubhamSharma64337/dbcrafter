@@ -139,7 +139,17 @@ export default function Diagrams({authInfo, showAlert, setDiagram}) {
           <div className="text-3xl">
           No diagrams found
           </div>
-         
+          <div className="bottom-right-buttons flex flex-col fixed bottom-5 right-5 gap-5">
+                    <button type='button' className={`group relative bg-blue-700 flex shadow-lg p-3 text-white transition-transform rounded-full hover:scale-110`} onClick={()=>{
+                      setDiagram({name: null, tbls: null});
+                      navigate('/craft');                        
+                    }}>
+                        <span className={`text-sm text-nowrap tooltip absolute right-full top-1/2 bg-white text-black border border-slate-500 px-2 py-1 rounded -translate-y-1/2 me-2 hidden group-hover:block`}>New Diagram</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                        </svg>
+                    </button>
+          </div>
         </div>
   )
 }
