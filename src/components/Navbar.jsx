@@ -43,6 +43,7 @@ export default function Navbar({title, theme, toggleTheme, showAlert, authInfo, 
         .then(response => response.json()) //response.json() or response.text() provides the 'data'
         .then((data)=>{
             if(data.success){
+                setAuthInfo(null);
                 showAlert(data.message, 'success')
                 navigate('/');
             } else {

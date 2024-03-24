@@ -53,7 +53,7 @@ function App(){
         <Routes>
           <Route exact path='/' element={<MainContent theme={theme} showAlert={showAlert} authInfo={authInfo} />}/>
           <Route exact path='/signup' element={<SignupForm showAlert={showAlert}/>}/>
-          <Route exact path='/login' element={<LoginForm showAlert={showAlert}/>}/>
+          <Route exact path='/login' element={<LoginForm showAlert={showAlert} setAuthInfo={setAuthInfo}/>}/>
           <Route exact path='/craft' element={<MainCanvas dtypes={dtypes} showAlert={showAlert} theme={theme} authInfo={authInfo} diagram={diagram} setDiagram={setDiagram}/>} />
           <Route exact path='/diagrams' element={<Diagrams showAlert={showAlert} theme={theme} authInfo={authInfo} setDiagram={setDiagram}/>}/>
           <Route exact path='/about' element={<AboutContent theme={theme}/>}/>

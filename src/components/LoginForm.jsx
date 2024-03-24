@@ -1,7 +1,7 @@
 import React from 'react'
 import {useState} from 'react'
 import {Link, useNavigate} from 'react-router-dom'
-export default function LoginForm({showAlert}) {
+export default function LoginForm({showAlert, setAuthInfo}) {
   const [mail,setMail] = useState('');
   const navigate = useNavigate();
   function handleLowerMail(event){
@@ -31,6 +31,7 @@ export default function LoginForm({showAlert}) {
     .then(response => response.json()) //response.json() or response.text() provides the 'data'
     .then((data) => {
       if(data.success){
+        setAuthInfo(fdata.email);
         navigate('/');
       }
       showAlert(data.message, data.success?'success':'danger')
