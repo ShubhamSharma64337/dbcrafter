@@ -29,7 +29,3 @@ export default function MainContent({theme, authInfo}) {
         </div>
     )
 }
-
-{/* <div className={`right w-full p-10 md:w-1/3 ${authInfo?'hidden':''}`}>
-        {type === 'signup' ? <SignupForm theme={theme} showAlert={showAlert} authInfo={authInfo}  toggleTerms={toggleTerms}/> : <LoginForm theme={theme} showAlert={showAlert}/>}
-</div> */}

@@ -6,7 +6,7 @@ export default function Slider() {
   return (
     <div className="slider flex flex-col sm:flex-row gap-x-5 items-center justify-center">
                         <div className="hidden sm:block">
-                            <button className="bg-blue-600 font-[800] text-lg text-white shadow-blue-900   border-slate-700 px-4 py-3 rounded-lg shadow-[0px_4px_0.1rem] hover:shadow-[0px_0.1px_0.1rem] hover:translate-y-[4px] transition" onClick={()=>{
+                            <button className="bg-blue-600 font-[800] text-lg text-white shadow-blue-900 hover:shadow-blue-900   border-slate-700 px-4 py-3 rounded-lg shadow-[0px_4px_0.1rem] hover:shadow-[0px_0.1px_0.1rem] hover:translate-y-[4px] transition" onClick={()=>{
                                 if(currentImage>1){
                                     setCurrentImage(currentImage-1);
                                 } else {
@@ -20,7 +20,7 @@ export default function Slider() {
                         </div>
                         <img src={`craft${currentImage}.png`} className="hover:scale-95 transition w-4/5 sm:w-3/5 h-auto border-4 border-blue-600 rounded-lg"></img>
                         <div className={`hidden sm:block`}>
-                            <button className={`bg-blue-600 font-[800] text-lg text-white shadow-blue-900   border-slate-700 px-4 py-3 rounded-lg shadow-[0px_4px_0.1rem] hover:shadow-[0px_0.1px_0.1rem] hover:translate-y-[4px] transition`} onClick={(e)=>{
+                            <button className={`bg-blue-600 font-[800] text-lg text-white shadow-blue-900 hover:shadow-blue-900   border-slate-700 px-4 py-3 rounded-lg shadow-[0px_4px_0.1rem] hover:shadow-[0px_0.1px_0.1rem] hover:translate-y-[4px] transition`} onClick={(e)=>{
                                 if(currentImage<3){
                                     setCurrentImage(currentImage+1);
                                 } else {
@@ -34,7 +34,7 @@ export default function Slider() {
                         </div>
                         <div className="buttons-below flex gap-x-5 mt-5">
                             <div className="sm:hidden">
-                                <button className="bg-blue-600 font-[800] text-lg text-white shadow-blue-900   border-slate-700 px-4 py-3 rounded-lg shadow-[0px_4px_0.1rem] hover:shadow-[0px_0.1px_0.1rem] hover:translate-y-[4px] transition" onClick={()=>{
+                                <button className="bg-blue-600 font-[800] text-lg text-white shadow-blue-900 hover:shadow-blue-900   border-slate-700 px-4 py-3 rounded-lg shadow-[0px_4px_0.1rem] hover:shadow-[0px_0.1px_0.1rem] hover:translate-y-[4px] transition" onClick={()=>{
                                 if(currentImage>1){
                                     setCurrentImage(currentImage-1);
                                 } else {
@@ -47,7 +47,7 @@ export default function Slider() {
                                 </button>
                             </div>
                             <div className="sm:hidden">
-                                <button className="bg-blue-600 font-[800] text-lg text-white shadow-blue-900   border-slate-700 px-4 py-3 rounded-lg shadow-[0px_4px_0.1rem] hover:shadow-[0px_0.1px_0.1rem] hover:translate-y-[4px] transition" onClick={()=>{
+                                <button className="bg-blue-600 font-[800] text-lg text-white shadow-blue-900 hover:shadow-blue-900   border-slate-700 px-4 py-3 rounded-lg shadow-[0px_4px_0.1rem] hover:shadow-[0px_0.1px_0.1rem] hover:translate-y-[4px] transition" onClick={()=>{
                                 if(currentImage<3){
                                     setCurrentImage(currentImage+1);
                                 } else {
