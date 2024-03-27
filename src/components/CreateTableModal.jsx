@@ -4,7 +4,7 @@ import React, { useState } from 'react'
 export default function CreateTableModal({show, toggleCreateModal, addTable, tbls, showAlert, dtypes}) {
   const [maxIndex, setMaxIndex] = useState(0);
   const [newTbl, setNewTbl] = useState({name: 'table', pKey: null, fields: [ //this state variable tracks the details filled into the modal form by the user, once finished, when user clicks on go button, this variable is used to add to the application level diagram object's tables
-    {name: 'id', type: 'INT', notNull: false, isFKey: false, refTbl: 'NONE', refField: 'NONE'}
+    {name: 'id', type: 'INT', size: null, notNull: false, isFKey: false, refTbl: 'NONE', refField: 'NONE'}
   ]})
 
   function handleNameChange(e){ //table name change handler
@@ -16,7 +16,7 @@ export default function CreateTableModal({show, toggleCreateModal, addTable, tbl
       return {...element}
     })}
     const insertIndex = parseInt(e.currentTarget.dataset.rowindex) + 1;
-    tableCopy.fields.splice(insertIndex,0, {name: 'field'+(maxIndex+1), type: 'INT', notNull: false, isFKey: false, refTbl: 'NONE', refField: 'NONE'})
+    tableCopy.fields.splice(insertIndex,0, {name: 'field'+(maxIndex+1),size: null, type: 'INT', notNull: false, isFKey: false, refTbl: 'NONE', refField: 'NONE'})
     setNewTbl(tableCopy);
     setMaxIndex(maxIndex+1);
   }
@@ -119,13 +119,13 @@ export default function CreateTableModal({show, toggleCreateModal, addTable, tbl
       return;
     }
     toggleCreateModal();
-    setNewTbl({name: 'table', pKey: null, fields: [{name: 'id', type: 'INT', notNull: false, isFKey: false, refTbl: 'NONE', refField: 'NONE'}]}) //this resets
+    setNewTbl({name: 'table', pKey: null, fields: [{name: 'id', type: 'INT', size: null, notNull: false, isFKey: false, refTbl: 'NONE', refField: 'NONE'}]}) //this resets
     //the modal when a table has been added
     setMaxIndex(0)
   }
 
   function closeModal(){
-    setNewTbl({name: 'table', pKey: null, fields: [{name: 'id', type: 'INT', notNull: false, isFKey: false, refTbl: 'NONE', refField: 'NONE'}]}) //this resets the modal
+    setNewTbl({name: 'table', pKey: null, fields: [{name: 'id', type: 'INT', size: null, notNull: false, isFKey: false, refTbl: 'NONE', refField: 'NONE'}]}) //this resets the modal
     //if the user closes the modal without adding the table to the diagram
     setMaxIndex(0)
     toggleCreateModal(0)
@@ -164,6 +164,7 @@ export default function CreateTableModal({show, toggleCreateModal, addTable, tbl
                         <tr>
                           <th>Field name</th>
                           <th>Datatype</th>
+                          <th>Byte Pair Length</th>
                           <th>Not Null</th>
                           <th>Primary Key</th>
                           <th>Foreign Key</th>
@@ -181,6 +182,9 @@ export default function CreateTableModal({show, toggleCreateModal, addTable, tbl
                                 return <option key={index}>{element}</option>
                               })}
                             </select>
+                          </td>
+                          <td>
+                            <input name='size' type='number' className='border p-2 outline-blue-700' max={8000} value={newTbl.fields[index].size?newTbl.fields[index].size:''}  data-rowindex={index} placeholder='Length' onChange={handleChange}></input>
                           </td>
                           <td>
                             <input name='notNull' type='checkbox' className='border p-2 w-5 h-5 accent-blue-700' checked={newTbl.notNull} data-rowindex={index} onChange={handleChange}></input>

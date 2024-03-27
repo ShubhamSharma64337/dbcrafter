@@ -213,7 +213,12 @@ export default function MainCanvas({showAlert, theme, authInfo, diagram, setDiag
                 }
                 ctxt.textAlign = 'right'; //this makes sure the datatype is aligned with last character just touching the right border...
                 // doing this not only makes it look better, but makes better use of space between name and type
-                ctxt.fillText(row.type, tbl.x + tbl.w - 3, tbl.y + 16 + commonProps.rh * (row_index));
+                if(row.size){
+                    ctxt.fillText(row.type + "(" + row.size + ")", tbl.x + tbl.w - 3, tbl.y + 16 + commonProps.rh * (row_index));
+                } else {
+                    ctxt.fillText(row.type, tbl.x + tbl.w - 3, tbl.y + 16 + commonProps.rh * (row_index));
+                }
+
                 ctxt.textAlign = 'left';
                 row_index += 1;
             }
