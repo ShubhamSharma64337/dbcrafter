@@ -11,6 +11,9 @@ export default function SqlModal({diagram, show,  toggleModal}) {
       let stmt = "CREATE TABLE " + table.name + "(\n";
       table.fields.map((field, index)=>{ //this creates each field's portion in the statement
         stmt = stmt + "\t" + field.name + " " + field.type;
+        if(field.size){
+          stmt = stmt + "(" + field.size + ")"
+        }
         if(table.pKey === field.name){
           stmt += " PRIMARY KEY";
         } else {

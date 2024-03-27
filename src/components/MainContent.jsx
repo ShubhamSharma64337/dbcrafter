@@ -12,7 +12,7 @@ export default function MainContent({theme, authInfo}) {
                                 Quickly design relational schemas without leaving your browser
                             </div>
                             <div className='text-xl mt-5'>
-                            Dbcrafter is an open source relational schema design tool built using <span className='text-blue-600'>ReactJS</span>, <span className='text-blue-600'>ExpressJS</span> and <span className='text-blue-600'>MongoDB</span>.
+                            Dbcrafter is an open source relational schema design tool built using <a className='text-blue-600 underline' href='https://react.dev'>ReactJS</a>, <a className='text-blue-600 underline' href='https://expressjs.com/'>ExpressJS</a> and <a className='text-blue-600 underline' href='https://www.mongodb.com/'>MongoDB</a>.
                             You can design, save and edit diagrams with an intuitive interface.
                             </div>
                         </div>
