@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 
 export default function CreateTableModal({show, toggleCreateModal, addTable, tbls, showAlert, dtypes}) {
   const [maxIndex, setMaxIndex] = useState(0);
-  const [newTbl, setNewTbl] = useState({name: 'table', pKey: 'id', fields: [
+  const [newTbl, setNewTbl] = useState({name: 'table', pKey: null, fields: [ //this state variable tracks the details filled into the modal form by the user, once finished, when user clicks on go button, this variable is used to add to the application level diagram object's tables
     {name: 'id', type: 'INT', notNull: false, isFKey: false, refTbl: 'NONE', refField: 'NONE'}
   ]})
 
@@ -11,7 +11,7 @@ export default function CreateTableModal({show, toggleCreateModal, addTable, tbl
     setNewTbl({...newTbl, name: e.target.value});
   }
 
-  function addField(e){
+  function addField(e){ //this adds field to the newTbl state variable which represents the temporary table filled into the modal and not the table belonging to the diagram
     let tableCopy = {...newTbl, fields: newTbl.fields.map((element, index)=>{
       return {...element}
     })}
@@ -21,13 +21,16 @@ export default function CreateTableModal({show, toggleCreateModal, addTable, tbl
     setMaxIndex(maxIndex+1);
   }
 
-  function delField(e){
+  function delField(e){ //this deletes field from the newTbl state variable which represents the temporary table filled into the modal and not the table belonging to the diagram
     let tableCopy = {...newTbl, fields: newTbl.fields.map((element, index)=>{
       return {...element}
     })}
     if(tableCopy.fields.length<2){
       showAlert("Table must have at least one row!","danger");
       return;
+    }
+    if(tableCopy.fields[parseInt(e.currentTarget.dataset.rowindex)].name === tableCopy.pKey){ //this resets the primary key to null if field which is currently set to primary key is deleted
+      tableCopy.pKey = null;
     }
     tableCopy.fields.splice(parseInt(e.currentTarget.dataset.rowindex),1)
     setNewTbl(tableCopy);
@@ -51,7 +54,7 @@ export default function CreateTableModal({show, toggleCreateModal, addTable, tbl
           return {...element};
         }
       })}
-    } else if (name === 'notNull'){
+    } else if (name === 'notNull'){ //handles change in Not Null checkbox
       let checked = e.currentTarget.checked;
       tableCopy = {...newTbl, fields: newTbl.fields.map((element, index)=>{
         if(index === rowindex){
@@ -61,8 +64,13 @@ export default function CreateTableModal({show, toggleCreateModal, addTable, tbl
         }
       })}
     } else if (name === 'pKey'){ //handle change in pkey checkbox
+      let checked = e.currentTarget.checked;
       let currentField = newTbl.fields[parseInt(e.currentTarget.dataset.rowindex)];
-      tableCopy = {...newTbl, pKey: currentField.name}
+      if(checked === true){
+          tableCopy = {...newTbl, pKey: currentField.name}
+        } else { //if user unchecked the checkbox
+          tableCopy = {...newTbl, pKey: null};
+      }
     } else {  //handle change in field name or type or any other text input
       tableCopy = {...newTbl, fields: newTbl.fields.map((element, index)=>{
         if(index === rowindex){
@@ -85,7 +93,6 @@ export default function CreateTableModal({show, toggleCreateModal, addTable, tbl
         } else {
           return {...element};
         }
-      
     })}
     setNewTbl(tableCopy);
   }
@@ -112,12 +119,14 @@ export default function CreateTableModal({show, toggleCreateModal, addTable, tbl
       return;
     }
     toggleCreateModal();
-    setNewTbl({name: 'table', pKey: 'id', fields: [{name: 'id', type: 'INT', notNull: false, isFKey: false, refTbl: 'NONE', refField: 'NONE'}]})
+    setNewTbl({name: 'table', pKey: null, fields: [{name: 'id', type: 'INT', notNull: false, isFKey: false, refTbl: 'NONE', refField: 'NONE'}]}) //this resets
+    //the modal when a table has been added
     setMaxIndex(0)
   }
 
   function closeModal(){
-    setNewTbl({name: 'table', pKey: 'id', fields: [{name: 'id', type: 'INT', notNull: false, isFKey: false, refTbl: 'NONE', refField: 'NONE'}]})
+    setNewTbl({name: 'table', pKey: null, fields: [{name: 'id', type: 'INT', notNull: false, isFKey: false, refTbl: 'NONE', refField: 'NONE'}]}) //this resets the modal
+    //if the user closes the modal without adding the table to the diagram
     setMaxIndex(0)
     toggleCreateModal(0)
   }

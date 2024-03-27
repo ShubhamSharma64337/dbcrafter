@@ -79,7 +79,7 @@ export default function Diagrams({authInfo, showAlert, setDiagram}) {
         .then(response => response.json()) //response.json() or response.text() provides the 'data'
         .then((data)=>{
             if(data.success){
-              setDiagram({name: null, tbls: [{ name: 'Table1', x: 100, y: 100, w: 150, notNull: false, pKey: 'id', fields: [{ name: 'id', type: 'INT', isFKey: false, refTbl: 'NONE', refField: 'NONE'}] }]});
+              setDiagram({name: null, tbls: [{ name: 'Table1', x: 100, y: 100, w: 150, notNull: false, pKey: null, fields: [{ name: 'id', type: 'INT', isFKey: false, refTbl: 'NONE', refField: 'NONE'}] }]});
               getdiagrams();
               showAlert(data.message, "danger");
               return;
@@ -121,7 +121,7 @@ export default function Diagrams({authInfo, showAlert, setDiagram}) {
           })}
           <div className="bottom-right-buttons flex flex-col fixed bottom-5 right-5 gap-5">
                     <button type='button' className={`group relative bg-blue-700 flex shadow-lg p-3 text-white transition-transform rounded-full hover:scale-110`} onClick={()=>{
-                      setDiagram({name: null, tbls: null});
+                      setDiagram({name: null, tbls: [{ name: 'Table1', x: 100, y: 100, w: 150, notNull: false, pKey: null, fields: [{ name: 'id', type: 'INT', isFKey: false, refTbl: 'NONE', refField: 'NONE'}] }]});
                       navigate('/craft');                        
                     }}>
                         <span className={`text-sm text-nowrap tooltip absolute right-full top-1/2 bg-white text-black border border-slate-500 px-2 py-1 rounded -translate-y-1/2 me-2 hidden group-hover:block`}>New Diagram</span>
@@ -141,7 +141,7 @@ export default function Diagrams({authInfo, showAlert, setDiagram}) {
           </div>
           <div className="bottom-right-buttons flex flex-col fixed bottom-5 right-5 gap-5">
                     <button type='button' className={`group relative bg-blue-700 flex shadow-lg p-3 text-white transition-transform rounded-full hover:scale-110`} onClick={()=>{
-                      setDiagram({name: null, tbls: null});
+                      setDiagram({name: null, tbls: [{ name: 'Table1', x: 100, y: 100, w: 150, notNull: false, pKey: null, fields: [{ name: 'id', type: 'INT', isFKey: false, refTbl: 'NONE', refField: 'NONE'}] }]});
                       navigate('/craft');                        
                     }}>
                         <span className={`text-sm text-nowrap tooltip absolute right-full top-1/2 bg-white text-black border border-slate-500 px-2 py-1 rounded -translate-y-1/2 me-2 hidden group-hover:block`}>New Diagram</span>

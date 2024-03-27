@@ -27,9 +27,12 @@ export default function EditModal({table, editShow, toggleEditModal, tbls, showA
     let tableCopy = {...updatedTbl, fields: updatedTbl.fields.map((element, index)=>{
       return {...element}
     })}
-    if(tableCopy.fields.length<2){
+    if(tableCopy.fields.length<2){ //this makes sure that user does not delete all the rows in the table
       showAlert("Table must have at least one row!","danger");
       return;
+    }
+    if(tableCopy.fields[parseInt(e.currentTarget.dataset.rowindex)].name === tableCopy.pKey){ //this resets the primary key to null if field which is currently set to primary key is deleted
+      tableCopy.pKey = null;
     }
     tableCopy.fields.splice(parseInt(e.currentTarget.dataset.rowindex),1)
     setUpdatedTbl(tableCopy);
@@ -65,7 +68,12 @@ export default function EditModal({table, editShow, toggleEditModal, tbls, showA
       } 
     } else if (name === 'pKey'){ //handle change in pkey checkbox
       let currentField = updatedTbl.fields[parseInt(e.currentTarget.dataset.rowindex)];
-      tableCopy = {...updatedTbl, pKey: currentField.name}
+      let checked = e.currentTarget.checked;
+      if(checked === true){
+        tableCopy = {...updatedTbl, pKey: currentField.name}
+      } else {
+        tableCopy = {...updatedTbl, pKey: null}
+      }
     } else {  //handle change in field name or type or any other text input
       tableCopy = {...updatedTbl, fields: updatedTbl.fields.map((element, index)=>{
         if(index === rowindex){
