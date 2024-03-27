@@ -166,6 +166,7 @@ export default function EditModal({table, editShow, toggleEditModal, tbls, showA
                         <tr>
                           <th>Field name</th>
                           <th>Datatype</th>
+                          <th>Size</th>
                           <th>Not Null</th>
                           <th>Primary Key</th>
                           <th>Foreign Key</th>
@@ -183,6 +184,9 @@ export default function EditModal({table, editShow, toggleEditModal, tbls, showA
                                 return <option key={index}>{element}</option>
                               })}
                             </select>
+                          </td>
+                          <td>
+                            <input name='size' type='number' className='border p-2 outline-blue-700' max={8000} value={updatedTbl.fields[index].size?updatedTbl.fields[index].size:''}  data-rowindex={index} placeholder='Length' onChange={handleChange}></input>
                           </td>
                           <td>
                             <input name='notNull' type='checkbox' className='border p-2 w-5 h-5 accent-blue-700' checked={element.notNull} data-rowindex={index} onChange={handleChange}></input>

@@ -164,7 +164,7 @@ export default function CreateTableModal({show, toggleCreateModal, addTable, tbl
                         <tr>
                           <th>Field name</th>
                           <th>Datatype</th>
-                          <th>Byte Pair Length</th>
+                          <th>Size</th>
                           <th>Not Null</th>
                           <th>Primary Key</th>
                           <th>Foreign Key</th>
