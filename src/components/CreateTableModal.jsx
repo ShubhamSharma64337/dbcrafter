@@ -177,8 +177,8 @@ export default function CreateTableModal({show, toggleCreateModal, addTable, tbl
                           </td>
                           <td>
                             <select name='type' className='border py-2 px-3 outline-blue-700' value={element.type} data-rowindex={index} onChange={handleSelect}>
-                              {dtypes.map((element)=>{
-                                return <option>{element}</option>
+                              {dtypes.map((element, index)=>{
+                                return <option key={index}>{element}</option>
                               })}
                             </select>
                           </td>

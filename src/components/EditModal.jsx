@@ -132,7 +132,11 @@ export default function EditModal({table, editShow, toggleEditModal, tbls, showA
     toggleEditModal();
   }
   return (
-    editShow && <div className="overlay overflow-auto fixed justify-start md:justify-center  flex items-start pt-5 top-0 w-screen h-screen bg-black bg-opacity-35" id="addTblModal" data-modal-id="addTblModal">
+    //here we are also checking the table value, because, if somehow, an out of bounds index was present in selectedTbl, then the table argument
+    //passed to edit modal will be null, so in that case, we need to make sure we avoid displaying the modal.
+    //we can make sure this never happens by makiing the other code work in such a way, that whenever the diagram is updated, it makes sure
+    //that selectedTbl does not go out of bounds, or is reset to null
+    editShow && table && <div className="overlay overflow-auto fixed justify-start md:justify-center  flex items-start pt-5 top-0 w-screen h-screen bg-black bg-opacity-35" id="addTblModal" data-modal-id="addTblModal">
         <div className="modal bg-white rounded">
             {/* Modal Header */}
             <div className="modal-header flex justify-between items-center border-blue-700 border-b-2 p-3">
@@ -175,8 +179,8 @@ export default function EditModal({table, editShow, toggleEditModal, tbls, showA
                           </td>
                           <td>
                             <select name='type' className='border py-2 px-3 outline-blue-700' value={element.type} data-rowindex={index} onChange={handleSelect}>
-                              {dtypes.map((element)=>{
-                                return <option>{element}</option>
+                              {dtypes.map((element, index)=>{
+                                return <option key={index}>{element}</option>
                               })}
                             </select>
                           </td>
@@ -192,8 +196,11 @@ export default function EditModal({table, editShow, toggleEditModal, tbls, showA
                           <td>
                             <select name='refTbl' className={`border py-2 px-3 outline-blue-700`} value={element.refTbl} data-rowindex={index} onChange={handleSelect} disabled={!element.isFKey}>
                               <option value="NONE">NONE</option>
-                              {tbls && tbls.map((table, index)=>{
-                                return <option key={index}>{table.name}</option>
+                              {tbls && tbls.map((currentTbl, index)=>{
+                                if(currentTbl.name === table.name){ //this makes sure we cannot reference a table to itself
+                                  return;
+                                }
+                                return <option key={index}>{currentTbl.name}</option>
                               })}
                             </select>
                           </td>

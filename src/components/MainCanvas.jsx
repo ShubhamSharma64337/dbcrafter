@@ -19,7 +19,7 @@ export default function MainCanvas({showAlert, theme, authInfo, diagram, setDiag
     //  selectedTbl is the index of the table which is currently selected
     //  is_dragging becomes true only when mousedown event is triggered on a particular table and is again set to false
     //  when the mouseup event is triggered
-    const [selections, setSelections] = useState({ selectedTbl: 0, is_dragging: false });
+    const [selections, setSelections] = useState({ selectedTbl: null, is_dragging: false });
 
     // useEffect is used to trigger draw function every single time the component is rendered, mainly to run draw the first time this component is loaded
     useEffect(draw);
@@ -64,11 +64,17 @@ export default function MainCanvas({showAlert, theme, authInfo, diagram, setDiag
         mystart.startY = parseInt(clientY_correct);
         setStart(mystart);
         let index_clicked = 0;
+        let tableWasSelected = false; //this variable is used to check if user has not selected any table, so that we can reset selection
         for (let tb of diagram.tbls) {
             if (isPointerInTbl(clientX_correct, clientY_correct, tb)) {
                 setSelections({selectedTbl: index_clicked, is_dragging: true});
+                tableWasSelected = true;
+                break;
             }
             index_clicked += 1;
+        }
+        if(!tableWasSelected){ //
+            setSelections({...selections, selectedTbl: null} );
         }
         if(!(selections.is_dragging)){
             setIsPanning(true);
@@ -397,6 +403,10 @@ export default function MainCanvas({showAlert, theme, authInfo, diagram, setDiag
             showAlert("No tables exist", "danger");
             return;
         }
+        if(selections.selectedTbl === null){
+            showAlert("Please select a table to delete!","danger");
+            return;
+        }
         let all_tbls = diagram.tbls.map((tbl) => {            //performing deeper copy of the tbls state object
             return {...tbl, fields: tbl.fields.map(
                 (row)=>{
@@ -422,14 +432,10 @@ export default function MainCanvas({showAlert, theme, authInfo, diagram, setDiag
             tblindex+=1;
         }
 
-        let current_count = diagram.tbls.length;
         let current_selections = {...selections};
         all_tbls.splice(current_selections.selectedTbl,1); //splice(index,number of items to be deleted)
 
-       // if the table to be deleted is the last one, then, we will 
-        if(current_selections.selectedTbl === current_count-1){
-                current_selections.selectedTbl -= 1;
-            }
+       current_selections.selectedTbl = null; //whenever a table will be deleted from the diagram, 
         
         setSelections(current_selections);
 
@@ -544,7 +550,10 @@ export default function MainCanvas({showAlert, theme, authInfo, diagram, setDiag
                 </div>
                 <canvas id='canvas' width={window.innerWidth} height={window.innerHeight} onMouseDown={handleMouseDown} onMouseMove={dragHandler} onMouseUp={handleMouseUp}></canvas>
                 <div className="top-right-buttons flex flex-col fixed top-4 right-4 gap-5">
-                    <button type='button' className={`group relative bg-blue-700 flex shadow-lg p-3 text-white transition-transform rounded-full hover:scale-110 ${authInfo ? '' : 'hidden'}`} onClick={() => { setDiagram({ name: null, tbls: [{ name: 'Table1', x: 100, y: 100, w: 150, notNull: false, pKey: null, fields: [{ name: 'id', type: 'INT', isFKey: false, refTbl: 'NONE', refField: 'NONE'}] }] }) }}>
+                    <button type='button' className={`group relative bg-blue-700 flex shadow-lg p-3 text-white transition-transform rounded-full hover:scale-110 ${authInfo ? '' : 'hidden'}`} onClick={() => { 
+                        setDiagram({ name: null, tbls: [{ name: 'Table1', x: 100, y: 100, w: 150, notNull: false, pKey: null, fields: [{ name: 'id', type: 'INT', isFKey: false, refTbl: 'NONE', refField: 'NONE'}] }] }); 
+                        setSelections({...selections, selectedTbl: null}); //this makes sure that the previous selected index is reset to null, if user creates a new diagram, else, out of bounds index will be accessed in the EditTable modal, which leads to error
+                        }}>
                         <span className={`text-sm text-nowrap tooltip absolute right-full top-1/2 bg-white text-black border border-slate-500 px-2 py-1 rounded -translate-y-1/2 me-2 hidden group-hover:block`}>New Diagram</span>
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
                             <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
@@ -574,7 +583,18 @@ export default function MainCanvas({showAlert, theme, authInfo, diagram, setDiag
                         </svg>
                     </button>
                    
-                    <button type='button' className='group relative bg-blue-700 shadow-lg p-3 text-white transition-transform rounded-full hover:scale-110' onClick={diagram.tbls ? toggleEditModal : () => { showAlert("No tables exist!", "danger") }}>
+                    <button type='button' className='group relative bg-blue-700 shadow-lg p-3 text-white transition-transform rounded-full hover:scale-110' onClick={()=>{
+                        // diagram.tbls ? toggleEditModal : () => { showAlert("No tables exist!", "danger") }
+                        if(!diagram.tbls){
+                            showAlert("No tables exist!", "danger")
+                            return;
+                        }
+                        if(selections.selectedTbl === null){
+                            showAlert("Please select a table to edit!", "warning");
+                            return;
+                        }
+                        toggleEditModal();
+                    }}>
                     <span className={`text-sm text-nowrap tooltip absolute right-full top-1/2 bg-white text-black border border-slate-500 px-2 py-1 rounded -translate-y-1/2 me-2 hidden group-hover:block`}>Edit Table</span>
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
                             <path strokeLinecap="round" strokeLinejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125" />
@@ -607,7 +627,7 @@ export default function MainCanvas({showAlert, theme, authInfo, diagram, setDiag
                 </div>
 
                 <CreateTableModal dtypes={dtypes} show={createTableModalShow} toggleCreateModal={toggleCreateModal} tbls={diagram.tbls?diagram.tbls:null} addTable={addTbl} showAlert={showAlert}/>
-                <EditModal dtypes={dtypes} table={diagram.tbls?diagram.tbls[selections.selectedTbl]:null} editShow={editTableModalShow} toggleEditModal={toggleEditModal} tbls={diagram.tbls?diagram.tbls:null} showAlert={showAlert} updateTbl={updateTbl}/>
+                <EditModal dtypes={dtypes} table={diagram.tbls && selections.selectedTbl !== null?diagram.tbls[selections.selectedTbl]:null} editShow={editTableModalShow} toggleEditModal={toggleEditModal} tbls={diagram.tbls?diagram.tbls:null} showAlert={showAlert} updateTbl={updateTbl}/>
                 <CreateDiagramModal diagram={diagram} createDiagramModalShow={createDiagramModalShow} toggleModal={toggleCreateDiagramModal} showAlert={showAlert} setDiagram={setDiagram}></CreateDiagramModal>
                 <SqlModal diagram={diagram} show={sqlModalShow} toggleModal={toggleSqlModal}></SqlModal>
             </div>
