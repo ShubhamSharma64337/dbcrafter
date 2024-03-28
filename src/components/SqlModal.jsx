@@ -33,8 +33,26 @@ export default function SqlModal({diagram, show,  toggleModal}) {
     }
     setSql(newSql);
   }, [diagram])
+
+  function downloader(){ //this function actually programmatically inserts an anchor tag into dom, with href set to data: url containing the sql,
+    //and sets its download attribute to a filename, triggers the click event on it, and then removes the element
+    var wholeSql = '';
+    for(let stmt of sql){
+      wholeSql = wholeSql + stmt + '\n';
+    }
+
+    var element = document.createElement('a');
+    document.body.appendChild(element);
+    element.setAttribute('download', diagram.name?diagram.name+'.sql':'unnamed.sql');
+    element.setAttribute('href','data:text/plain;charset=utf-8, '+ encodeURIComponent(wholeSql));
+    element.classList.add('hidden');
+    document.body.appendChild(element);
+    element.click();
+
+    document.body.removeChild(element);
+  }
   return (
-    show && <div className="overlay overflow-auto fixed justify-start md:justify-center  flex items-start pt-5 top-0 w-screen h-screen bg-black bg-opacity-35" id="addTblModal" data-modal-id="addTblModal">
+    show && <div className="overlay overflow-auto fixed justify-start md:justify-center  flex items-start pt-5 px-2 md:px-0 top-0 w-screen h-screen bg-black bg-opacity-35" id="addTblModal" data-modal-id="addTblModal">
         <div className="modal bg-white rounded w-full md:w-4/5">
             {/* Modal Header */}
             <div className="modal-header flex justify-between items-center border-blue-700 border-b-2 p-3">
@@ -43,9 +61,14 @@ export default function SqlModal({diagram, show,  toggleModal}) {
                   <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
                 </svg>
               </button>
-              <p className='text-center text-lg font-medium '>Auto-Generated SQL</p>
-
-
+              <div className='flex items-center gap-x-4'>
+                <p className='text-center text-lg font-medium '>Auto-Generated SQL</p>
+                <button onClick={downloader} className={`bg-slate-200 p-2 rounded-full hover:bg-green-200 transition ${sql===null?'hidden':''}`}>
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
+                    <path fillRule="evenodd" d="M12 2.25a.75.75 0 0 1 .75.75v11.69l3.22-3.22a.75.75 0 1 1 1.06 1.06l-4.5 4.5a.75.75 0 0 1-1.06 0l-4.5-4.5a.75.75 0 1 1 1.06-1.06l3.22 3.22V3a.75.75 0 0 1 .75-.75Zm-9 13.5a.75.75 0 0 1 .75.75v2.25a1.5 1.5 0 0 0 1.5 1.5h13.5a1.5 1.5 0 0 0 1.5-1.5V16.5a.75.75 0 0 1 1.5 0v2.25a3 3 0 0 1-3 3H5.25a3 3 0 0 1-3-3V16.5a.75.75 0 0 1 .75-.75Z" clipRule="evenodd" />
+                  </svg>
+                </button>
+              </div>
             </div>
 
             {/* Modal Body */}
