@@ -139,7 +139,7 @@ export default function MainCanvas({showAlert, theme, authInfo, diagram, setDiag
 
 
     //draw function draws all tables from the tbls state variable
-    function draw() {
+    function draw(bgWhite = false) { //the bgWhite parameter is used to create white background when downloading the canvas data as image
         const canvas = document.getElementById("canvas");
         const ctxt = canvas.getContext("2d");
         
@@ -149,6 +149,10 @@ export default function MainCanvas({showAlert, theme, authInfo, diagram, setDiag
         ctxt.canvas.width = window.innerWidth;
         ctxt.font = '16px Segoe UI';
         ctxt.clearRect(0, 0, canvas.width, canvas.height);
+        if(bgWhite){ //if bgWhite argument is true, draw a white background before drawing anything
+            ctxt.fillStyle = 'white';
+            ctxt.fillRect(0,0, canvas.width, canvas.height);
+        }
         ctxt.scale(scale, scale);
         ctxt.translate(offset.x,offset.y);
         if(!diagram.tbls){
@@ -547,6 +551,16 @@ export default function MainCanvas({showAlert, theme, authInfo, diagram, setDiag
             })
     }
 
+    function imgDownload(){
+        draw(true); //draw a white background
+        let canvas = document.querySelector('canvas'); //retrieve the canvas element
+        const link = document.createElement('a'); // create a hyperlink which will be used to download the image
+        link.href = canvas.toDataURL(); //set the href of hyperlink to dataUrl created using canvas
+        link.download = diagram.name + '_dbcrafter.png'; //setting the name of file which will be downloaded
+        link.click(); //clicking the link to trigger the download
+        draw();
+    }
+
     return (
             <div className="canvas-div flex justify-center" style={theme==='dark'?{ backgroundImage: `url(${backgroundDark})`}:{ backgroundImage: `url(${background})`}}>
                 <p className={`guestmode-alert bg-blue-500 shadow opacity-75 text-white text-center absolute rounded-b px-1 py-0.5 top-0 ${authInfo ? 'hidden scale-0' : ''}`}>You are accessing this page in guest mode, you will not be able to save any changes. To unlock all features, please create an account and sign in!</p>
@@ -616,6 +630,13 @@ export default function MainCanvas({showAlert, theme, authInfo, diagram, setDiag
                         <svg height="24" width="24" className='w-6 h-6' xmlns="http://www.w3.org/2000/svg">
                             <text x="0" fontSize="13" y="16" fill="white" fontWeight={'bold'}>SQL</text>
                         </svg>
+                    </button>
+                    <button type='button' className={`group relative bg-blue-700 shadow-lg p-3   text-white transition-transform rounded-full hover:scale-110 ${authInfo ? '' : 'hidden'}`} onClick={()=>{imgDownload()}}>
+                    <span className={`text-sm text-nowrap tooltip absolute right-full top-1/2 bg-white text-black border border-slate-500 px-2 py-1 rounded -translate-y-1/2 me-2 hidden group-hover:block`}>Export as Image</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
+                            <path fillRule="evenodd" d="M12 2.25a.75.75 0 0 1 .75.75v11.69l3.22-3.22a.75.75 0 1 1 1.06 1.06l-4.5 4.5a.75.75 0 0 1-1.06 0l-4.5-4.5a.75.75 0 1 1 1.06-1.06l3.22 3.22V3a.75.75 0 0 1 .75-.75Zm-9 13.5a.75.75 0 0 1 .75.75v2.25a1.5 1.5 0 0 0 1.5 1.5h13.5a1.5 1.5 0 0 0 1.5-1.5V16.5a.75.75 0 0 1 1.5 0v2.25a3 3 0 0 1-3 3H5.25a3 3 0 0 1-3-3V16.5a.75.75 0 0 1 .75-.75Z" clipRule="evenodd" />
+                        </svg>
+
                     </button>
                 </div>
                 <div className="bottom-left-buttons flex  fixed bottom-4 left-4 gap-5">

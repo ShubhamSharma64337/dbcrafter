@@ -168,7 +168,7 @@ export default function Diagrams({authInfo, showAlert, setDiagram}) {
                   </div>
                   <div className="body rounded bg-blue-50 flex justify-between items-center w-full overflow-x-auto p-3">
                       <form id={element.name+'Form'} className='left flex items-center gap-x-2'>
-                        <input type='text' required={true} id={element.name+'Input'} defaultValue={element.name} className="diagram-name rounded enabled:px-1 py-0.5 outline-blue-700 enabled:border disabled:bg-blue-50" disabled={element.isEditing?false:true} data-diagramname={element.name}/>
+                        <input type='text' required={true} id={element.name+'Input'} defaultValue={element.name} className="diagram-name rounded px-1 py-0.5 outline-blue-700 enabled:border disabled:bg-blue-50" disabled={element.isEditing?false:true} data-diagramname={element.name}/>
                       </form>
                       <div className='right buttons flex flex-nowrap'>
                         <button className={`rename-button rounded-full p-2 hover:bg-blue-200 ${element.isEditing?'hidden':''}`} data-diagramname={element.name} onClick={enableEdit}>
