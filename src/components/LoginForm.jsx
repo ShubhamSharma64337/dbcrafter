@@ -1,7 +1,7 @@
 import React from 'react'
 import {useState} from 'react'
 import {Link, useNavigate} from 'react-router-dom'
-export default function LoginForm({showAlert, setAuthInfo}) {
+export default function LoginForm({showAlert, setAuthInfo, theme}) {
   const [mail,setMail] = useState('');
   const navigate = useNavigate();
   function handleLowerMail(event){
@@ -43,8 +43,8 @@ export default function LoginForm({showAlert, setAuthInfo}) {
   }
 
   return (
-        <div className="flex justify-center w-full p-10">
-          <form className="shadow-lg rounded w-full sm:w-2/5  border p-10 bg-white">
+        <div className={`flex justify-center w-full p-10 h-screen ${theme==='dark'?'bg-blue-950':''}`}>
+          <form className="shadow-lg rounded w-full sm:w-2/5 h-min  border p-10 bg-white">
           <div className="my-5">
               <label htmlFor="loginName" className="block">Email address</label>
               <input type="email" value={mail} required={true} minLength={5} onChange={handleLowerMail} className="border-2 border-slate-300 bg-slate-50 p-2 w-full out outline-blue-700 hover:bg-slate-200 transition focus:bg-white" id="loginName" name="email" placeholder='abc@xyz.com'/>

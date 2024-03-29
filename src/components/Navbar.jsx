@@ -75,11 +75,11 @@ export default function Navbar({title, theme, toggleTheme, showAlert, authInfo, 
                         <li className={`mx-2 my-2 md:my-0 ${authInfo?'':'hidden'}`}>
                             <Link className={`transition px-1.5 py-1 rounded ${theme==='dark'?'hover:bg-blue-900':'hover:bg-slate-200'}`}  to="/diagrams">Diagrams</Link>
                         </li>
-                        <li className="mx-2 my-2 md:my-0">
-                            <Link className={`transition px-1.5 py-1 rounded ${theme==='dark'?'hover:bg-blue-900':'hover:bg-slate-200'}`} to="/about">About</Link>
-                        </li>
                         <li className={`mx-2 my-2 md:my-0 ${authInfo?'hidden':''}`}>
                             <Link className={`transition px-1.5 py-1 rounded ${theme==='dark'?'hover:bg-blue-900':'hover:bg-slate-200'}`} to="/login">Login</Link>
+                        </li>
+                        <li className="mx-2 my-2 md:my-0">
+                            <Link className={`transition px-1.5 py-1 rounded ${theme==='dark'?'hover:bg-blue-900':'hover:bg-slate-200'}`} to="/about">About</Link>
                         </li>
                         <li className="mx-2 my-2 md:my-0 flex items-center">
                             <button onClick={toggleTheme}><ThemeButton theme={theme}/></button>

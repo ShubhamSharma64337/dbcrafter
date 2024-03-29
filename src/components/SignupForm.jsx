@@ -2,7 +2,7 @@ import {React, useState} from 'react'
 import {Link, useNavigate} from 'react-router-dom'
 import TermsModal from './TermsModal';
 
-export default function SignupForm({showAlert}) {
+export default function SignupForm({showAlert, theme}) {
   const navigate = useNavigate();
   const [showTerms, setShowTerms] = useState(false);
   function toggleTerms(){
@@ -40,8 +40,8 @@ export default function SignupForm({showAlert}) {
   }
   return (
 
-        <div className='w-full flex justify-center p-10'>
-          <form className="shadow-lg w-4/5 sm:w-2/5 border p-10 bg-white rounded">
+        <div className={`w-full flex justify-center h-screen p-10 ${theme==='dark'?'bg-blue-950':''}`}>
+          <form className="shadow-lg w-full sm:w-2/5 h-min border p-10 bg-white rounded">
           <div className="my-5">
               <label htmlFor="signupEmail" className="block">Email address</label>
               <input type="email" required={true} name='email' minLength={5} className="border-2 border-slate-300 bg-slate-50 p-2 w-full outline-blue-700 hover:bg-slate-200 transition focus:bg-white" id="signupEmail" aria-describedby="emailHelp" placeholder='abc@xyz.com'/>
