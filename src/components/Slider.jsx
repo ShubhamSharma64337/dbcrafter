@@ -1,8 +1,18 @@
-import { React, useState } from 'react'
-
+import { React, useEffect, useState } from 'react'
+import img1 from '/craft1.png'
+import img2 from '/craft2.png'
+import img3 from '/craft3.png'
 export default function Slider() {
   const [currentImage, setCurrentImage] = useState(1);
-
+    useEffect(()=>{
+        if(currentImage===1){
+            document.getElementById('sliderImage').src = img1;
+        } else if(currentImage===2){
+            document.getElementById('sliderImage').src = img2;
+        } else {
+            document.getElementById('sliderImage').src = img3;
+        }
+    },[currentImage])
   return (
     <div className="slider flex flex-col sm:flex-row gap-x-5 items-center justify-center">
                         <div className="hidden sm:block">
@@ -18,7 +28,7 @@ export default function Slider() {
                                 </svg>
                             </button>
                         </div>
-                        <img src={`craft${currentImage}.png`} className="hover:scale-95 transition w-4/5 sm:w-3/5 h-auto border-4 border-blue-600 rounded-lg"></img>
+                        <img id='sliderImage' className="hover:scale-95 transition w-4/5 sm:w-3/5 h-auto border-4 border-blue-600 rounded-lg"></img>
                         <div className={`hidden sm:block`}>
                             <button className={`bg-blue-600 font-[800] text-lg text-white shadow-blue-900 hover:shadow-blue-900   border-slate-700 px-4 py-3 rounded-lg shadow-[0px_4px_0.1rem] hover:shadow-[0px_0.1px_0.1rem] hover:translate-y-[4px] transition`} onClick={(e)=>{
                                 if(currentImage<3){
