@@ -1,7 +1,7 @@
 import React from 'react'
 import {useState} from 'react'
 import {Link, useNavigate} from 'react-router-dom'
-export default function LoginForm({showAlert, setAuthInfo, theme}) {
+export default function LoginForm({showAlert, setAuthInfo, theme, setIsLoading}) {
   const [mail,setMail] = useState('');
   const navigate = useNavigate();
   function handleLowerMail(event){
@@ -19,6 +19,8 @@ export default function LoginForm({showAlert, setAuthInfo, theme}) {
     fdobj.forEach(function(value, key){
       fdata[key] = value;
     })
+    //starting the loader
+    setIsLoading(true);
     fetch('https://dbcrafter-project.uc.r.appspot.com/signin', {
       method: 'POST',
       headers: {         
@@ -30,6 +32,7 @@ export default function LoginForm({showAlert, setAuthInfo, theme}) {
     })
     .then(response => response.json()) //response.json() or response.text() provides the 'data'
     .then((data) => {
+      setIsLoading(false);
       if(data.success){
         setAuthInfo(fdata.email);
         navigate('/');
@@ -37,6 +40,7 @@ export default function LoginForm({showAlert, setAuthInfo, theme}) {
       showAlert(data.message, data.success?'success':'danger')
     })
     .catch((error)=>{
+      setIsLoading(false);
       showAlert('An error occured while trying to access the backend API', 'danger')
       console.log(error)
     })

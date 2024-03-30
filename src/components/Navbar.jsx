@@ -22,8 +22,6 @@ export default function Navbar({title, theme, toggleTheme, showAlert, authInfo, 
         .then((data)=>{
             if(data.user){
                 setAuthInfo(data.user);
-            } else {
-                setAuthInfo(null);
             }
         })
         .catch((error)=>{
@@ -31,7 +29,8 @@ export default function Navbar({title, theme, toggleTheme, showAlert, authInfo, 
           console.log(error)
         })
       }
-    useEffect(login);
+    useEffect(login, [authInfo]); //this is important to update it only when authInfo changes so that if showAlert changes,
+    //it does not trigger the login checker again and again
     function logout(){
         fetch('https://dbcrafter-project.uc.r.appspot.com/logout', {
           method: 'GET',

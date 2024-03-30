@@ -13,8 +13,10 @@ import {
 } from "react-router-dom";
 import SignupForm from './components/SignupForm.jsx';
 import LoginForm from './components/LoginForm.jsx';
+import Loader from './components/Loader.jsx';
 
 function App(){
+  const [isLoading, setIsLoading] = useState(false);
   const [authInfo, setAuthInfo] = useState(null); //this stores whether user is logged in or not, if logged in, it contains the email
   const [alert, setAlert] = useState(null);
   const [theme, setTheme] = useState('light');
@@ -51,10 +53,11 @@ function App(){
       {/* basename is necessary because github pages hosts app at user.ghub.io/repo_name so every route will be prefixed with repo_name */}
       <Navbar title='Dbcrafter' theme={theme} alert={alert} toggleTheme={toggleTheme} showAlert={showAlert} authInfo = {authInfo} setAuthInfo={setAuthInfo}/>
       <Alert alert={alert} closeAlert={closeAlert}/>
+      <Loader isLoading={isLoading}/>
         <Routes>
           <Route exact path='/' element={<MainContent theme={theme} showAlert={showAlert} authInfo={authInfo} />}/>
           <Route exact path='/signup' element={<SignupForm showAlert={showAlert} theme={theme}/>}/>
-          <Route exact path='/login' element={<LoginForm showAlert={showAlert} setAuthInfo={setAuthInfo} theme={theme}/>}/>
+          <Route exact path='/login' element={<LoginForm showAlert={showAlert} setAuthInfo={setAuthInfo} theme={theme} setIsLoading={setIsLoading}/>}/>
           <Route exact path='/craft' element={<MainCanvas dtypes={dtypes} showAlert={showAlert} theme={theme} authInfo={authInfo} diagram={diagram} setDiagram={setDiagram}/>} />
           <Route exact path='/diagrams' element={<Diagrams showAlert={showAlert} theme={theme} authInfo={authInfo} setDiagram={setDiagram}/>}/>
           <Route exact path='/about' element={<AboutContent theme={theme}/>}/>
