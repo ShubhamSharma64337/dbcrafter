@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 
-export default function CreateDiagramModal({diagram, createDiagramModalShow, toggleModal, showAlert, setDiagram}) {
+export default function CreateDiagramModal({diagram, createDiagramModalShow, toggleModal, showAlert, setDiagram, setIsLoading}) {
   const [diagramName, setDiagramName] = useState(null);
   useEffect(()=>{
     setDiagramName(diagram.name);
@@ -23,6 +23,7 @@ export default function CreateDiagramModal({diagram, createDiagramModalShow, tog
 
     let diagramCopy = {...diagram};
     diagramCopy.name = diagramName;
+    setIsLoading(true);
     fetch('https://dbcrafter-project.uc.r.appspot.com/user/creatediagram', {
       method: 'POST',
       headers: {         
@@ -45,6 +46,9 @@ export default function CreateDiagramModal({diagram, createDiagramModalShow, tog
     .catch((error)=>{
       showAlert('An error occured while trying to access the backend API', 'danger')
       console.log(error)
+    })
+    .finally(()=>{
+      setIsLoading(false);
     })
   }
   return (

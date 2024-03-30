@@ -2,11 +2,12 @@ import React, { useEffect } from 'react'
 import {useState} from 'react'
 import {  useNavigate } from "react-router-dom";
 
-export default function Diagrams({authInfo, showAlert, setDiagram}) {
+export default function Diagrams({authInfo, showAlert, setDiagram, setIsLoading}) {
     const navigate = useNavigate();
     const [diagrams, setDiagrams] = useState(null);
 
     function getdiagrams(){
+        setIsLoading(true);
         fetch('https://dbcrafter-project.uc.r.appspot.com/user/getdiagrams', {
           method: 'GET',
           headers: {         
@@ -30,6 +31,9 @@ export default function Diagrams({authInfo, showAlert, setDiagram}) {
           showAlert('An error occured while trying to access the backend API', 'danger')
           console.log(error)
         })
+        .finally(()=>{
+          setIsLoading(false);
+        })
       }
 
     useEffect(()=>{
@@ -42,6 +46,7 @@ export default function Diagrams({authInfo, showAlert, setDiagram}) {
     }, [authInfo])
 
     function openDiagram(e){
+      setIsLoading(true);
       fetch('https://dbcrafter-project.uc.r.appspot.com/user/getdiagram', {
           method: 'POST',
           headers: {         
@@ -66,12 +71,16 @@ export default function Diagrams({authInfo, showAlert, setDiagram}) {
           showAlert('An error occured while trying to access the backend API', 'danger')
           console.log(error)
         })
+        .finally(()=>{
+          setIsLoading(false);
+        })
     }
 
     function deleteDiagram(e){
       if(!confirm("Do you really want to delete the diagram?")){
         return;
       }
+      setIsLoading(true);
       fetch('https://dbcrafter-project.uc.r.appspot.com/user/deletediagram', {
           method: 'POST',
           headers: {         
@@ -96,6 +105,9 @@ export default function Diagrams({authInfo, showAlert, setDiagram}) {
         .catch((error)=>{
           showAlert('An error occured while trying to access the backend API', 'danger')
           console.log(error)
+        })
+        .finally(()=>{
+          setIsLoading(false);
         })
     }
 
@@ -130,6 +142,7 @@ export default function Diagrams({authInfo, showAlert, setDiagram}) {
         document.querySelector('#'+oldname+'Form').reportValidity();
         return;
       }
+      setIsLoading(true);
       fetch('https://dbcrafter-project.uc.r.appspot.com/user/renamediagram', {
         method: 'POST',
         headers: {
@@ -141,17 +154,28 @@ export default function Diagrams({authInfo, showAlert, setDiagram}) {
     })
         .then(response => response.json()) //response.json() or response.text() provides the 'data'
         .then((data) => {
-            if (data.success) {
-              showAlert(data.message, 'success');
-              getdiagrams();
-            } else {
-              document.getElementById(oldname+'Input').value = oldname;
-              showAlert(data.message, 'success');
+          let newDiagrams = diagrams.map((element) => { //the below lines will actually disable the input before doing anything with response
+            if (element.name === oldname) {
+              return { ...element, isEditing: false };
             }
+            return { ...element }
+          });
+          setDiagrams(newDiagrams);
+
+          if (data.success) {
+            showAlert(data.message, 'success');
+            getdiagrams();
+          } else {
+            document.getElementById(oldname+'Input').value = oldname;
+            showAlert(data.message, 'success');
+          }
         })
         .catch((error) => {
             showAlert('An error occured while trying to access the backend API', 'danger')
             console.log(error)
+        })
+        .finally(()=>{
+          setIsLoading(false);
         })
     }
 

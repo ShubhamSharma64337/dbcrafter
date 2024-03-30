@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import ThemeButton from './ThemeButton';
 import GithubButton from './GithubButton';
-export default function Navbar({title, theme, toggleTheme, showAlert, authInfo, setAuthInfo}) {
+export default function Navbar({title, theme, toggleTheme, showAlert, authInfo, setAuthInfo, setIsLoading}) {
     const navigate = useNavigate();
     const {pathname} = useLocation();
     const [collapsed, setCollapsed] = useState(true);
@@ -10,6 +10,7 @@ export default function Navbar({title, theme, toggleTheme, showAlert, authInfo, 
         collapsed?setCollapsed(false):setCollapsed(true);   
     }
     function login(){
+        setIsLoading(true);
         fetch('https://dbcrafter-project.uc.r.appspot.com/loginstatus', {
           method: 'GET',
           headers: {         
@@ -28,10 +29,14 @@ export default function Navbar({title, theme, toggleTheme, showAlert, authInfo, 
           showAlert('An error occured while trying to access the backend API', 'danger')
           console.log(error)
         })
+        .finally(()=>{
+            setIsLoading(false);
+        })
       }
     useEffect(login, [authInfo]); //this is important to update it only when authInfo changes so that if showAlert changes,
     //it does not trigger the login checker again and again
     function logout(){
+        setIsLoading(true); //starting the loader
         fetch('https://dbcrafter-project.uc.r.appspot.com/logout', {
           method: 'GET',
           headers: {         
@@ -53,6 +58,9 @@ export default function Navbar({title, theme, toggleTheme, showAlert, authInfo, 
         .catch((error)=>{
           showAlert('An error occured while trying to access the backend API', 'danger')
           console.log(error)
+        })
+        .finally(()=>{
+            setIsLoading(false);
         })
     }
     if(pathname === '/craft'){

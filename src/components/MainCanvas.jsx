@@ -7,7 +7,7 @@ import EditModal from './EditModal';
 import CreateDiagramModal from './CreateDiagramModal';
 import SqlModal from './SqlModal';
 import { Link } from 'react-router-dom';
-export default function MainCanvas({showAlert, theme, authInfo, diagram, setDiagram, dtypes}) {
+export default function MainCanvas({showAlert, theme, authInfo, diagram, setDiagram, dtypes, setIsLoading}) {
     const [createTableModalShow, setCreateTableModalShow] = useState(false); //this is used to show or hide add table modal
     const [editTableModalShow, setEditTableModalShow] = useState(false); //this is used to show or hide edit table modal
     const [createDiagramModalShow, setCreateDiagramModalShow] = useState(false); //this is used to show or hide the create diagram modal
@@ -528,6 +528,7 @@ export default function MainCanvas({showAlert, theme, authInfo, diagram, setDiag
     }
 
     function saveDiagram() {
+        setIsLoading(true);
         fetch('https://dbcrafter-project.uc.r.appspot.com/user/savediagram', {
             method: 'POST',
             headers: {
@@ -548,6 +549,9 @@ export default function MainCanvas({showAlert, theme, authInfo, diagram, setDiag
             .catch((error) => {
                 showAlert('An error occured while trying to access the backend API', 'danger')
                 console.log(error)
+            })
+            .finally(()=>{
+                setIsLoading(false);
             })
     }
 
@@ -654,7 +658,7 @@ export default function MainCanvas({showAlert, theme, authInfo, diagram, setDiag
 
                 <CreateTableModal dtypes={dtypes} show={createTableModalShow} toggleCreateModal={toggleCreateModal} tbls={diagram.tbls?diagram.tbls:null} addTable={addTbl} showAlert={showAlert}/>
                 <EditModal dtypes={dtypes} table={diagram.tbls && selections.selectedTbl !== null?diagram.tbls[selections.selectedTbl]:null} editShow={editTableModalShow} toggleEditModal={toggleEditModal} tbls={diagram.tbls?diagram.tbls:null} showAlert={showAlert} updateTbl={updateTbl}/>
-                <CreateDiagramModal diagram={diagram} createDiagramModalShow={createDiagramModalShow} toggleModal={toggleCreateDiagramModal} showAlert={showAlert} setDiagram={setDiagram}></CreateDiagramModal>
+                <CreateDiagramModal diagram={diagram} createDiagramModalShow={createDiagramModalShow} toggleModal={toggleCreateDiagramModal} showAlert={showAlert} setDiagram={setDiagram} setIsLoading={setIsLoading}></CreateDiagramModal>
                 <SqlModal diagram={diagram} show={sqlModalShow} toggleModal={toggleSqlModal}></SqlModal>
             </div>
 

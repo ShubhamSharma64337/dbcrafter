@@ -2,7 +2,7 @@ import {React, useState} from 'react'
 import {Link, useNavigate} from 'react-router-dom'
 import TermsModal from './TermsModal';
 
-export default function SignupForm({showAlert, theme}) {
+export default function SignupForm({showAlert, theme, setIsLoading}) {
   const navigate = useNavigate();
   const [showTerms, setShowTerms] = useState(false);
   function toggleTerms(){
@@ -19,6 +19,8 @@ export default function SignupForm({showAlert, theme}) {
       document.querySelector('form').reportValidity();
       return;
     }
+    //starting the loader
+    setIsLoading(true);
     fetch('https://dbcrafter-project.uc.r.appspot.com/signup', {
       method: 'POST',
       headers: {         
@@ -36,6 +38,10 @@ export default function SignupForm({showAlert, theme}) {
     .catch((error)=>{
       showAlert('An error occured while trying to access the backend API', 'danger')
       console.log(error)
+    })
+    .finally(()=>{
+      //stopping the loader
+      setIsLoading(false);
     })
   }
   return (
