@@ -19,7 +19,7 @@ export default function LoginForm({showAlert, setAuthInfo, theme}) {
     fdobj.forEach(function(value, key){
       fdata[key] = value;
     })
-    fetch('http://localhost:3000/signin', {
+    fetch('https://dbcrafter-project.uc.r.appspot.com/signin', {
       method: 'POST',
       headers: {         
         'Content-Type': 'application/json',

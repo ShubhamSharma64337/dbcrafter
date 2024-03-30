@@ -23,7 +23,7 @@ export default function CreateDiagramModal({diagram, createDiagramModalShow, tog
 
     let diagramCopy = {...diagram};
     diagramCopy.name = diagramName;
-    fetch('http://localhost:3000/user/creatediagram', {
+    fetch('https://dbcrafter-project.uc.r.appspot.com/user/creatediagram', {
       method: 'POST',
       headers: {         
         'Content-Type': 'application/json',

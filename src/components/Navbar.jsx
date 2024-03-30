@@ -10,7 +10,7 @@ export default function Navbar({title, theme, toggleTheme, showAlert, authInfo, 
         collapsed?setCollapsed(false):setCollapsed(true);   
     }
     function login(){
-        fetch('http://localhost:3000/loginstatus', {
+        fetch('https://dbcrafter-project.uc.r.appspot.com/loginstatus', {
           method: 'GET',
           headers: {         
             'Content-Type': 'application/json',
@@ -33,7 +33,7 @@ export default function Navbar({title, theme, toggleTheme, showAlert, authInfo, 
       }
     useEffect(login);
     function logout(){
-        fetch('http://localhost:3000/logout', {
+        fetch('https://dbcrafter-project.uc.r.appspot.com/logout', {
           method: 'GET',
           headers: {         
             'Content-Type': 'application/json',

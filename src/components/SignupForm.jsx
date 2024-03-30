@@ -19,7 +19,7 @@ export default function SignupForm({showAlert, theme}) {
       document.querySelector('form').reportValidity();
       return;
     }
-    fetch('http://localhost:3000/signup', {
+    fetch('https://dbcrafter-project.uc.r.appspot.com/signup', {
       method: 'POST',
       headers: {         
         'Content-Type': 'application/json',

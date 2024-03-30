@@ -7,7 +7,7 @@ export default function Diagrams({authInfo, showAlert, setDiagram}) {
     const [diagrams, setDiagrams] = useState(null);
 
     function getdiagrams(){
-        fetch('http://localhost:3000/user/getdiagrams', {
+        fetch('https://dbcrafter-project.uc.r.appspot.com/user/getdiagrams', {
           method: 'GET',
           headers: {         
             'Content-Type': 'application/json',
@@ -42,7 +42,7 @@ export default function Diagrams({authInfo, showAlert, setDiagram}) {
     }, [authInfo])
 
     function openDiagram(e){
-      fetch('http://localhost:3000/user/getdiagram', {
+      fetch('https://dbcrafter-project.uc.r.appspot.com/user/getdiagram', {
           method: 'POST',
           headers: {         
             'Content-Type': 'application/json',
@@ -72,7 +72,7 @@ export default function Diagrams({authInfo, showAlert, setDiagram}) {
       if(!confirm("Do you really want to delete the diagram?")){
         return;
       }
-      fetch('http://localhost:3000/user/deletediagram', {
+      fetch('https://dbcrafter-project.uc.r.appspot.com/user/deletediagram', {
           method: 'POST',
           headers: {         
             'Content-Type': 'application/json',
@@ -130,7 +130,7 @@ export default function Diagrams({authInfo, showAlert, setDiagram}) {
         document.querySelector('#'+oldname+'Form').reportValidity();
         return;
       }
-      fetch('http://localhost:3000/user/renamediagram', {
+      fetch('https://dbcrafter-project.uc.r.appspot.com/user/renamediagram', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',

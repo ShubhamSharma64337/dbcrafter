@@ -528,7 +528,7 @@ export default function MainCanvas({showAlert, theme, authInfo, diagram, setDiag
     }
 
     function saveDiagram() {
-        fetch('http://localhost:3000/user/savediagram', {
+        fetch('https://dbcrafter-project.uc.r.appspot.com/user/savediagram', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
