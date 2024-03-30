@@ -47,7 +47,8 @@ function App(){
   }
   return (
     <div>
-      <Router>
+      <Router basename='/dbcrafter_frontend'> 
+      {/* basename is necessary because github pages hosts app at user.ghub.io/repo_name so every route will be prefixed with repo_name */}
       <Navbar title='Dbcrafter' theme={theme} alert={alert} toggleTheme={toggleTheme} showAlert={showAlert} authInfo = {authInfo} setAuthInfo={setAuthInfo}/>
       <Alert alert={alert} closeAlert={closeAlert}/>
         <Routes>
