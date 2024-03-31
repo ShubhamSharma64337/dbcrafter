@@ -56,7 +56,7 @@ export default function LoginForm({showAlert, setAuthInfo, theme, setIsLoading, 
           </div>
           <div className="my-5">
               <label htmlFor="loginPassword" className="block">Password</label>
-              <input type="password" required={true} minLength={6} className="border-2 border-slate-300 bg-slate-50 p-2 w-full outline-blue-700 hover:bg-slate-200 transition focus:bg-white" id="loginPassword" placeholder='Enter your password' name="password"/>
+              <input type="password" required={true} className="border-2 border-slate-300 bg-slate-50 p-2 w-full outline-blue-700 hover:bg-slate-200 transition focus:bg-white" id="loginPassword" placeholder='Enter your password' name="password"/>
           </div>
           <div className="my-5 flex items-center">
               <input type="checkbox" className="w-4 h-4" id="rememberCheck"/>
