@@ -7,11 +7,15 @@ import EditModal from './EditModal';
 import CreateDiagramModal from './CreateDiagramModal';
 import SqlModal from './SqlModal';
 import { Link } from 'react-router-dom';
+import GuestInfoModal from './GuestInfoModal';
 export default function MainCanvas({showAlert, theme, authInfo, diagram, setDiagram, dtypes, setIsLoading, urls}) {
     const [createTableModalShow, setCreateTableModalShow] = useState(false); //this is used to show or hide add table modal
     const [editTableModalShow, setEditTableModalShow] = useState(false); //this is used to show or hide edit table modal
     const [createDiagramModalShow, setCreateDiagramModalShow] = useState(false); //this is used to show or hide the create diagram modal
     const [sqlModalShow, setSqlModalShow] = useState(false);
+    const [guestModalShow, setGuestModalShow] = useState(false);
+
+
     const [offset, setOffset] = useState({x: 0, y:0}); //this is used to pan the canvas by translating the origin by offset
     const [isPanning, setIsPanning] = useState(false) //this is used to check if user has clicked ang is dragging on the canvas (i.e not the table)
     const [commonProps, setCommonProps] = useState({rh: 20}); //this specifies the row height of the tables
@@ -526,6 +530,9 @@ export default function MainCanvas({showAlert, theme, authInfo, diagram, setDiag
     function toggleSqlModal(){
         sqlModalShow?setSqlModalShow(false):setSqlModalShow(true);
     }
+    function toggleGuestModal(){
+        guestModalShow?setGuestModalShow(false):setGuestModalShow(true);
+    }
 
     function saveDiagram() {
         setIsLoading(true);
@@ -567,7 +574,14 @@ export default function MainCanvas({showAlert, theme, authInfo, diagram, setDiag
 
     return (
             <div className="canvas-div flex justify-center" style={theme==='dark'?{ backgroundImage: `url(${backgroundDark})`}:{ backgroundImage: `url(${background})`}}>
-                <p className={`guestmode-alert bg-blue-500 shadow opacity-75 text-white text-center absolute rounded-b px-1 py-0.5 top-0 ${authInfo ? 'hidden scale-0' : ''}`}>You are accessing this page in guest mode, you will not be able to save any changes. To unlock all features, please create an account and sign in!</p>
+                <p className={`guestmode-alert flex justify-center items-center gap-x-2 bg-white shadow opacity-75 text-slate-800 ring-1 text-center absolute rounded-b px-1 py-0.5 top-0 ${authInfo ? 'hidden scale-0' : ''}`}>
+                    Guest Mode
+                    <button onClick={toggleGuestModal}>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z" />
+                        </svg>
+                    </button>
+                </p>
                 <div className={`fixed top-4 left-1/2 -translate-x-1/2 bg-white border border-blue-500 px-2 py-1 rounded ${!authInfo? 'hidden':''}`}>
                     {diagram.name?diagram.name:'unnamed'}
                 </div>
@@ -660,6 +674,7 @@ export default function MainCanvas({showAlert, theme, authInfo, diagram, setDiag
                 <EditModal dtypes={dtypes} table={diagram.tbls && selections.selectedTbl !== null?diagram.tbls[selections.selectedTbl]:null} editShow={editTableModalShow} toggleEditModal={toggleEditModal} tbls={diagram.tbls?diagram.tbls:null} showAlert={showAlert} updateTbl={updateTbl}/>
                 <CreateDiagramModal diagram={diagram} createDiagramModalShow={createDiagramModalShow} toggleModal={toggleCreateDiagramModal} showAlert={showAlert} setDiagram={setDiagram} setIsLoading={setIsLoading} urls={urls}></CreateDiagramModal>
                 <SqlModal diagram={diagram} show={sqlModalShow} toggleModal={toggleSqlModal}></SqlModal>
+                <GuestInfoModal visible={guestModalShow} toggleModal={toggleGuestModal}></GuestInfoModal>
             </div>
 
     )
