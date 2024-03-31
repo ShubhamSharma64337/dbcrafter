@@ -52,7 +52,7 @@ export default function CreateDiagramModal({diagram, createDiagramModalShow, tog
     })
   }
   return (
-    createDiagramModalShow && <div className="overlay overflow-auto fixed justify-start md:justify-center  flex items-start pt-5 top-0 w-screen h-screen bg-black bg-opacity-35">
+    createDiagramModalShow && <div className="overlay overflow-auto fixed justify-center  flex items-start pt-5 top-0 w-screen h-screen bg-black bg-opacity-35">
         <div className="modal bg-white rounded">
             {/* Modal Header */}
             <div className="modal-header flex  gap-5 justify-between items-center border-blue-700 border-b-2 p-5">
