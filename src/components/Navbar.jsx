@@ -77,22 +77,22 @@ export default function Navbar({title, theme, toggleTheme, showAlert, authInfo, 
                     </Link>
                     <ul className={`${collapsed?'scale-0':'scale-100'} transition-transform flex flex-col absolute top-full shadow justify-center items-center bg-inherit text-center text-sm font-medium left-0 w-full md:w-min md:static md:flex-row md:shadow-none md:scale-100`}>
                         <li className="mx-2 my-2 md:my-0">
-                            <Link className={`transition px-1.5 py-1 rounded ${theme==='dark'?'hover:bg-blue-900':'hover:bg-slate-200'}`} to="/">Home</Link>
+                            <Link className={`transition px-1.5 py-1 rounded ${theme==='dark'?'hover:bg-blue-900':'hover:bg-slate-200'}`} to="/" onClick={toggleCollapsed}>Home</Link>
                         </li>
                         <li className={`mx-2 my-2 md:my-0 ${authInfo?'':'hidden'}`}>
-                            <Link className={`transition px-1.5 py-1 rounded ${theme==='dark'?'hover:bg-blue-900':'hover:bg-slate-200'}`}  to="/diagrams">Diagrams</Link>
+                            <Link className={`transition px-1.5 py-1 rounded ${theme==='dark'?'hover:bg-blue-900':'hover:bg-slate-200'}`}  to="/diagrams" onClick={toggleCollapsed}>Diagrams</Link>
                         </li>
                         <li className={`mx-2 my-2 md:my-0 ${authInfo?'hidden':''}`}>
-                            <Link className={`transition px-1.5 py-1 rounded ${theme==='dark'?'hover:bg-blue-900':'hover:bg-slate-200'}`} to="/login">Login</Link>
+                            <Link className={`transition px-1.5 py-1 rounded ${theme==='dark'?'hover:bg-blue-900':'hover:bg-slate-200'}`} to="/login" onClick={toggleCollapsed}>Login</Link>
                         </li>
                         <li className="mx-2 my-2 md:my-0">
-                            <Link className={`transition px-1.5 py-1 rounded ${theme==='dark'?'hover:bg-blue-900':'hover:bg-slate-200'}`} to="/about">About</Link>
+                            <Link className={`transition px-1.5 py-1 rounded ${theme==='dark'?'hover:bg-blue-900':'hover:bg-slate-200'}`} to="/about" onClick={toggleCollapsed}>About</Link>
                         </li>
                         <li className="mx-2 my-2 md:my-0 flex items-center">
                             <button onClick={toggleTheme}><ThemeButton theme={theme}/></button>
                         </li>
                         <li className={`mx-2 my-2 md:my-0 flex items-center ${authInfo?'':'hidden'}`}>
-                            <button className="relative flex flex-col items-center justify-center" onClick={() => { document.querySelector('#userDropdown').classList.toggle('hidden') }}>
+                            <button className="relative flex flex-col items-center justify-center" onClick={() => {console.log("username"); document.querySelector('#userDropdown').classList.toggle('hidden') }}>
                                 <div className='flex'>
                                 {authInfo ?     authInfo : 'username'}
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="ms-2 w-5 h-5">
@@ -101,7 +101,8 @@ export default function Navbar({title, theme, toggleTheme, showAlert, authInfo, 
                                 </div>
                                 <ul id="userDropdown" className={`my-2 rounded sm:absolute hidden p-1 top-full ${theme==='dark'?'bg-blue-900':'bg-white'} border border-slate-400 right-0`}>
                                     <li className={`hover:${theme==='dark'?'bg-blue-950':'bg-blue-50'} rounded`} >
-                                        <div className='flex gap-x-2 justify-between  px-3 py-2' onClick={() => { document.querySelector('#userDropdown').classList.toggle('hidden'); logout(); }}>
+                                        <div className='flex gap-x-2 justify-between  px-3 py-2' onClick={(e) => { e.stopPropagation(); console.log("logoutbtn"); document.querySelector('#userDropdown').classList.toggle('hidden'); toggleCollapsed(); logout(); }}>
+                                            {/* In the above line, e.stopPropagation is used to prevent event bubbling which causes the onClick of the username button also being triggered when logout button is clicked */}
                                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
                                                 <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 9V5.25A2.25 2.25 0 0 1 10.5 3h6a2.25 2.25 0 0 1 2.25 2.25v13.5A2.25 2.25 0 0 1 16.5 21h-6a2.25 2.25 0 0 1-2.25-2.25V15m-3 0-3-3m0 0 3-3m-3 3H15" />
                                             </svg>
