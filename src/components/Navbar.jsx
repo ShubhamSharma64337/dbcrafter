@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import ThemeButton from './ThemeButton';
 import GithubButton from './GithubButton';
-export default function Navbar({title, theme, toggleTheme, showAlert, authInfo, setAuthInfo, setIsLoading}) {
+export default function Navbar({title, theme, toggleTheme, showAlert, authInfo, setAuthInfo, setIsLoading, urls}) {
     const navigate = useNavigate();
     const {pathname} = useLocation();
     const [collapsed, setCollapsed] = useState(true);
@@ -11,7 +11,7 @@ export default function Navbar({title, theme, toggleTheme, showAlert, authInfo, 
     }
     function login(){
         setIsLoading(true);
-        fetch('https://dbcrafter-project.uc.r.appspot.com/loginstatus', {
+        fetch(import.meta.env.PROD?urls.productionUrl:urls.devUrl+'/loginstatus', {
           method: 'GET',
           headers: {         
             'Content-Type': 'application/json',
@@ -37,7 +37,7 @@ export default function Navbar({title, theme, toggleTheme, showAlert, authInfo, 
     //it does not trigger the login checker again and again
     function logout(){
         setIsLoading(true); //starting the loader
-        fetch('https://dbcrafter-project.uc.r.appspot.com/logout', {
+        fetch(import.meta.env.PROD?urls.productionUrl:urls.devUrl+'/logout', {
           method: 'GET',
           headers: {         
             'Content-Type': 'application/json',

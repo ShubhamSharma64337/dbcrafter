@@ -2,7 +2,7 @@ import {React, useState} from 'react'
 import {Link, useNavigate} from 'react-router-dom'
 import TermsModal from './TermsModal';
 
-export default function SignupForm({showAlert, theme, setIsLoading}) {
+export default function SignupForm({showAlert, theme, setIsLoading, urls}) {
   const navigate = useNavigate();
   const [showTerms, setShowTerms] = useState(false);
   function toggleTerms(){
@@ -21,7 +21,7 @@ export default function SignupForm({showAlert, theme, setIsLoading}) {
     }
     //starting the loader
     setIsLoading(true);
-    fetch('https://dbcrafter-project.uc.r.appspot.com/signup', {
+    fetch(import.meta.env.PROD?urls.productionUrl:urls.devUrl+'/signup', {
       method: 'POST',
       headers: {         
         'Content-Type': 'application/json',

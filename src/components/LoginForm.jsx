@@ -1,7 +1,7 @@
 import React from 'react'
 import {useState} from 'react'
 import {Link, useNavigate} from 'react-router-dom'
-export default function LoginForm({showAlert, setAuthInfo, theme, setIsLoading}) {
+export default function LoginForm({showAlert, setAuthInfo, theme, setIsLoading, urls}) {
   const [mail,setMail] = useState('');
   const navigate = useNavigate();
   function handleLowerMail(event){
@@ -21,7 +21,7 @@ export default function LoginForm({showAlert, setAuthInfo, theme, setIsLoading})
     })
     //starting the loader
     setIsLoading(true);
-    fetch('https://dbcrafter-project.uc.r.appspot.com/signin', {
+    fetch(import.meta.env.PROD?urls.productionUrl:urls.devUrl+'/signin', {
       method: 'POST',
       headers: {         
         'Content-Type': 'application/json',

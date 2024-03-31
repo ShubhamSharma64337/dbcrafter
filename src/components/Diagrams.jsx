@@ -2,13 +2,13 @@ import React, { useEffect } from 'react'
 import {useState} from 'react'
 import {  useNavigate } from "react-router-dom";
 
-export default function Diagrams({authInfo, showAlert, setDiagram, setIsLoading}) {
+export default function Diagrams({authInfo, showAlert, setDiagram, setIsLoading, urls}) {
     const navigate = useNavigate();
     const [diagrams, setDiagrams] = useState(null);
 
     function getdiagrams(){
         setIsLoading(true);
-        fetch('https://dbcrafter-project.uc.r.appspot.com/user/getdiagrams', {
+        fetch(import.meta.env.PROD?urls.productionUrl:urls.devUrl+'/user/getdiagrams', {
           method: 'GET',
           headers: {         
             'Content-Type': 'application/json',
@@ -47,7 +47,7 @@ export default function Diagrams({authInfo, showAlert, setDiagram, setIsLoading}
 
     function openDiagram(e){
       setIsLoading(true);
-      fetch('https://dbcrafter-project.uc.r.appspot.com/user/getdiagram', {
+      fetch(import.meta.env.PROD?urls.productionUrl:urls.devUrl+'/user/getdiagram', {
           method: 'POST',
           headers: {         
             'Content-Type': 'application/json',
@@ -81,7 +81,7 @@ export default function Diagrams({authInfo, showAlert, setDiagram, setIsLoading}
         return;
       }
       setIsLoading(true);
-      fetch('https://dbcrafter-project.uc.r.appspot.com/user/deletediagram', {
+      fetch(import.meta.env.PROD?urls.productionUrl:urls.devUrl+'/user/deletediagram', {
           method: 'POST',
           headers: {         
             'Content-Type': 'application/json',
@@ -143,7 +143,7 @@ export default function Diagrams({authInfo, showAlert, setDiagram, setIsLoading}
         return;
       }
       setIsLoading(true);
-      fetch('https://dbcrafter-project.uc.r.appspot.com/user/renamediagram', {
+      fetch(import.meta.env.PROD?urls.productionUrl:urls.devUrl+'/user/renamediagram', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
