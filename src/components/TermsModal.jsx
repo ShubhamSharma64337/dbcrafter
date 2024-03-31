@@ -16,9 +16,9 @@ export default function TermsModal({visible, toggleTerms}) {
             {/* Modal Body */}
             <div className="modal-body p-5">
                 <p>
-                    By signing up, you agree to share your email with us which may be used for targeted advertising. As this is a free to use software,
-                    advertising helps us to support our efforts and the project.
-                    Your password will be stored in a properly encrypted form, but email address will be stored as it is. 
+                    By signing up, you agree to share your email with us which will be stored in plain text form. The data will
+                    be stored in a MongoDB Cloud Database, therefore, Dbcrafter will not be responsible for any kind of data theft 
+                    or leaks. Your password will be converted into a hash with bcrypt before storing it in the database, but email address will be stored as it is. 
                 </p>
             </div>
         </div>
