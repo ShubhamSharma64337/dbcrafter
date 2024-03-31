@@ -15,16 +15,16 @@ export default function AboutContent({theme}) {
             Following is an overview of the tools and services used to build the webapp - <br></br>
             <br></br>
             <ul className='w-full sm:w-1/2 text-xl sm:text-2xl'>
-              <li className='flex justify-between bg-blue-50 p-3 rounded my-1 items-center'><span className='underline my-2'>Drawing:</span> HTML Canvas API</li>
-              <li className='flex justify-between bg-blue-50 p-3 rounded my-1 items-center'><span className='underline my-2'>Styling:</span> TailwindCSS</li>
-              <li className='flex justify-between bg-blue-50 p-3 rounded my-1 items-center'><span className='underline my-2'>Javascript Library:</span> ReactJS</li>
-              <li className='flex justify-between bg-blue-50 p-3 rounded my-1 items-center'><span className='underline my-2'>React Framework/Bundler:</span> Vite</li>
-              <li className='flex justify-between bg-blue-50 p-3 rounded my-1 items-center'><span className='underline my-2'>Icons:</span> heroicons</li>
-              <li className='flex justify-between bg-blue-50 p-3 rounded my-1 items-center'><span className='underline my-2'>Version Control:</span> git</li>
-              <li className='flex justify-between bg-blue-50 p-3 rounded my-1 items-center'><span className='underline my-2'>Backend Framework:</span> ExpressJS</li>
-              <li className='flex justify-between bg-blue-50 p-3 rounded my-1 items-center'><span className='underline my-2'>Database:</span> MongoDB Cloud</li>
-              <li className='flex justify-between bg-blue-50 p-3 rounded my-1 items-center'><span className='underline my-2'>Frontend Hosting:</span> Github Pages</li>
-              <li className='flex justify-between bg-blue-50 p-3 rounded my-1 items-center'><span className='underline my-2'>Backend Hosting:</span> Google Cloud AppEngine</li>
+              <li className={`flex justify-between ${theme==='dark'?'bg-blue-900':'bg-blue-50'} p-3 rounded my-1 items-center`}><span className='underline my-2'>Drawing:</span> HTML Canvas API</li>
+              <li className={`flex justify-between ${theme==='dark'?'bg-blue-900':'bg-blue-50'} p-3 rounded my-1 items-center`}><span className='underline my-2'>Styling:</span> TailwindCSS</li>
+              <li className={`flex justify-between ${theme==='dark'?'bg-blue-900':'bg-blue-50'} p-3 rounded my-1 items-center`}><span className='underline my-2'>Javascript Library:</span> ReactJS</li>
+              <li className={`flex justify-between ${theme==='dark'?'bg-blue-900':'bg-blue-50'} p-3 rounded my-1 items-center`}><span className='underline my-2'>React Framework/Bundler:</span> Vite</li>
+              <li className={`flex justify-between ${theme==='dark'?'bg-blue-900':'bg-blue-50'} p-3 rounded my-1 items-center`}><span className='underline my-2'>Icons:</span> heroicons</li>
+              <li className={`flex justify-between ${theme==='dark'?'bg-blue-900':'bg-blue-50'} p-3 rounded my-1 items-center`}><span className='underline my-2'>Version Control:</span> git</li>
+              <li className={`flex justify-between ${theme==='dark'?'bg-blue-900':'bg-blue-50'} p-3 rounded my-1 items-center`}><span className='underline my-2'>Backend Framework:</span> ExpressJS</li>
+              <li className={`flex justify-between ${theme==='dark'?'bg-blue-900':'bg-blue-50'} p-3 rounded my-1 items-center`}><span className='underline my-2'>Database:</span> MongoDB Cloud</li>
+              <li className={`flex justify-between ${theme==='dark'?'bg-blue-900':'bg-blue-50'} p-3 rounded my-1 items-center`}><span className='underline my-2'>Frontend Hosting:</span> Github Pages</li>
+              <li className={`flex justify-between ${theme==='dark'?'bg-blue-900':'bg-blue-50'} p-3 rounded my-1 items-center`}><span className='underline my-2'>Backend Hosting:</span> Google Cloud AppEngine</li>
             </ul>
         </div>
       </div>
