@@ -11,7 +11,7 @@ export default function Navbar({title, theme, toggleTheme, showAlert, authInfo, 
     }
     function login(){
         setIsLoading(true);
-        fetch(import.meta.env.PROD?urls.productionUrl:urls.devUrl+'/loginstatus', {
+        fetch(import.meta.env.PROD?urls.productionUrl+'/loginstatus':urls.devUrl+'/loginstatus', {
           method: 'GET',
           headers: {         
             'Content-Type': 'application/json',
@@ -37,7 +37,7 @@ export default function Navbar({title, theme, toggleTheme, showAlert, authInfo, 
     //it does not trigger the login checker again and again
     function logout(){
         setIsLoading(true); //starting the loader
-        fetch(import.meta.env.PROD?urls.productionUrl:urls.devUrl+'/logout', {
+        fetch(import.meta.env.PROD?urls.productionUrl+'/logout':urls.devUrl+'/logout', {
           method: 'GET',
           headers: {         
             'Content-Type': 'application/json',

@@ -8,7 +8,7 @@ export default function Diagrams({authInfo, showAlert, setDiagram, setIsLoading,
 
     function getdiagrams(){
         setIsLoading(true);
-        fetch(import.meta.env.PROD?urls.productionUrl:urls.devUrl+'/user/getdiagrams', {
+        fetch(import.meta.env.PROD?urls.productionUrl+'/user/getdiagrams':urls.devUrl+'/user/getdiagrams', {
           method: 'GET',
           headers: {         
             'Content-Type': 'application/json',
@@ -47,7 +47,7 @@ export default function Diagrams({authInfo, showAlert, setDiagram, setIsLoading,
 
     function openDiagram(e){
       setIsLoading(true);
-      fetch(import.meta.env.PROD?urls.productionUrl:urls.devUrl+'/user/getdiagram', {
+      fetch(import.meta.env.PROD?urls.productionUrl+'/user/getdiagram':urls.devUrl+'/user/getdiagram', {
           method: 'POST',
           headers: {         
             'Content-Type': 'application/json',
@@ -81,7 +81,7 @@ export default function Diagrams({authInfo, showAlert, setDiagram, setIsLoading,
         return;
       }
       setIsLoading(true);
-      fetch(import.meta.env.PROD?urls.productionUrl:urls.devUrl+'/user/deletediagram', {
+      fetch(import.meta.env.PROD?urls.productionUrl+'/user/deletediagram':urls.devUrl+'/user/deletediagram', {
           method: 'POST',
           headers: {         
             'Content-Type': 'application/json',
@@ -143,7 +143,7 @@ export default function Diagrams({authInfo, showAlert, setDiagram, setIsLoading,
         return;
       }
       setIsLoading(true);
-      fetch(import.meta.env.PROD?urls.productionUrl:urls.devUrl+'/user/renamediagram', {
+      fetch(import.meta.env.PROD?urls.productionUrl+'/user/renamediagram':urls.devUrl+'/user/renamediagram', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',

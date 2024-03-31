@@ -21,7 +21,7 @@ export default function SignupForm({showAlert, theme, setIsLoading, urls}) {
     }
     //starting the loader
     setIsLoading(true);
-    fetch(import.meta.env.PROD?urls.productionUrl:urls.devUrl+'/signup', {
+    fetch(import.meta.env.PROD?urls.productionUrl+'/signup':urls.devUrl+'/signup', {
       method: 'POST',
       headers: {         
         'Content-Type': 'application/json',

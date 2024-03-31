@@ -529,7 +529,7 @@ export default function MainCanvas({showAlert, theme, authInfo, diagram, setDiag
 
     function saveDiagram() {
         setIsLoading(true);
-        fetch(import.meta.env.PROD?urls.productionUrl:urls.devUrl+'/user/savediagram', {
+        fetch(import.meta.env.PROD?urls.productionUrl+'/user/savediagram':urls.devUrl+'/user/savediagram', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

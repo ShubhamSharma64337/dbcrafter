@@ -21,7 +21,7 @@ export default function LoginForm({showAlert, setAuthInfo, theme, setIsLoading, 
     })
     //starting the loader
     setIsLoading(true);
-    fetch(import.meta.env.PROD?urls.productionUrl:urls.devUrl+'/signin', {
+    fetch(import.meta.env.PROD?urls.productionUrl+'/signin':urls.devUrl+'/signin', {
       method: 'POST',
       headers: {         
         'Content-Type': 'application/json',
