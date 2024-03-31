@@ -72,7 +72,7 @@ export default function SqlModal({diagram, show,  toggleModal}) {
             </div>
 
             {/* Modal Body */}
-            <div className="modal-body p-5 text-lg">
+            <div className="modal-body p-5 text-lg overflow-x-auto">
                 {sql?sql.map((stmt, index)=>{return <pre key={index}>{stmt} <br></br><br></br></pre>}):'No SQL Generated'}
             </div>
         </div>
