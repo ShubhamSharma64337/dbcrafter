@@ -1,5 +1,5 @@
 .loading-ring{
-    animation: loading 0.75s ease infinite;
+    animation: loading 0.50s linear infinite;
 }
 
 @keyframes loading {
