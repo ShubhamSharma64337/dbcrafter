@@ -1,3 +1,7 @@
+body{
+    overscroll-behavior: contain; /*This is required to prevent reloading when touching and dragging down a diagram on mobile devices in chrome*/
+}
+
 .loading-ring{
     animation: loading 0.50s linear infinite;
 }

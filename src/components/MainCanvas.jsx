@@ -52,7 +52,6 @@ export default function MainCanvas({showAlert, theme, authInfo, diagram, setDiag
     // tables in the state and sets the selectedTblIndex state variable
     // to the index of the table on which mouse button is down
     function handleMouseDown(event) {
-        
         event.preventDefault();
         if(!diagram.tbls){
             return;
@@ -60,9 +59,16 @@ export default function MainCanvas({showAlert, theme, authInfo, diagram, setDiag
         //By default the clientY and clientX values will be relative to whole document
         //therefore we need to get offsets of the canvas relative to document(navbar height needs to be subtracted for example)
         //and subtract them from the clientX and clientY values.
-        let clientX_correct = (event.clientX - event.target.getBoundingClientRect().left)/scale - offset.x; //do not divide offset by scale as it is already
+        let clientX_correct = null, clientY_correct = null;
+        clientX_correct = (event.clientX - event.target.getBoundingClientRect().left)/scale - offset.x; //do not divide offset by scale as it is already
         //calculated after dividing the pointer location by the scale
-        let clientY_correct = (event.clientY - event.target.getBoundingClientRect().top)/scale - offset.y;
+        clientY_correct = (event.clientY - event.target.getBoundingClientRect().top)/scale - offset.y;
+        
+        if(event.type == 'touchstart'){//if event is touchstart, we need to extract first touch using touches[0] and then use its clientX/Y properties
+            clientX_correct = (event.touches[0].clientX - event.target.getBoundingClientRect().left)/scale - offset.x; //do not divide offset by scale as it is already
+            clientY_correct = (event.touches[0].clientY - event.target.getBoundingClientRect().top)/scale - offset.y;
+
+        }
         let mystart = {...start};
         mystart.startX = parseInt(clientX_correct);
         mystart.startY = parseInt(clientY_correct);
@@ -95,11 +101,17 @@ export default function MainCanvas({showAlert, theme, authInfo, diagram, setDiag
 
     //implements drag and drop
     function dragHandler(event) {
-
+        event.preventDefault();
+        let clientX_correct = null, clientY_correct = null;
         if (!(selections.is_dragging)) {
             if(isPanning){ //if this is placed outside this outer condition, trying to move table causes panning, yet to find out why?
-                let clientX_correct = (event.clientX - event.target.getBoundingClientRect().left)/scale - offset.x;
-                let clientY_correct = (event.clientY - event.target.getBoundingClientRect().top)/scale - offset.y;
+                if(event.type == 'touchmove'){
+                    clientX_correct = (event.touches[0].clientX - event.target.getBoundingClientRect().left)/scale - offset.x;
+                    clientY_correct = (event.touches[0].clientY - event.target.getBoundingClientRect().top)/scale - offset.y;
+                } else {
+                    clientX_correct = (event.clientX - event.target.getBoundingClientRect().left)/scale - offset.x;
+                    clientY_correct = (event.clientY - event.target.getBoundingClientRect().top)/scale - offset.y;
+                }
                 let mouseX = parseInt(clientX_correct);
                 let mouseY = parseInt(clientY_correct);
                 let dx = mouseX - start.startX;
@@ -117,9 +129,13 @@ export default function MainCanvas({showAlert, theme, authInfo, diagram, setDiag
             return;
         }
         else {
-            event.preventDefault();
-            let clientX_correct = (event.clientX - event.target.getBoundingClientRect().left)/scale - offset.x;
-            let clientY_correct = (event.clientY - event.target.getBoundingClientRect().top)/scale - offset.y;
+            if(event.type == 'touchmove'){ //if event is touchmove, we need to extract first touch using touches[0] and then use its clientX/Y properties
+                clientX_correct = (event.touches[0].clientX - event.target.getBoundingClientRect().left)/scale - offset.x;
+                clientY_correct = (event.touches[0].clientY - event.target.getBoundingClientRect().top)/scale - offset.y;        
+            } else {
+                clientX_correct = (event.clientX - event.target.getBoundingClientRect().left)/scale - offset.x;
+                clientY_correct = (event.clientY - event.target.getBoundingClientRect().top)/scale - offset.y;
+            }
             let mouseX = parseInt(clientX_correct);
             let mouseY = parseInt(clientY_correct);
 
@@ -585,7 +601,7 @@ export default function MainCanvas({showAlert, theme, authInfo, diagram, setDiag
                 <div className={`fixed top-4 left-1/2 -translate-x-1/2 bg-white border border-blue-500 px-2 py-1 rounded ${!authInfo? 'hidden':''}`}>
                     {diagram.name?diagram.name:'unnamed'}
                 </div>
-                <canvas id='canvas' width={window.innerWidth} height={window.innerHeight} onMouseDown={handleMouseDown} onMouseMove={dragHandler} onMouseUp={handleMouseUp}></canvas>
+                <canvas id='canvas' width={window.innerWidth} height={window.innerHeight} onTouchStart={handleMouseDown} onTouchMove={dragHandler} onTouchEnd={handleMouseUp} onMouseDown={handleMouseDown} onMouseMove={dragHandler} onMouseUp={handleMouseUp}></canvas>
                 <div className="top-right-buttons flex flex-col fixed top-4 right-4 gap-5">
                     <button type='button' className={`group relative bg-blue-700 flex shadow-lg p-3 text-white transition-transform rounded-full hover:scale-110 ${authInfo ? '' : 'hidden'}`} onClick={() => { 
                         setDiagram({ name: null, tbls: [{ name: 'Table1', x: 100, y: 100, w: 150, notNull: false, pKey: null, fields: [{ name: 'id', type: 'INT', isFKey: false, refTbl: 'NONE', refField: 'NONE'}] }] }); 
