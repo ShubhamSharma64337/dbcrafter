@@ -26,10 +26,10 @@ export default function MainContent({theme, authInfo}) {
                             </div>
                         </div>
                     </div>
-                    <div className='flex sm:hidden'>
+                    <div className='sm:hidden'>
                         <ImageList theme={theme}></ImageList>
                     </div>
-                    <div className='hidden sm:flex h-full'>
+                    <div className='hidden sm:flex'>
                         <Slider theme={theme}></Slider>
                     </div>
         </div>
