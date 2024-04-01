@@ -7,7 +7,7 @@ import Alert from './components/Alert.jsx';
 import Diagrams from './components/Diagrams.jsx';
 import { useEffect, useState } from 'react';
 import {
-  BrowserRouter as Router,
+  HashRouter as Router,
   Routes,
   Route,
 } from "react-router-dom";
@@ -52,8 +52,7 @@ function App(){
   }
   return (
     <div>
-      <Router basename={import.meta.env.PROD?'/dbcrafter_frontend':undefined}> 
-      {/* basename is necessary because github pages hosts app at user.ghub.io/repo_name so every route will be prefixed with repo_name */}
+      <Router> 
       <Navbar title='Dbcrafter' theme={theme} alert={alert} toggleTheme={toggleTheme} showAlert={showAlert} authInfo = {authInfo} setAuthInfo={setAuthInfo} setIsLoading={setIsLoading} urls={urls}/>
       <Alert alert={alert} closeAlert={closeAlert}/>
       <Loader isLoading={isLoading}/>
