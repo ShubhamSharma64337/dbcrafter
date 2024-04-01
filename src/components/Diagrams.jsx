@@ -23,6 +23,7 @@ export default function Diagrams({authInfo, showAlert, setDiagram, setIsLoading,
                 return {...element, isEditing: false}
               }));
             } else {
+              setDiagrams(null); //without this, if the last diagram is deleted, the state will remain same, and the last diagram will still be shown on page
               setLoadStatus('No Diagrams Found!');
               showAlert(data.message, 'danger');
               return;
