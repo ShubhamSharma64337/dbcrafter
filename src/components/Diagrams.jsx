@@ -5,7 +5,7 @@ import {  useNavigate } from "react-router-dom";
 export default function Diagrams({authInfo, showAlert, setDiagram, setIsLoading, urls}) {
     const navigate = useNavigate();
     const [diagrams, setDiagrams] = useState(null);
-
+    const [loadStatus, setLoadStatus] = useState('Fetching Diagrams...');
     function getdiagrams(){
         setIsLoading(true);
         fetch(import.meta.env.PROD?urls.productionUrl+'/user/getdiagrams':urls.devUrl+'/user/getdiagrams', {
@@ -23,11 +23,13 @@ export default function Diagrams({authInfo, showAlert, setDiagram, setIsLoading,
                 return {...element, isEditing: false}
               }));
             } else {
+              setLoadStatus('No Diagrams Found!');
               showAlert(data.message, 'danger');
               return;
             }
         })
         .catch((error)=>{
+          setLoadStatus('Unable to Fetch Diagrams!');
           showAlert('An error occured while trying to access the backend API', 'danger')
           console.log(error)
         })
@@ -240,7 +242,7 @@ export default function Diagrams({authInfo, showAlert, setDiagram, setIsLoading,
             <path strokeLinecap="round" strokeLinejoin="round" d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z" />
           </svg>
           <div className="text-3xl">
-          No diagrams found
+            {loadStatus}
           </div>
           <div className="bottom-right-buttons flex flex-col fixed bottom-5 right-5 gap-5">
                     <button type='button' className={`group relative bg-blue-700 flex shadow-lg p-3 text-white transition-transform rounded-full hover:scale-110`} onClick={()=>{
