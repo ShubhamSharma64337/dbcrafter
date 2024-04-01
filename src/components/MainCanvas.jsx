@@ -52,7 +52,6 @@ export default function MainCanvas({showAlert, theme, authInfo, diagram, setDiag
     // tables in the state and sets the selectedTblIndex state variable
     // to the index of the table on which mouse button is down
     function handleMouseDown(event) {
-        event.preventDefault();
         if(!diagram.tbls){
             return;
         }
@@ -101,7 +100,6 @@ export default function MainCanvas({showAlert, theme, authInfo, diagram, setDiag
 
     //implements drag and drop
     function dragHandler(event) {
-        event.preventDefault();
         let clientX_correct = null, clientY_correct = null;
         if (!(selections.is_dragging)) {
             if(isPanning){ //if this is placed outside this outer condition, trying to move table causes panning, yet to find out why?

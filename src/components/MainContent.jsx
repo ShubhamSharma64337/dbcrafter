@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom';
 import Slider from './Slider';
+import ImageList from './ImageList';
 
 
 export default function MainContent({theme, authInfo}) {
@@ -25,7 +26,12 @@ export default function MainContent({theme, authInfo}) {
                             </div>
                         </div>
                     </div>
-                    <Slider/>
+                    <div className='flex sm:hidden'>
+                        <ImageList theme={theme}></ImageList>
+                    </div>
+                    <div className='hidden sm:flex h-full'>
+                        <Slider theme={theme}></Slider>
+                    </div>
         </div>
     )
 }
