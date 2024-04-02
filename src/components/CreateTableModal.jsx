@@ -133,8 +133,8 @@ export default function CreateTableModal({show, toggleCreateModal, addTable, tbl
 
 
   return (
-    show && <div className="overlay overflow-auto fixed justify-start md:justify-center  flex items-start pt-5 top-0 w-screen h-screen bg-black bg-opacity-35" id="addTblModal" data-modal-id="addTblModal">
-        <div className="modal bg-white rounded">
+    show && <div className="overlay overflow-auto fixed justify-center md:justify-center flex items-start p-5 top-0 w-screen h-screen bg-black bg-opacity-35" id="addTblModal" data-modal-id="addTblModal">
+        <div className="modal bg-white rounded w-full">
             {/* Modal Header */}
             <div className="modal-header flex justify-between items-center border-blue-700 border-b-2 p-3">
               <button type="button" className="p-2 rounded-full transition-colors bg-slate-200 hover:bg-red-300" onClick={closeModal}>

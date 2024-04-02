@@ -136,8 +136,8 @@ export default function EditModal({table, editShow, toggleEditModal, tbls, showA
     //passed to edit modal will be null, so in that case, we need to make sure we avoid displaying the modal.
     //we can make sure this never happens by makiing the other code work in such a way, that whenever the diagram is updated, it makes sure
     //that selectedTbl does not go out of bounds, or is reset to null
-    editShow && table && <div className="overlay overflow-auto fixed justify-start md:justify-center  flex items-start pt-5 top-0 w-screen h-screen bg-black bg-opacity-35" id="addTblModal" data-modal-id="addTblModal">
-        <div className="modal bg-white rounded">
+    editShow && table && <div className="overlay overflow-auto fixed justify-center md:justify-center  flex items-start p-5 top-0 w-screen h-screen bg-black bg-opacity-35" id="addTblModal" data-modal-id="addTblModal">
+        <div className="modal bg-white rounded w-full">
             {/* Modal Header */}
             <div className="modal-header flex justify-between items-center border-blue-700 border-b-2 p-3">
               <button type="button" className="p-2 rounded-full transition-colors bg-slate-200 hover:bg-red-300" onClick={closeEditModal}>
