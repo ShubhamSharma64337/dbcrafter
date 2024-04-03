@@ -20,7 +20,7 @@ function App(){
   const [authInfo, setAuthInfo] = useState(null); //this stores whether user is logged in or not, if logged in, it contains the email
   const [alert, setAlert] = useState(null);
   const [theme, setTheme] = useState('light');
-  const [diagram, setDiagram] = useState({name: null, tbls: [{ name: 'Table1', x: 100, y: 100, w: 150, notNull: false, pKey: null, fields: [{ name: 'id', type: 'INT', size: null, isFKey: false, refTbl: 'NONE', refField: 'NONE'}] }]});
+  const [diagram, setDiagram] = useState({name: null, tbls:null, isPublic: false});
   const dtypes = [
     "CHAR","VARCHAR","BINARY","VARBINARY","TINYBLOB","TINYTEXT","TEXT","BLOB","MEDIUMTEXT","MEDIUMBLOB","LONGTEXT","LONGBLOB","TINYINT","BOOL","BOOLEAN","SMALLINT","MEDIUMINT","INT","INTEGER","BIGINT","FLOAT","DOUBLE","DECIMAL","DEC","ENUM","SET","DATE","DATETIME","TIMESTAMP","TIME","YEAR"];
   
@@ -33,7 +33,7 @@ function App(){
   //new diagram object is created. 
   useEffect(()=>{
     if(!authInfo){
-      setDiagram({name: null, tbls: [{ name: 'Table1', x: 100, y: 100, w: 150, notNull: false, pKey: null, fields: [{ name: 'id', type: 'INT', size: null, isFKey: false, refTbl: 'NONE', refField: 'NONE'}] }]})
+      setDiagram({name: null, tbls: null})
     }
   }, [authInfo])
   function showAlert(message, type){

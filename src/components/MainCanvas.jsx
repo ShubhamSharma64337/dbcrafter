@@ -602,7 +602,7 @@ export default function MainCanvas({showAlert, theme, authInfo, diagram, setDiag
                 <canvas id='canvas' width={window.innerWidth} height={window.innerHeight} onTouchStart={handleMouseDown} onTouchMove={dragHandler} onTouchEnd={handleMouseUp} onMouseDown={handleMouseDown} onMouseMove={dragHandler} onMouseUp={handleMouseUp}></canvas>
                 <div className="top-right-buttons flex flex-col fixed top-4 right-4 gap-5">
                     <button type='button' className={`group relative bg-blue-700 flex shadow-lg p-3 text-white transition-transform rounded-full hover:scale-110 ${authInfo ? '' : 'hidden'}`} onClick={() => { 
-                        setDiagram({ name: null, tbls: [{ name: 'Table1', x: 100, y: 100, w: 150, notNull: false, pKey: null, fields: [{ name: 'id', type: 'INT', isFKey: false, refTbl: 'NONE', refField: 'NONE'}] }] }); 
+                        setDiagram({ name: null, tbls: null , isPublic: false}); 
                         setSelections({...selections, selectedTbl: null}); //this makes sure that the previous selected index is reset to null, if user creates a new diagram, else, out of bounds index will be accessed in the EditTable modal, which leads to error
                         }}>
                         <span className={`text-sm text-nowrap tooltip absolute right-full top-1/2 bg-white text-black border border-slate-500 px-2 py-1 rounded -translate-y-1/2 me-2 hidden group-hover:block`}>New Diagram</span>

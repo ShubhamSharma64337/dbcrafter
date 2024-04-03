@@ -28,6 +28,7 @@ export default function CreateDiagramModal({diagram, createDiagramModalShow, tog
 
     let diagramCopy = {...diagram};
     diagramCopy.name = diagramName;
+    diagramCopy.isPublic = isPublic;
     setIsLoading(true);
     fetch(import.meta.env.PROD?urls.productionUrl+'/user/creatediagram':urls.devUrl+'/user/creatediagram', {
       method: 'POST',
