@@ -1,9 +1,12 @@
 import React, { useEffect } from 'react'
 import {useState} from 'react'
 import {  useNavigate } from "react-router-dom";
+import TemplateModal from './TemplateModal';
 
 export default function Diagrams({authInfo, showAlert, setDiagram, setIsLoading, urls}) {
     const navigate = useNavigate();
+    const [templates, setTemplates]= useState(null);
+    const [templateModalVisible, setTemplateModalVisible] = useState(false);
     const [diagrams, setDiagrams] = useState(null);
     const [loadStatus, setLoadStatus] = useState('Fetching Diagrams...');
     function getdiagrams(){
@@ -181,6 +184,43 @@ export default function Diagrams({authInfo, showAlert, setDiagram, setIsLoading,
           setIsLoading(false);
         })
     }
+    
+
+    function toggleTemplateModal(){
+      templateModalVisible?setTemplateModalVisible(false):setTemplateModalVisible(true);
+    }
+
+    function openTemplateModal(){
+      setIsLoading(true);
+      fetch(import.meta.env.PROD?urls.productionUrl+'/user/gettemplates':urls.devUrl+'/user/gettemplates', {
+          method: 'GET',
+          headers: {         
+            'Content-Type': 'application/json',
+          },
+          credentials: 'include', //this must be set in order to save the received session-cookie,
+          //also, after setting credentials to include, cors options must be set to allow credentials and origin from this domain
+        })
+        .then(response => response.json()) //response.json() or response.text() provides the 'data'
+        .then((data)=>{
+            if(data.success){
+              setTemplates(data.message);
+            } else {
+              setTemplates(null); //without this, if the last diagram is deleted, the state will remain same, and the last diagram will still be shown on page
+              setLoadStatus('No Templates Found!');
+              showAlert(data.message, 'danger');
+              return;
+            }
+        })
+        .catch((error)=>{
+          setLoadStatus('Unable to Fetch Templates!');
+          showAlert('An error occured while trying to access the backend API', 'danger')
+          console.log(error)
+        })
+        .finally(()=>{
+          setIsLoading(false);
+        })
+      toggleTemplateModal();
+    }
 
     return (
     diagrams ? <div className='p-5 grid gap-5 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'>
@@ -221,7 +261,6 @@ export default function Diagrams({authInfo, showAlert, setDiagram, setIsLoading,
                         
                       </div>
                   </div>
-                
               </div>
               )
           })}
@@ -235,7 +274,14 @@ export default function Diagrams({authInfo, showAlert, setDiagram, setIsLoading,
                             <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                         </svg>
                     </button>
+                    <button type='button' className={`group relative bg-blue-700 flex shadow-lg p-3 text-white transition-transform rounded-full hover:scale-110`} onClick={openTemplateModal}>
+                        <span className={`text-sm text-nowrap tooltip absolute right-full top-1/2 bg-white text-black border border-slate-500 px-2 py-1 rounded -translate-y-1/2 me-2 hidden group-hover:block`}>New From Template</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
+                          <path fillRule="evenodd" d="M9 4.5a.75.75 0 0 1 .721.544l.813 2.846a3.75 3.75 0 0 0 2.576 2.576l2.846.813a.75.75 0 0 1 0 1.442l-2.846.813a3.75 3.75 0 0 0-2.576 2.576l-.813 2.846a.75.75 0 0 1-1.442 0l-.813-2.846a3.75 3.75 0 0 0-2.576-2.576l-2.846-.813a.75.75 0 0 1 0-1.442l2.846-.813A3.75 3.75 0 0 0 7.466 7.89l.813-2.846A.75.75 0 0 1 9 4.5ZM18 1.5a.75.75 0 0 1 .728.568l.258 1.036c.236.94.97 1.674 1.91 1.91l1.036.258a.75.75 0 0 1 0 1.456l-1.036.258c-.94.236-1.674.97-1.91 1.91l-.258 1.036a.75.75 0 0 1-1.456 0l-.258-1.036a2.625 2.625 0 0 0-1.91-1.91l-1.036-.258a.75.75 0 0 1 0-1.456l1.036-.258a2.625 2.625 0 0 0 1.91-1.91l.258-1.036A.75.75 0 0 1 18 1.5ZM16.5 15a.75.75 0 0 1 .712.513l.394 1.183c.15.447.5.799.948.948l1.183.395a.75.75 0 0 1 0 1.422l-1.183.395c-.447.15-.799.5-.948.948l-.395 1.183a.75.75 0 0 1-1.422 0l-.395-1.183a1.5 1.5 0 0 0-.948-.948l-1.183-.395a.75.75 0 0 1 0-1.422l1.183-.395c.447-.15.799-.5.948-.948l.395-1.183A.75.75 0 0 1 16.5 15Z" clipRule="evenodd" />
+                        </svg>
+                    </button>
           </div>
+          <TemplateModal visible={templateModalVisible} toggleVisible={toggleTemplateModal} templates={templates}></TemplateModal>
     </div>
     :
         <div className='flex justify-center items-center gap-5 p-10 flex-col'>
@@ -256,6 +302,7 @@ export default function Diagrams({authInfo, showAlert, setDiagram, setIsLoading,
                         </svg>
                     </button>
           </div>
+          <TemplateModal visible={templateModalVisible} toggleVisible={toggleTemplateModal} templates={templates}></TemplateModal>
         </div>
   )
 }

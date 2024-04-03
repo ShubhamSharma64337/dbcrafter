@@ -2,12 +2,17 @@ import React, { useEffect, useState } from 'react'
 
 export default function CreateDiagramModal({diagram, createDiagramModalShow, toggleModal, showAlert, setDiagram, setIsLoading, urls}) {
   const [diagramName, setDiagramName] = useState(null);
+  const [isPublic, setIsPublic] = useState(false);
   useEffect(()=>{
     setDiagramName(diagram.name);
   }, [diagram])
 
   function handleChange(e){
     setDiagramName(e.currentTarget.value);
+  }
+
+  function handleCheck(e){
+    setIsPublic(e.currentTarget.checked);
   }
 
   function createDiagram(){
@@ -73,11 +78,14 @@ export default function CreateDiagramModal({diagram, createDiagramModalShow, tog
             {/* Modal Body */}
             <div className="modal-body p-5">
             <form className="flex flex-col overflow-auto">
-                    <div className="formItem mb-3">
+                    <div className="formItem my-3">
                         {/* <label className='block' htmlFor='diagramName'>Diagram Name</label> */}
                         <input required={true} name='diagramName' id='diagramName' value={diagramName?diagramName:''} onChange={handleChange} className="border p-2 w-full outline-blue-700" type='text' placeholder='Enter the diagram name'></input>
                     </div>
-                    
+                    <div className="formItem my-3 flex items-center gap-x-2">
+                        <input name='isPublic' id='isPublic' className="h-4 w-4 " type='checkbox' checked={isPublic} onChange={handleCheck}></input>
+                        <label  htmlFor='isPublic' className=' text-slate-500'>Make this Public</label>
+                    </div>
                 </form>
             </div>
         </div>
