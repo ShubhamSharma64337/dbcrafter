@@ -42,7 +42,7 @@ export default function CreateDiagramModal({diagram, createDiagramModalShow, tog
     .then(response => response.json()) //response.json() or response.text() provides the 'data'
     .then((data) => {
         if(data.success){
-          setDiagram({...diagram, name: diagramName})
+          setDiagram({...diagramCopy})
           showAlert(data.message, 'success');
           toggleModal();
         } else {
