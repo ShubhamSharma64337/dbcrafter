@@ -58,7 +58,7 @@ export default function LoginForm({showAlert, setAuthInfo, theme, setIsLoading, 
           <div className="my-5">
               <label htmlFor="loginPassword" className="block">Password</label>
               <div className='flex'>
-                <input type={passwordVisible?'text':'password'} required={true} className="z-10 border-2 border-r-0 border-slate-300 bg-slate-50 p-2 w-full outline-blue-700 hover:bg-slate-200 transition focus:bg-white" id="loginPassword" placeholder='Enter your password' name="password"/>
+                <input type={passwordVisible?'text':'password'} required={true} className="border-2 border-r-2 border-slate-300 bg-slate-50 p-2 w-full outline-blue-700 hover:bg-slate-200 transition focus:bg-white" id="loginPassword" placeholder='Enter your password' name="password"/>
                 <button type='button' className="px-2 border-2 border-l-0 -z-2 border-slate-300 bg-slate-50 text-slate-500 rounded-r outline-blue-700" onClick={()=>{
                   passwordVisible?setPasswordVisible(false):setPasswordVisible(true);
                 }}>

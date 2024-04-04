@@ -232,8 +232,8 @@ export default function Diagrams({authInfo, showAlert, setDiagram, setIsLoading,
     diagrams ? <div className='p-5 grid gap-5 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'>
           {diagrams.map((element, index)=>{
               return (
-              <div key={index} className="card relative p-1 rounded-lg border-2 border-blue-50 shadow-lg flex flex-col justify-center items-center transition overflow-hidden hover:shadow hover:border-2 hover:border-blue-400">
-                  <div className='publicStatus absolute top-2 right-2 text-gray-400'>
+              <div key={index} className="card p-1 rounded-lg border-2 border-blue-50 shadow-lg flex flex-col justify-center items-center transition overflow-hidden hover:shadow hover:border-2 hover:border-blue-400">
+                  <div className='publicStatus w-full flex justify-end text-gray-400'>
                         {
                           element.isPublic?
                           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-6 w-6 open-eye">
