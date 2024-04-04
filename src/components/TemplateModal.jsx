@@ -46,7 +46,7 @@ export default function TemplateModal({visible, toggleVisible, templates, setIsL
 
 
             {/* Modal Body */}
-            <div className="modal-body grid grid-cols-3 gap-5 p-5">
+            <div className="modal-body grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5 p-5">
               {templates? templates.map((element, index)=>{
                 return <button key={index} className='card grid grid-cols-1 grid-rows-4 bg-white rounded hover:bg-sky-100 px-5 py-4 border border-slate-200' onClick={openTemplate} data-id={element._id}>
                   <div className='image row-span-3 flex justify-center items-center px-5 py-20'>
