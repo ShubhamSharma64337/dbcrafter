@@ -9,6 +9,15 @@ import SqlModal from './SqlModal';
 import { Link } from 'react-router-dom';
 import GuestInfoModal from './GuestInfoModal';
 export default function MainCanvas({showAlert, theme, authInfo, diagram, setDiagram, dtypes, setIsLoading, urls}) {
+    window.addEventListener('resize',()=>{ //this helps in properly resizing the canvas whenever user resizes the window
+        const canvas = document.getElementById("canvas");
+        const ctxt = canvas.getContext("2d");
+        
+        ctxt.canvas.height = window.innerHeight - 0.1;
+        ctxt.canvas.width = window.innerWidth;
+        draw();
+    })
+    
     const [createTableModalShow, setCreateTableModalShow] = useState(false); //this is used to show or hide add table modal
     const [editTableModalShow, setEditTableModalShow] = useState(false); //this is used to show or hide edit table modal
     const [createDiagramModalShow, setCreateDiagramModalShow] = useState(false); //this is used to show or hide the create diagram modal
