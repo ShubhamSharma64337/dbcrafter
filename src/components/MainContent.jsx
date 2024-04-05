@@ -10,11 +10,11 @@ export default function MainContent({theme, authInfo}) {
                     <div className={`first flex flex-col items-center justify-center ${theme==='dark'?'text-white':'text-slate-900'}`}>
                         <div className="text  text-center w-10/12 sm:w-6/12">
                             <div className='main font-[800]  text-5xl sm:text-6xl'>
-                                Quickly design relational schemas without leaving your browser
+                                Quickly design and share relational schemas without leaving your browser
                             </div>
                             <div className='text-xl mt-5'>
                             Dbcrafter is an open source relational schema design tool built using <a className={`${theme==='dark'?'text-blue-400':'text-blue-700'} underline`} href='https://react.dev' target="_blank">ReactJS</a>, <a className={`${theme==='dark'?'text-blue-400':'text-blue-700'} underline`} href='https://expressjs.com/' target="_blank">ExpressJS</a> and <a className={`${theme==='dark'?'text-blue-400':'text-blue-700'} underline`} href='https://www.mongodb.com/' target="_blank">MongoDB</a>.
-                            You can design, save and edit diagrams with an intuitive interface.
+                            You can design, publically share, save and edit diagrams with an intuitive interface. It is mobile device supported, so you can effortlessly access the diagrams on your phone too.
                             </div>
                         </div>
                         <div className={`flex gap-x-20 mt-10 ${authInfo?'hidden':''}`}>
