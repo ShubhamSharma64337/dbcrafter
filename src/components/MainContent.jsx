@@ -6,8 +6,8 @@ import ImageList from './ImageList';
 
 export default function MainContent({theme, authInfo}) {
     return (
-        <div className={`grid grid-rows-2 h-[190vh] ${theme==='dark'?'bg-blue-950':''} transition-colors`}>
-                    <div className={`first flex flex-col items-center justify-center ${theme==='dark'?'text-white':'text-slate-900'}`}>
+        <div className={`flex flex-col gap-y-10 ${theme==='dark'?'bg-blue-950':''} transition-colors`}>
+                    <div className={`first py-10 flex flex-col items-center justify-center ${theme==='dark'?'text-white':'text-slate-900'}`}>
                         <div className="text  text-center w-10/12 sm:w-6/12">
                             <div className='main font-[800]  text-5xl sm:text-6xl'>
                                 Quickly design and share relational schemas without leaving your browser
@@ -29,7 +29,7 @@ export default function MainContent({theme, authInfo}) {
                     <div className='sm:hidden'>
                         <ImageList theme={theme}></ImageList>
                     </div>
-                    <div className='hidden sm:flex'>
+                    <div className='hidden sm:flex py-5'>
                         <Slider theme={theme}></Slider>
                     </div>
         </div>
