@@ -257,19 +257,27 @@ export default function MainCanvas({showAlert, theme, authInfo, diagram, setDiag
         }
 
         //this finds linked tables and calls drawArrow function to show their links
-        for(let tbl of diagram.tbls){
-            for(let field of tbl.fields){
+        diagram.tbls.map((tbl)=>{
+            tbl.fields.map((field, fromIndex)=>{
                 if(field.isFKey){
                     let second_tbl = diagram.tbls.find((tbl)=> tbl.name === field.refTbl);
-                    drawArrow(tbl,second_tbl);
+                    let toIndex = 0;
+                    for(let second_field of second_tbl.fields){
+                        if(second_field.name === field.refField){
+                            break;
+                        }
+                        toIndex++;
+                    }
+                    drawArrow(tbl,second_tbl, fromIndex, toIndex);
                 }
-            }
-        }
+            })
+        })
     }
 
     //this function is used to draw arrows between tables linked with foreign keys
     //we will use bezier curves to draw smooth curves using control points
-    function drawArrow(tbl1,tbl2){
+    //fromIndex and toIndex are the indices of the fields which are linked
+    function drawArrow(tbl1,tbl2,fromIndex, toIndex){
         const canvas = document.getElementById("canvas");
         const ctxt = canvas.getContext("2d");
         ctxt.strokeStyle = '#0d6efd';
@@ -283,46 +291,132 @@ export default function MainCanvas({showAlert, theme, authInfo, diagram, setDiag
         let tbl2_right = tbl2.x + tbl2.w;
         let tbl1_top = tbl1.y;
         let tbl2_top = tbl2.y;
-        let ctrl_dist, fromx, fromy, tox, toy; //ctrl_dist is used to calculate offsets for making control points
+        let ctrl_dist = 100, fromx, fromy, tox, toy; //ctrl_dist is used to calculate offsets for making control points
         let arrow_length = 11, arrow_width = 6;
         ctxt.beginPath();
-        if(tbl2_top > tbl1_bottom){ //when tbl2 is below tbl1
-            fromx = tbl1_left + tbl1.w*0.5;
-            fromy = tbl1_bottom;
-            tox = tbl2_left + tbl2.w*0.5;
-            toy = tbl2_top;
-            ctrl_dist = 200; 
-            ctxt.moveTo(fromx, fromy);
-            ctxt.bezierCurveTo(fromx, fromy+ctrl_dist, tox, toy-ctrl_dist, tox, toy);
-            ctxt.stroke();
-            ctxt.beginPath(); //now drawing the arrowhead (downwards)
-            ctxt.moveTo(tox,toy);
-            ctxt.lineTo(tox+arrow_width, toy-arrow_length);
-            ctxt.lineTo(tox-arrow_width, toy-arrow_length);
-            ctxt.fill();
+
+        // To draw the relation curve, we will consider three main cases :
+        // Case 1. When tbl2(containing primary key) is below tbl1(containing foregin key)
+        // Case 2. When tbl2 is above, i.e its bottom edge is above top edge of tbl1
+        // Case 3. When tbl2 is not completely above or below, but is on left or right of tbl1
+        if(tbl2_top > tbl1_bottom){ //CASE 1: when tbl2 is below tbl1 (This will contain 4 cases)
+            if(tbl2_right < tbl1_left){ //Case 1: when tbl2's right edge is on left of left edge of upper table
+                fromx = tbl1_left;
+                fromy = tbl1_top + commonProps.rh*(fromIndex+1) + commonProps.rh*0.5;
+                tox = tbl2_right;
+                toy = tbl2_top + commonProps.rh*(toIndex+1) + commonProps.rh*0.5;
+                ctxt.moveTo(fromx, fromy);
+                ctxt.bezierCurveTo(fromx - ctrl_dist, fromy, tox + ctrl_dist, toy, tox, toy);
+                ctxt.stroke();
+                ctxt.beginPath(); //now drawing the arrowhead (downwards)
+                ctxt.moveTo(tox,toy);
+                ctxt.lineTo(tox+arrow_length, toy-arrow_width);
+                ctxt.lineTo(tox+arrow_length, toy+arrow_width);
+                ctxt.fill();
+            } else if(tbl2_right > tbl1_left && tbl2_right < tbl1_right){ //Case 2: when tbl2's right edge is within the width of tbl1
+                fromx = tbl1_left;
+                fromy = tbl1_top + commonProps.rh*(fromIndex+1) + commonProps.rh*0.5;
+                tox = tbl2_left;
+                toy = tbl2_top + commonProps.rh*(toIndex+1) + commonProps.rh*0.5;
+                ctxt.moveTo(fromx, fromy);
+                ctxt.bezierCurveTo(fromx - ctrl_dist, fromy, tox - ctrl_dist, toy, tox, toy);
+                ctxt.stroke();
+                ctxt.beginPath(); //now drawing the arrowhead (downwards)
+                ctxt.moveTo(tox,toy);
+                ctxt.lineTo(tox-arrow_length, toy-arrow_width);
+                ctxt.lineTo(tox-arrow_length, toy+arrow_width);
+                ctxt.fill();
+            } else if(tbl2_right > tbl1_right && tbl2_left < tbl1_right){ //Case 3: when tbl2's right edge is on right of tbl1's right edge, but left edge of tbl2 is
+                //still within the width of tbl1
+                fromx = tbl1_right;
+                fromy = tbl1_top + commonProps.rh*(fromIndex+1) + commonProps.rh*0.5;
+                tox = tbl2_right;
+                toy = tbl2_top + commonProps.rh*(toIndex+1) + commonProps.rh*0.5;
+                ctxt.moveTo(fromx, fromy);
+                ctxt.bezierCurveTo(fromx + ctrl_dist, fromy, tox + ctrl_dist, toy, tox, toy);
+                ctxt.stroke();
+                ctxt.beginPath(); //now drawing the arrowhead (downwards)
+                ctxt.moveTo(tox,toy);
+                ctxt.lineTo(tox+arrow_length, toy-arrow_width);
+                ctxt.lineTo(tox+arrow_length, toy+arrow_width);
+                ctxt.fill();
+            } else if(tbl2_right > tbl1_right && tbl2_left > tbl1_right){//Case 4: when both right and left edge of tbl2 are on right of right edge of tbl1
+                fromx = tbl1_right;
+                fromy = tbl1_top + commonProps.rh*(fromIndex+1) + commonProps.rh*0.5;
+                tox = tbl2_left;
+                toy = tbl2_top + commonProps.rh*(toIndex+1) + commonProps.rh*0.5;
+                ctxt.moveTo(fromx, fromy);
+                ctxt.bezierCurveTo(fromx + ctrl_dist, fromy, tox - ctrl_dist, toy, tox, toy);
+                ctxt.stroke();
+                ctxt.beginPath(); //now drawing the arrowhead (downwards)
+                ctxt.moveTo(tox,toy);
+                ctxt.lineTo(tox-arrow_length, toy-arrow_width);
+                ctxt.lineTo(tox-arrow_length, toy+arrow_width);
+                ctxt.fill();
+            }
             
-        } else if (tbl2_bottom < tbl1_top){ //when tbl1 is below tbl2
-            fromx = tbl1_left + tbl1.w*0.5;
-            fromy = tbl1_top;
-            tox = tbl2_left + tbl2.w*0.5;
-            toy = tbl2_bottom;
-            ctrl_dist = 200; 
-            ctxt.moveTo(fromx, fromy);
-            ctxt.bezierCurveTo(fromx, fromy - ctrl_dist, tox, toy + ctrl_dist, tox, toy);
-            ctxt.stroke();
-            ctxt.beginPath(); //now drawing the arrowhead (upward)
-            ctxt.moveTo(tox,toy);
-            ctxt.lineTo(tox+arrow_width, toy+arrow_length);
-            ctxt.lineTo(tox-arrow_width, toy+arrow_length);
-            ctxt.fill();
-        } else { //when tbl2 is either on left or right of tbl1
+        } else if (tbl2_bottom < tbl1_top){ //CASE 2: when tbl2 is above tbl1 (This will contain 4 cases)
+            if(tbl2_right < tbl1_left){ //Case 1: when tbl2's right edge is on left of left edge of tbl1
+                fromx = tbl1_left;
+                fromy = tbl1_top + commonProps.rh*(fromIndex+1) + commonProps.rh*0.5;
+                tox = tbl2_right;
+                toy = tbl2_top + commonProps.rh*(toIndex+1) + commonProps.rh*0.5;
+                ctxt.moveTo(fromx, fromy);
+                ctxt.bezierCurveTo(fromx - ctrl_dist, fromy, tox + ctrl_dist, toy, tox, toy);
+                ctxt.stroke();
+                ctxt.beginPath(); //now drawing the arrowhead (downwards)
+                ctxt.moveTo(tox,toy);
+                ctxt.lineTo(tox+arrow_length, toy-arrow_width);
+                ctxt.lineTo(tox+arrow_length, toy+arrow_width);
+                ctxt.fill();
+            } else if(tbl2_right > tbl1_left && tbl2_right < tbl1_right){ //Case 2: when tbl2's right edge is within the width of tbl1
+                fromx = tbl1_left;
+                fromy = tbl1_top + commonProps.rh*(fromIndex+1) + commonProps.rh*0.5;
+                tox = tbl2_left;
+                toy = tbl2_top + commonProps.rh*(toIndex+1) + commonProps.rh*0.5;
+                ctxt.moveTo(fromx, fromy);
+                ctxt.bezierCurveTo(fromx - ctrl_dist, fromy, tox - ctrl_dist, toy, tox, toy);
+                ctxt.stroke();
+                ctxt.beginPath(); //now drawing the arrowhead (downwards)
+                ctxt.moveTo(tox,toy);
+                ctxt.lineTo(tox-arrow_length, toy-arrow_width);
+                ctxt.lineTo(tox-arrow_length, toy+arrow_width);
+                ctxt.fill();
+            } else if(tbl2_right > tbl1_right && tbl2_left < tbl1_right){ //Case 3: when tbl2's right edge is on right of tbl1's right edge, but left edge of tbl2 is
+                //still within the width of tbl1
+                fromx = tbl1_right;
+                fromy = tbl1_top + commonProps.rh*(fromIndex+1) + commonProps.rh*0.5;
+                tox = tbl2_right;
+                toy = tbl2_top + commonProps.rh*(toIndex+1) + commonProps.rh*0.5;
+                ctxt.moveTo(fromx, fromy);
+                ctxt.bezierCurveTo(fromx + ctrl_dist, fromy, tox + ctrl_dist, toy, tox, toy);
+                ctxt.stroke();
+                ctxt.beginPath(); //now drawing the arrowhead (downwards)
+                ctxt.moveTo(tox,toy);
+                ctxt.lineTo(tox+arrow_length, toy-arrow_width);
+                ctxt.lineTo(tox+arrow_length, toy+arrow_width);
+                ctxt.fill();
+            } else if(tbl2_right > tbl1_right && tbl2_left > tbl1_right){//Case 4: when both right and left edge of tbl2 are on right of right edge of tbl1
+                fromx = tbl1_right;
+                fromy = tbl1_top + commonProps.rh*(fromIndex+1) + commonProps.rh*0.5;
+                tox = tbl2_left;
+                toy = tbl2_top + commonProps.rh*(toIndex+1) + commonProps.rh*0.5;
+                ctxt.moveTo(fromx, fromy);
+                ctxt.bezierCurveTo(fromx + ctrl_dist, fromy, tox - ctrl_dist, toy, tox, toy);
+                ctxt.stroke();
+                ctxt.beginPath(); //now drawing the arrowhead (downwards)
+                ctxt.moveTo(tox,toy);
+                ctxt.lineTo(tox-arrow_length, toy-arrow_width);
+                ctxt.lineTo(tox-arrow_length, toy+arrow_width);
+                ctxt.fill();
+            }
+        } else { //CASE 3: When tbl2 is either on left or right of tbl1
             if(tbl2_right < tbl1_left){ //tbl1 is on right of tbl2
                 fromx = tbl1_left;
-                fromy = tbl1_top + (tbl1_bottom-tbl1_top)*0.5;
+                fromy = tbl1_top + commonProps.rh*(fromIndex+1) + commonProps.rh*0.5;
                 tox = tbl2_right;
-                toy = tbl2_top + (tbl2_bottom-tbl2_top)*0.5;
-                ctrl_dist = 100;
-                ctxt.moveTo(tbl1_left, tbl1_top + (tbl1_bottom - tbl1_top)*0.5); 
+                toy = tbl2_top + commonProps.rh*(toIndex+1) + commonProps.rh*0.5;
+                ctxt.moveTo(fromx, fromy); 
                 ctxt.bezierCurveTo(fromx - ctrl_dist, fromy,  tox + ctrl_dist, toy, tox, toy);
                 ctxt.stroke();
                 ctxt.beginPath(); //now drawing the arrowhead (leftwards)
@@ -332,11 +426,10 @@ export default function MainCanvas({showAlert, theme, authInfo, diagram, setDiag
                 ctxt.fill();
             } else if(tbl2_left > tbl1_right){ //tbl2 is on the right of tbl1
                 fromx = tbl1_right;
-                fromy = tbl1_top + (tbl1_bottom-tbl1_top)*0.5;
+                fromy = tbl1_top + commonProps.rh*(fromIndex+1) + commonProps.rh*0.5;
                 tox = tbl2_left;
-                toy = tbl2_top + (tbl2_bottom-tbl2_top)*0.5;
-                ctrl_dist = 100;
-                ctxt.moveTo(tbl1.x + tbl1.w, tbl1.y + (tbl1_bottom-tbl1_top)*0.5);
+                toy = tbl2_top + commonProps.rh*(toIndex+1) + commonProps.rh*0.5;
+                ctxt.moveTo(fromx,fromy);
                 ctxt.bezierCurveTo(fromx + ctrl_dist, fromy,  tox - ctrl_dist, toy, tox, toy);
                 ctxt.stroke();
                 ctxt.beginPath(); //now drawing the arrowhead (rightwards)
