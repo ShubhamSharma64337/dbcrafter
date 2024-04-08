@@ -313,7 +313,7 @@ export default function MainCanvas({showAlert, theme, authInfo, diagram, setDiag
                 ctxt.lineTo(tox+arrow_length, toy-arrow_width);
                 ctxt.lineTo(tox+arrow_length, toy+arrow_width);
                 ctxt.fill();
-            } else if(tbl2_right > tbl1_left && tbl2_right < tbl1_right){ //Case 2: when tbl2's right edge is within the width of tbl1
+            } else if(tbl2_right > tbl1_left && tbl2_right <= tbl1_right){ //Case 2: when tbl2's right edge is within the width of tbl1
                 fromx = tbl1_left;
                 fromy = tbl1_top + commonProps.rh*(fromIndex+1) + commonProps.rh*0.5;
                 tox = tbl2_left;
@@ -369,7 +369,7 @@ export default function MainCanvas({showAlert, theme, authInfo, diagram, setDiag
                 ctxt.lineTo(tox+arrow_length, toy-arrow_width);
                 ctxt.lineTo(tox+arrow_length, toy+arrow_width);
                 ctxt.fill();
-            } else if(tbl2_right > tbl1_left && tbl2_right < tbl1_right){ //Case 2: when tbl2's right edge is within the width of tbl1
+            } else if(tbl2_right > tbl1_left && tbl2_right <= tbl1_right){ //Case 2: when tbl2's right edge is within the width of tbl1
                 fromx = tbl1_left;
                 fromy = tbl1_top + commonProps.rh*(fromIndex+1) + commonProps.rh*0.5;
                 tox = tbl2_left;
