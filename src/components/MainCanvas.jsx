@@ -23,7 +23,7 @@ export default function MainCanvas({showAlert, theme, authInfo, diagram, setDiag
     const [createDiagramModalShow, setCreateDiagramModalShow] = useState(false); //this is used to show or hide the create diagram modal
     const [sqlModalShow, setSqlModalShow] = useState(false);
     const [guestModalShow, setGuestModalShow] = useState(false);
-
+    const [curveType, setCurveType] = useState('bezier');
 
     const [offset, setOffset] = useState({x: 0, y:0}); //this is used to pan the canvas by translating the origin by offset
     const [isPanning, setIsPanning] = useState(false) //this is used to check if user has clicked ang is dragging on the canvas (i.e not the table)
@@ -268,16 +268,21 @@ export default function MainCanvas({showAlert, theme, authInfo, diagram, setDiag
                         }
                         toIndex++;
                     }
-                    drawArrow(tbl,second_tbl, fromIndex, toIndex);
+                    if(curveType === 'edge'){
+                        drawCurveEdge(tbl,second_tbl, fromIndex, toIndex);
+                    } else {
+                        drawCurveBezier(tbl,second_tbl, fromIndex, toIndex);
+                    }
                 }
             })
         })
     }
 
+    //Draw Curvy Arrows
     //this function is used to draw arrows between tables linked with foreign keys
     //we will use bezier curves to draw smooth curves using control points
     //fromIndex and toIndex are the indices of the fields which are linked
-    function drawArrow(tbl1,tbl2,fromIndex, toIndex){
+    function drawCurveBezier(tbl1,tbl2,fromIndex, toIndex){
         const canvas = document.getElementById("canvas");
         const ctxt = canvas.getContext("2d");
         ctxt.strokeStyle = '#0d6efd';
@@ -437,6 +442,214 @@ export default function MainCanvas({showAlert, theme, authInfo, diagram, setDiag
                 ctxt.lineTo(tox-arrow_length, toy-arrow_width);
                 ctxt.lineTo(tox-arrow_length, toy+arrow_width);
                 ctxt.fill();
+            }
+        }
+        ctxt.stroke();
+        ctxt.fillStyle = 'black';
+        ctxt.strokeStyle = 'black';
+    }
+
+    //Draw Edgy Arrows
+    //this function is used to draw arrows between tables linked with foreign keys
+    //we will use normal lineTo function of ctxt because this function creates edgy arrows
+    //fromIndex and toIndex are the indices of the fields which are linked
+    function drawCurveEdge(tbl1,tbl2,fromIndex, toIndex){
+        const canvas = document.getElementById("canvas");
+        const ctxt = canvas.getContext("2d");
+        ctxt.strokeStyle = '#0d6efd';
+        ctxt.fillStyle = '#0d6efd';
+        ctxt.lineWidth = '2';
+        let tbl1_bottom = tbl1.y + commonProps.rh + commonProps.rh*tbl1.fields.length;
+        let tbl2_bottom = tbl2.y + commonProps.rh + commonProps.rh*tbl2.fields.length;
+        let tbl1_left = tbl1.x;
+        let tbl2_left = tbl2.x;
+        let tbl1_right = tbl1.x + tbl1.w;
+        let tbl2_right = tbl2.x + tbl2.w;
+        let tbl1_top = tbl1.y;
+        let tbl2_top = tbl2.y;
+        let table_dist = 20, fromx, fromy, tox, toy; //ctrl_dist is used to calculate offsets for making control points
+        let arrow_length = 11, arrow_width = 6;
+        ctxt.beginPath();
+
+        // To draw the relation curve, we will consider three main cases :
+        // Case 1. When tbl2(containing primary key) is below tbl1(containing foregin key)
+        // Case 2. When tbl2 is above, i.e its bottom edge is above top edge of tbl1
+        // Case 3. When tbl2 is not completely above or below, but is on left or right of tbl1
+        if(tbl2_top > tbl1_bottom){ //CASE 1: when tbl2 is below tbl1 (This will contain 4 cases)
+            if(tbl2_right + arrow_length + table_dist < tbl1_left){ //Case 1: when tbl2's right edge is on left of left edge of upper table
+                fromx = tbl1_left;
+                fromy = tbl1_top + commonProps.rh*(fromIndex+1) + commonProps.rh*0.5;
+                tox = tbl2_right;
+                toy = tbl2_top + commonProps.rh*(toIndex+1) + commonProps.rh*0.5;
+                ctxt.moveTo(fromx, fromy);
+                ctxt.lineTo(fromx-table_dist, fromy);
+                ctxt.lineTo(fromx-table_dist, toy);
+                ctxt.lineTo(tox, toy);
+                ctxt.stroke();
+                ctxt.beginPath(); //now drawing the arrowhead (downwards)
+                ctxt.moveTo(tox,toy);
+                ctxt.lineTo(tox+arrow_length, toy-arrow_width);
+                ctxt.lineTo(tox+arrow_length, toy+arrow_width);
+                ctxt.fill();
+            } else if(tbl2_right + table_dist + arrow_length > tbl1_left && tbl2_right <= tbl1_right){ //Case 2: when tbl2's right edge is within the width of tbl1
+                fromx = tbl1_left;
+                fromy = tbl1_top + commonProps.rh*(fromIndex+1) + commonProps.rh*0.5;
+                tox = tbl2_left;
+                toy = tbl2_top + commonProps.rh*(toIndex+1) + commonProps.rh*0.5;
+                ctxt.moveTo(fromx, fromy);
+                ctxt.lineTo(tox - table_dist, fromy);
+                ctxt.lineTo(tox - table_dist, toy);
+                ctxt.lineTo(tox, toy);
+                ctxt.stroke();
+                ctxt.beginPath(); //now drawing the arrowhead (downwards)
+                ctxt.moveTo(tox,toy);
+                ctxt.lineTo(tox-arrow_length, toy-arrow_width);
+                ctxt.lineTo(tox-arrow_length, toy+arrow_width);
+                ctxt.fill();
+            } else if(tbl2_right > tbl1_right && tbl2_left - arrow_length - table_dist < tbl1_right){ //Case 3: when tbl2's right edge is on right of tbl1's right edge, but left edge of tbl2 is
+                //still within the width of tbl1
+                fromx = tbl1_right;
+                fromy = tbl1_top + commonProps.rh*(fromIndex+1) + commonProps.rh*0.5;
+                tox = tbl2_right;
+                toy = tbl2_top + commonProps.rh*(toIndex+1) + commonProps.rh*0.5;
+                ctxt.moveTo(fromx, fromy);
+                ctxt.lineTo(tox+table_dist, fromy);
+                ctxt.lineTo(tox+table_dist, toy);
+                ctxt.lineTo(tox, toy);
+                ctxt.stroke();
+                ctxt.beginPath(); //now drawing the arrowhead (downwards)
+                ctxt.moveTo(tox,toy);
+                ctxt.lineTo(tox+arrow_length, toy-arrow_width);
+                ctxt.lineTo(tox+arrow_length, toy+arrow_width);
+                ctxt.fill();
+            } else if(tbl2_right > tbl1_right && tbl2_left > tbl1_right){//Case 4: when both right and left edge of tbl2 are on right of right edge of tbl1
+                fromx = tbl1_right;
+                fromy = tbl1_top + commonProps.rh*(fromIndex+1) + commonProps.rh*0.5;
+                tox = tbl2_left;
+                toy = tbl2_top + commonProps.rh*(toIndex+1) + commonProps.rh*0.5;
+                ctxt.moveTo(fromx, fromy);
+                ctxt.lineTo(fromx+table_dist, fromy);
+                ctxt.lineTo(fromx+table_dist, toy);
+                ctxt.lineTo(tox, toy);
+                ctxt.stroke();
+                ctxt.beginPath(); //now drawing the arrowhead (downwards)
+                ctxt.moveTo(tox,toy);
+                ctxt.lineTo(tox-arrow_length, toy-arrow_width);
+                ctxt.lineTo(tox-arrow_length, toy+arrow_width);
+                ctxt.fill();
+            }
+            
+        } else if (tbl2_bottom < tbl1_top){ //CASE 2: when tbl2 is above tbl1 (This will contain 4 cases)
+            if(tbl2_right + arrow_length + table_dist < tbl1_left){ //Case 1: when tbl2's right edge is on left of left edge of upper table
+                fromx = tbl1_left;
+                fromy = tbl1_top + commonProps.rh*(fromIndex+1) + commonProps.rh*0.5;
+                tox = tbl2_right;
+                toy = tbl2_top + commonProps.rh*(toIndex+1) + commonProps.rh*0.5;
+                ctxt.moveTo(fromx, fromy);
+                ctxt.lineTo(fromx-table_dist, fromy);
+                ctxt.lineTo(fromx-table_dist, toy);
+                ctxt.lineTo(tox, toy);
+                ctxt.stroke();
+                ctxt.beginPath(); //now drawing the arrowhead (downwards)
+                ctxt.moveTo(tox,toy);
+                ctxt.lineTo(tox+arrow_length, toy-arrow_width);
+                ctxt.lineTo(tox+arrow_length, toy+arrow_width);
+                ctxt.fill();
+            } else if(tbl2_right + table_dist + arrow_length > tbl1_left && tbl2_right <= tbl1_right){ //Case 2: when tbl2's right edge is within the width of tbl1
+                fromx = tbl1_left;
+                fromy = tbl1_top + commonProps.rh*(fromIndex+1) + commonProps.rh*0.5;
+                tox = tbl2_left;
+                toy = tbl2_top + commonProps.rh*(toIndex+1) + commonProps.rh*0.5;
+                ctxt.moveTo(fromx, fromy);
+                ctxt.lineTo(tox - table_dist, fromy);
+                ctxt.lineTo(tox - table_dist, toy);
+                ctxt.lineTo(tox, toy);
+                ctxt.stroke();
+                ctxt.beginPath(); //now drawing the arrowhead (downwards)
+                ctxt.moveTo(tox,toy);
+                ctxt.lineTo(tox-arrow_length, toy-arrow_width);
+                ctxt.lineTo(tox-arrow_length, toy+arrow_width);
+                ctxt.fill();
+            } else if(tbl2_right > tbl1_right && tbl2_left - arrow_length - table_dist < tbl1_right){ //Case 3: when tbl2's right edge is on right of tbl1's right edge, but left edge of tbl2 is
+                //still within the width of tbl1
+                fromx = tbl1_right;
+                fromy = tbl1_top + commonProps.rh*(fromIndex+1) + commonProps.rh*0.5;
+                tox = tbl2_right;
+                toy = tbl2_top + commonProps.rh*(toIndex+1) + commonProps.rh*0.5;
+                ctxt.moveTo(fromx, fromy);
+                ctxt.lineTo(tox+table_dist, fromy);
+                ctxt.lineTo(tox+table_dist, toy);
+                ctxt.lineTo(tox, toy);
+                ctxt.stroke();
+                ctxt.beginPath(); //now drawing the arrowhead (downwards)
+                ctxt.moveTo(tox,toy);
+                ctxt.lineTo(tox+arrow_length, toy-arrow_width);
+                ctxt.lineTo(tox+arrow_length, toy+arrow_width);
+                ctxt.fill();
+            } else if(tbl2_right > tbl1_right && tbl2_left > tbl1_right){//Case 4: when both right and left edge of tbl2 are on right of right edge of tbl1
+                fromx = tbl1_right;
+                fromy = tbl1_top + commonProps.rh*(fromIndex+1) + commonProps.rh*0.5;
+                tox = tbl2_left;
+                toy = tbl2_top + commonProps.rh*(toIndex+1) + commonProps.rh*0.5;
+                ctxt.moveTo(fromx, fromy);
+                ctxt.lineTo(fromx+table_dist, fromy);
+                ctxt.lineTo(fromx+table_dist, toy);
+                ctxt.lineTo(tox, toy);
+                ctxt.stroke();
+                ctxt.beginPath(); //now drawing the arrowhead (downwards)
+                ctxt.moveTo(tox,toy);
+                ctxt.lineTo(tox-arrow_length, toy-arrow_width);
+                ctxt.lineTo(tox-arrow_length, toy+arrow_width);
+                ctxt.fill();
+            }
+            
+        } else { //CASE 3: When tbl2 is either on left or right of tbl1
+            if(tbl2_right + arrow_length + table_dist < tbl1_left){ //tbl1 is on right of tbl2
+                fromx = tbl1_left;
+                fromy = tbl1_top + commonProps.rh*(fromIndex+1) + commonProps.rh*0.5;
+                tox = tbl2_right;
+                toy = tbl2_top + commonProps.rh*(toIndex+1) + commonProps.rh*0.5;
+                ctxt.moveTo(fromx, fromy); 
+                ctxt.lineTo(fromx - table_dist, fromy); 
+                ctxt.lineTo(fromx - table_dist, toy); 
+                ctxt.lineTo(tox, toy); 
+                ctxt.stroke();
+                ctxt.beginPath(); //now drawing the arrowhead (leftwards)
+                ctxt.moveTo(tox,toy);
+                ctxt.lineTo(tox+arrow_length, toy-arrow_width);
+                ctxt.lineTo(tox+arrow_length, toy+arrow_width);
+                ctxt.fill();
+            } else if(tbl2_left - arrow_length - table_dist > tbl1_right){ //tbl2 is on the right of tbl1
+                fromx = tbl1_right;
+                fromy = tbl1_top + commonProps.rh*(fromIndex+1) + commonProps.rh*0.5;
+                tox = tbl2_left;
+                toy = tbl2_top + commonProps.rh*(toIndex+1) + commonProps.rh*0.5;
+                ctxt.moveTo(fromx,fromy);
+                ctxt.lineTo(fromx+table_dist,fromy);
+                ctxt.lineTo(fromx+table_dist,toy);
+                ctxt.lineTo(tox,toy);
+                ctxt.stroke();
+                ctxt.beginPath(); //now drawing the arrowhead (rightwards)
+                ctxt.moveTo(tox,toy);
+                ctxt.lineTo(tox-arrow_length, toy-arrow_width);
+                ctxt.lineTo(tox-arrow_length, toy+arrow_width);
+                ctxt.fill();
+            } else if(tbl2_left > tbl1_right){ //when table2 is very close on left side of table1, we draw a straight line and hide the arrow
+                fromx = tbl1_right;
+                fromy = tbl1_top + commonProps.rh*(fromIndex+1) + commonProps.rh*0.5;
+                tox = tbl2_left;
+                toy = tbl2_top + commonProps.rh*(toIndex+1) + commonProps.rh*0.5;
+                ctxt.moveTo(fromx,fromy);
+                ctxt.lineTo(tox,toy);
+                ctxt.stroke();
+            } else if(tbl2_right < tbl1_left){
+                fromx = tbl1_left;
+                fromy = tbl1_top + commonProps.rh*(fromIndex+1) + commonProps.rh*0.5;
+                tox = tbl2_right;
+                toy = tbl2_top + commonProps.rh*(toIndex+1) + commonProps.rh*0.5;
+                ctxt.moveTo(fromx, fromy);
+                ctxt.lineTo(tox, toy); 
+                ctxt.stroke();
             }
         }
         ctxt.stroke();
@@ -649,6 +862,9 @@ export default function MainCanvas({showAlert, theme, authInfo, diagram, setDiag
     function toggleGuestModal(){
         guestModalShow?setGuestModalShow(false):setGuestModalShow(true);
     }
+    function toggleCurveType(){
+        curveType==='edge'?setCurveType('bezier'):setCurveType('edge');
+    }
 
     function saveDiagram() {
         setIsLoading(true);
@@ -746,6 +962,21 @@ export default function MainCanvas({showAlert, theme, authInfo, diagram, setDiag
                     
                 <div className="bottom-right-buttons flex flex-col fixed bottom-4 right-4 gap-5">
                     
+                    <button type='button' className={`relative group bg-blue-700 shadow-lg p-3 text-white transition-transform rounded-full hover:scale-110 ${authInfo ? '' : 'hidden'}`} onClick={toggleCurveType}>
+                        <span className={`text-sm text-nowrap tooltip absolute right-full top-1/2 bg-white text-black border border-slate-500 px-2 py-1 rounded -translate-y-1/2 me-2 hidden group-hover:block`}>Change Curve Type</span>
+                        { curveType==='bezier'?
+                        <svg viewBox="0 0 76 76" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" baseProfile="full" enable-background="new 0 0 76.00 76.00" xml:space="preserve" fill="#000000">
+                            <g id="SVGRepo_bgCarrier" stroke-width="0">
+                            </g>
+                            <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                            <g id="SVGRepo_iconCarrier"> 
+                                <path fill="none" fill-opacity="1" stroke="white" stroke-width="3" stroke-linejoin="round" d="M 58,18C 58,18 33,24 33,33C 33,42 46,41 46,45C 46,49 22,55 18,56L 19,59C 19,59 49,53 49,45C 49,37 36,40 36,33C 36,26 59,21 59,21L 58,18 Z "></path>
+                            </g>
+                        </svg>
+                        :
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#ffffff"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M3 16.5L9 10L13 16L21 6.5" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
+                    }
+                    </button>
                     <button type='button' className={`relative group bg-blue-700 shadow-lg p-3 text-white transition-transform rounded-full hover:scale-110 ${authInfo ? '' : 'hidden'}`} onClick={diagram.name?saveDiagram:toggleCreateDiagramModal}>
                         <span className={`text-sm text-nowrap tooltip absolute right-full top-1/2 bg-white text-black border border-slate-500 px-2 py-1 rounded -translate-y-1/2 me-2 hidden group-hover:block`}>Save Changes</span>
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
