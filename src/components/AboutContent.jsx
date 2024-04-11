@@ -2,7 +2,7 @@ import React from 'react'
 
 export default function AboutContent({theme}) {
   return (
-    <div className={`p-5 sm:px-20 ${theme==='dark'?'bg-blue-950 text-white':''} transition`}>
+    <div className={`p-5 sm:px-20 ${theme==='dark'?'bg-gray-950 text-white':''} transition`}>
       <div className={`flex flex-col justify-center items-center p-10 sm:p-20 gap-y-10 rounded my-5`}>
         <div className='text-2xl underline'>
             About the website

@@ -6,7 +6,7 @@ import ImageList from './ImageList';
 
 export default function MainContent({theme, authInfo}) {
     return (
-        <div className={`flex flex-col gap-y-10 ${theme==='dark'?'bg-blue-950':''} transition-colors`}>
+        <div className={`flex flex-col gap-y-10 ${theme==='dark'?'bg-gray-950':''} transition-colors`}>
                     <div className={`first py-10 flex flex-col items-center justify-center ${theme==='dark'?'text-white':'text-slate-900'}`}>
                         <div className="text  text-center w-10/12 sm:w-6/12">
                             <div className='main font-[800]  text-5xl sm:text-6xl'>

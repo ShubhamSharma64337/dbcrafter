@@ -911,7 +911,7 @@ export default function MainCanvas({showAlert, theme, authInfo, diagram, setDiag
     }
 
     return (
-            <div className="canvas-div flex justify-center" style={theme==='dark'?{ backgroundImage: `url(${backgroundDark})`}:{ backgroundImage: `url(${background})`}}>
+            <div className={`bg-black canvas-div flex justify-center ${theme==='dark'?'bg-gray-900':'bg-white'}`} style={theme==='dark'?{ backgroundImage: `url(${backgroundDark})`}:{ backgroundImage: `url(${background})`}}>
                 <p className={`guestmode-alert flex justify-center items-center gap-x-2 bg-white shadow opacity-75 text-slate-800 ring-1 text-center absolute rounded-b px-1 py-0.5 top-0 ${authInfo ? 'hidden scale-0' : ''}`}>
                     Guest Mode
                     <button onClick={toggleGuestModal}>

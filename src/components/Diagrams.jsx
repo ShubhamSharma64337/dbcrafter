@@ -3,7 +3,7 @@ import {useState} from 'react'
 import {  useNavigate } from "react-router-dom";
 import TemplateModal from './TemplateModal';
 
-export default function Diagrams({authInfo, showAlert, setDiagram, setIsLoading, urls}) {
+export default function Diagrams({authInfo, showAlert, setDiagram, setIsLoading, urls, theme}) {
     const navigate = useNavigate();
     const [templates, setTemplates]= useState(null);
     const [templateModalVisible, setTemplateModalVisible] = useState(false);
@@ -229,10 +229,10 @@ export default function Diagrams({authInfo, showAlert, setDiagram, setIsLoading,
     }
 
     return (
-    diagrams ? <div className='p-5 grid gap-5 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'>
+    diagrams ? <div className={`h-full grid-rows-3 p-5 grid gap-5 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 ${theme==='dark'?'bg-gray-950':'bg-white'}`}>
           {diagrams.map((element, index)=>{
               return (
-              <div key={index} className="card p-1 rounded-lg border-2 border-blue-50 shadow-lg flex flex-col justify-center items-center transition overflow-hidden hover:shadow hover:border-2 hover:border-blue-400">
+              <div key={index} className={`card p-1 rounded-lg ${theme==='dark'?'border-gray-900 bg-gray-900':'border-blue-50'} border-2  shadow-lg flex flex-col justify-center items-center transition overflow-hidden hover:shadow hover:border-2 hover:border-blue-400`}>
                   <div className='publicStatus w-full flex justify-end text-gray-400'>
                         {
                           element.isPublic?
@@ -254,29 +254,29 @@ export default function Diagrams({authInfo, showAlert, setDiagram, setIsLoading,
                     </svg>
 
                   </div>
-                  <div className="body rounded bg-blue-50 flex justify-between items-center w-full overflow-x-auto p-3">
+                  <div className={`body rounded bg-transparent flex justify-between items-center w-full overflow-x-auto p-3 ${theme==='dark'?'text-white':''}`}>
                       <form id={'form'+element._id} className='left flex items-center gap-x-2'>
                       {/* We need to set key value in the below input to one which changes everytime, because, if key value will be same, defaultValue will be cached for first rerender as the input maintains its own state,
                       But, if the key value exists, and changes on rerender, the defaultValue also changes */}
-                        <input key={element._id} type='text' required={true} id={'input'+element._id} defaultValue={element.name} className="diagram-name rounded px-1 py-0.5 outline-blue-700 enabled:border disabled:bg-blue-50" disabled={element.isEditing?false:true} data-diagramid={element._id}/>
+                        <input key={element._id} type='text' required={true} id={'input'+element._id} defaultValue={element.name} className="diagram-name px-1 py-0.5 border-blue-600 enabled:outline-0 enabled:border-b-2 bg-transparent" disabled={element.isEditing?false:true} data-diagramid={element._id}/>
                       </form>
                       <div className='right buttons flex flex-nowrap'>
-                        <button className={`rename-button rounded-full p-2 hover:bg-blue-200 ${element.isEditing?'hidden':''}`} data-diagramid={element._id} onClick={enableEdit}>
+                        <button className={`rename-button rounded-full p-2 ${theme==='dark'?'hover:bg-blue-500':'hover:bg-blue-200'} ${element.isEditing?'hidden':''}`} data-diagramid={element._id} onClick={enableEdit}>
                           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
                             <path d="M21.731 2.269a2.625 2.625 0 0 0-3.712 0l-1.157 1.157 3.712 3.712 1.157-1.157a2.625 2.625 0 0 0 0-3.712ZM19.513 8.199l-3.712-3.712-12.15 12.15a5.25 5.25 0 0 0-1.32 2.214l-.8 2.685a.75.75 0 0 0 .933.933l2.685-.8a5.25 5.25 0 0 0 2.214-1.32L19.513 8.2Z" />
                           </svg>
                         </button>
-                        <button className={`cancel-button rounded-full p-2 hover:bg-blue-200 ${element.isEditing ? '' : 'hidden'}`} data-diagramname={element.name} data-diagramid={element._id} onClick={disableEdit}>
+                        <button className={`cancel-button rounded-full p-2 ${theme==='dark'?'hover:bg-gray-500':'hover:bg-gray-200'} ${element.isEditing ? '' : 'hidden'}`} data-diagramname={element.name} data-diagramid={element._id} onClick={disableEdit}>
                           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
                             <path fillRule="evenodd" d="M5.47 5.47a.75.75 0 0 1 1.06 0L12 10.94l5.47-5.47a.75.75 0 1 1 1.06 1.06L13.06 12l5.47 5.47a.75.75 0 1 1-1.06 1.06L12 13.06l-5.47 5.47a.75.75 0 0 1-1.06-1.06L10.94 12 5.47 6.53a.75.75 0 0 1 0-1.06Z" clipRule="evenodd" />
                           </svg>
                         </button>
-                        <button className={`save-button rounded-full p-2 hover:bg-blue-200 ${element.isEditing?'':'hidden'}`} data-diagramname={element.name} data-diagramid={element._id} onClick={renameDiagram}>
+                        <button className={`save-button rounded-full p-2 ${theme==='dark'?'hover:bg-blue-500':'hover:bg-blue-200'} ${element.isEditing?'':'hidden'}`} data-diagramname={element.name} data-diagramid={element._id} onClick={renameDiagram}>
                           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
                             <path fillRule="evenodd" d="M19.916 4.626a.75.75 0 0 1 .208 1.04l-9 13.5a.75.75 0 0 1-1.154.114l-6-6a.75.75 0 0 1 1.06-1.06l5.353 5.353 8.493-12.74a.75.75 0 0 1 1.04-.207Z" clipRule="evenodd" />
                           </svg>
                         </button>
-                        <button className={`delete-button rounded-full p-2 hover:bg-red-200 ${element.isEditing?'hidden':''}`} data-diagramid={element._id} onClick={deleteDiagram}>
+                        <button className={`delete-button rounded-full p-2 ${theme==='dark'?'hover:bg-red-500':'hover:bg-red-200'} ${element.isEditing?'hidden':''}`} data-diagramid={element._id} onClick={deleteDiagram}>
                           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
                             <path strokeLinecap="round" strokeLinejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
                           </svg>

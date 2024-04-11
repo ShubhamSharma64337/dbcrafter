@@ -54,7 +54,7 @@ function App(){
     <div>
       <Router> 
       <Navbar title='Dbcrafter' theme={theme} alert={alert} toggleTheme={toggleTheme} showAlert={showAlert} authInfo = {authInfo} setAuthInfo={setAuthInfo} setIsLoading={setIsLoading} urls={urls}/>
-      <Alert alert={alert} closeAlert={closeAlert}/>
+      <Alert alert={alert} closeAlert={closeAlert} theme={theme}/>
       <Loader isLoading={isLoading}/>
         <Routes>
           <Route exact path='/' element={<MainContent theme={theme} showAlert={showAlert} authInfo={authInfo} />}/>
