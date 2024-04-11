@@ -190,11 +190,18 @@ export default function MainCanvas({showAlert, theme, authInfo, diagram, setDiag
         for (let tbl of diagram.tbls) {
             
             //filling background of table with white color
-            ctxt.fillStyle = 'white';
+            
             let tbl_height = commonProps.rh + commonProps.rh * tbl.fields.length;
 
-            ctxt.shadowBlur = 20; //setting fill shadow
-            ctxt.shadowColor = "#d0d0d0";   
+            if(theme==='dark'){
+                ctxt.shadowBlur = 0; //setting fill shadow
+                ctxt.shadowColor = "#000000"; 
+                ctxt.fillStyle = '#313244';
+            }  else {
+                ctxt.shadowBlur = 20; //setting fill shadow
+                ctxt.shadowColor = "#d0d0d0"; 
+                ctxt.fillStyle = 'white';
+            }
             
             ctxt.beginPath(); //now filling the rounded white background
             ctxt.roundRect(tbl.x, tbl.y, tbl.w, tbl_height, 5);
@@ -236,10 +243,19 @@ export default function MainCanvas({showAlert, theme, authInfo, diagram, setDiag
                 // ctxt.strokeStyle = 'black';
                 //filling the text
                 if(tbl.pKey === row.name){
-                    ctxt.fillStyle = '#0d6efd';
+                    if(theme==='dark'){
+                        ctxt.fillStyle = '#89b4fa';
+                    } else {
+                        ctxt.fillStyle = '#0d6efd';
+                    }
                     ctxt.fillText(row.name , tbl.x + 3, tbl.y + 16 + commonProps.rh * (row_index));
-                    ctxt.fillStyle = 'black';
+                    
                 } else {
+                    if(theme==='dark'){
+                        ctxt.fillStyle = 'white';
+                    } else {
+                        ctxt.fillStyle = 'black';
+                    }
                     ctxt.fillText(row.name, tbl.x + 3, tbl.y + 16 + commonProps.rh * (row_index));
                 }
                 ctxt.textAlign = 'right'; //this makes sure the datatype is aligned with last character just touching the right border...
