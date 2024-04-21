@@ -38,7 +38,8 @@ export default function MainCanvas({showAlert, theme, authInfo, diagram, setDiag
     // useEffect is used to trigger draw function every single time the component is rendered, mainly to run draw the first time this component is loaded
     useEffect(draw)
     useEffect(()=>{
-        if(diagram.name){ // this checks if diagram is already created and saved in the server, if it is, only then we will autosave it
+        if(diagram.name && !selections.is_dragging){ // this checks if diagram is already created and saved in the server, if it is, only then we will autosave it
+            // the !selections.is_dragging is used to avoid autosaving the diagram when only the arrangement of tables is changed as it leads to unnecessary load on server
             autosaveDiagram();
         }
     },[diagram]);
@@ -931,6 +932,13 @@ export default function MainCanvas({showAlert, theme, authInfo, diagram, setDiag
             body: JSON.stringify(diagram)
         })
             .then(response => response.json()) //response.json() or response.text() provides the 'data'
+            .then((data)=>{
+                if(data.success){
+                    showAlert("Autosave Completed",'success')
+                } else {
+                    showAlert(data.message,'danger')
+                }
+            })
             .catch((error) => {
                 showAlert('An error occured while trying to access the backend API', 'danger')
                 console.log(error)
