@@ -8,6 +8,7 @@ import CreateDiagramModal from './CreateDiagramModal';
 import SqlModal from './SqlModal';
 import { Link } from 'react-router-dom';
 import GuestInfoModal from './GuestInfoModal';
+import AutosaveLoader from './AutosaveLoader';
 export default function MainCanvas({showAlert, theme, authInfo, diagram, setDiagram, dtypes, setIsLoading, urls}) {
     window.addEventListener('resize',()=>{ //this helps in properly resizing the canvas whenever user resizes the window
         const canvas = document.getElementById("canvas");
@@ -35,13 +36,21 @@ export default function MainCanvas({showAlert, theme, authInfo, diagram, setDiag
     const [selections, setSelections] = useState({ selectedTbl: null, is_dragging: false });
 
     // useEffect is used to trigger draw function every single time the component is rendered, mainly to run draw the first time this component is loaded
-    useEffect(draw);
+    useEffect(()=>{
+        draw();
+        if(diagram.name){ // this checks if diagram is already created and saved in the server, if it is, only then we will autosave it
+            autosaveDiagram();
+        }
+    },[diagram]);
     //these are used to determine initial position of pointer (useful in implementing drag and drop)
     //when dragging a table.
     const [start, setStart] = useState({startX: null, startY: null});
 
     //this is used to remember the zoom state
     const [scale, setScale] = useState(1);
+
+    //this is used to show or hide the auto saving loader beside the diagram name
+    const [autoSaving, setAutoSaving] = useState(false);
 
     //this function checks if the value of arguments x,y lies in the table
     //represented by tbl argument and returns true or false accordingly
@@ -910,6 +919,32 @@ export default function MainCanvas({showAlert, theme, authInfo, diagram, setDiag
             })
     }
 
+    function autosaveDiagram() {
+        setAutoSaving(true);
+        fetch(import.meta.env.PROD?urls.productionUrl+'/user/savediagram':urls.devUrl+'/user/savediagram', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            credentials: 'include', //this must be set in order to save the received session-cookie,
+            //also, after setting credentials to include, cors options must be set to allow credentials and origin from this domain
+            body: JSON.stringify(diagram)
+        })
+            .then(response => response.json()) //response.json() or response.text() provides the 'data'
+            .then((data) => {
+                if (!data.success) {
+                    showAlert(data.message, 'success');
+                }
+            })
+            .catch((error) => {
+                showAlert('An error occured while trying to access the backend API', 'danger')
+                console.log(error)
+            })
+            .finally(()=>{
+                setAutoSaving(false);
+            })
+    }
+
     function imgDownload(){
         draw(true); //draw a white background
         let canvas = document.querySelector('canvas'); //retrieve the canvas element
@@ -952,9 +987,14 @@ export default function MainCanvas({showAlert, theme, authInfo, diagram, setDiag
                                     <path d="M6.75 12c0-.619.107-1.213.304-1.764l-3.1-3.1a11.25 11.25 0 0 0-2.63 4.31c-.12.362-.12.752 0 1.114 1.489 4.467 5.704 7.69 10.675 7.69 1.5 0 2.933-.294 4.242-.827l-2.477-2.477A5.25 5.25 0 0 1 6.75 12Z" />
                                 </svg>
 
-                        }
+}
                         <span className={`text-sm text-nowrap tooltip absolute left-full ms-2 top-1/2 bg-white text-black border border-slate-500 px-2 py-1 rounded -translate-y-1/2 me-2 hidden group-hover:block`}>Toggle Public/Private</span>
                     </button>
+                    {
+                        diagram.name?
+                        <AutosaveLoader autoSaving={autoSaving}></AutosaveLoader>
+                        :''
+                    }
                 </div>
                 <canvas id='canvas' width={window.innerWidth} height={window.innerHeight} onTouchStart={handleMouseDown} onTouchMove={dragHandler} onTouchEnd={handleMouseUp} onMouseDown={handleMouseDown} onMouseMove={dragHandler} onMouseUp={handleMouseUp}></canvas>
                 <div className="top-right-buttons flex flex-col fixed top-4 right-4 gap-5">
@@ -981,16 +1021,16 @@ export default function MainCanvas({showAlert, theme, authInfo, diagram, setDiag
                     <button type='button' className={`relative group bg-blue-700 shadow-lg p-3 text-white transition-transform rounded-full hover:scale-110 ${authInfo ? '' : 'hidden'}`} onClick={toggleCurveType}>
                         <span className={`text-sm text-nowrap tooltip absolute right-full top-1/2 bg-white text-black border border-slate-500 px-2 py-1 rounded -translate-y-1/2 me-2 hidden group-hover:block`}>Change Curve Type</span>
                         { curveType==='bezier'?
-                        <svg viewBox="0 0 76 76" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" baseProfile="full" enable-background="new 0 0 76.00 76.00" xml:space="preserve" fill="#000000">
-                            <g id="SVGRepo_bgCarrier" stroke-width="0">
+                        <svg viewBox="0 0 76 76" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" version="1.1" baseProfile="full" enableBackground="new 0 0 76.00 76.00" xmlSpace="preserve" fill="#000000">
+                            <g id="SVGRepo_bgCarrier" strokeWidth="0">
                             </g>
-                            <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                            <g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g>
                             <g id="SVGRepo_iconCarrier"> 
-                                <path fill="none" fill-opacity="1" stroke="white" stroke-width="3" stroke-linejoin="round" d="M 58,18C 58,18 33,24 33,33C 33,42 46,41 46,45C 46,49 22,55 18,56L 19,59C 19,59 49,53 49,45C 49,37 36,40 36,33C 36,26 59,21 59,21L 58,18 Z "></path>
+                                <path fill="none" fillOpacity="1" stroke="white" strokeWidth="3" strokeLinejoin="round" d="M 58,18C 58,18 33,24 33,33C 33,42 46,41 46,45C 46,49 22,55 18,56L 19,59C 19,59 49,53 49,45C 49,37 36,40 36,33C 36,26 59,21 59,21L 58,18 Z "></path>
                             </g>
                         </svg>
                         :
-                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#ffffff"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M3 16.5L9 10L13 16L21 6.5" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#ffffff"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M3 16.5L9 10L13 16L21 6.5" stroke="#ffffff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"></path> </g></svg>
                     }
                     </button>
                     <button type='button' className={`relative group bg-blue-700 shadow-lg p-3 text-white transition-transform rounded-full hover:scale-110 ${authInfo ? '' : 'hidden'}`} onClick={diagram.name?saveDiagram:toggleCreateDiagramModal}>

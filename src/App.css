@@ -10,3 +10,12 @@ body{
     from {transform: rotate(0turn);}
     to {transform: rotate(1turn);}
 }
+
+.autosave-loader{
+    animation: saving 0.75s linear infinite;
+}
+
+@keyframes saving{
+    from {transform: rotate(0turn);}
+    to {transform: rotate(1turn);}
+}
