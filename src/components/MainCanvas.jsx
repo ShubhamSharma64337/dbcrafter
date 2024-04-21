@@ -36,8 +36,8 @@ export default function MainCanvas({showAlert, theme, authInfo, diagram, setDiag
     const [selections, setSelections] = useState({ selectedTbl: null, is_dragging: false });
 
     // useEffect is used to trigger draw function every single time the component is rendered, mainly to run draw the first time this component is loaded
+    useEffect(draw)
     useEffect(()=>{
-        draw();
         if(diagram.name){ // this checks if diagram is already created and saved in the server, if it is, only then we will autosave it
             autosaveDiagram();
         }
