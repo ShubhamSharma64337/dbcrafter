@@ -995,7 +995,7 @@ export default function MainCanvas({showAlert, theme, authInfo, diagram, setDiag
                     </button>
                     {
                         diagram.name?
-                        <AutosaveLoader autoSaving={autoSaving}></AutosaveLoader>
+                        <AutosaveLoader autoSave={autosaveDiagram} autoSaving={autoSaving}></AutosaveLoader>
                         :''
                     }
                 </div>

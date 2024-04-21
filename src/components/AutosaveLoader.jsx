@@ -1,6 +1,6 @@
 import React from 'react'
 
-export default function AutosaveLoader({autoSaving}) {
+export default function AutosaveLoader({autoSave, autoSaving}) {
   return (
       autoSaving ? <div>
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 autosave-loader">
@@ -10,10 +10,12 @@ export default function AutosaveLoader({autoSaving}) {
       </div>
           :
           <div>
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 3M6.75 19.5a4.5 4.5 0 0 1-1.41-8.775 5.25 5.25 0 0 1 10.233-2.33 3 3 0 0 1 3.758 3.848A3.752 3.752 0 0 1 18 19.5H6.75Z" />
-                  <path strokeLinecap="round" strokeLinejoin="round" d="m6.5 12.75 4 4 5-5.5" />
-              </svg>
+              <button onClick={autoSave} className='flex'>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 3M6.75 19.5a4.5 4.5 0 0 1-1.41-8.775 5.25 5.25 0 0 1 10.233-2.33 3 3 0 0 1 3.758 3.848A3.752 3.752 0 0 1 18 19.5H6.75Z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" d="m6.5 12.75 4 4 5-5.5" />
+                </svg>
+              </button>
           </div>
   )
 }
