@@ -931,11 +931,6 @@ export default function MainCanvas({showAlert, theme, authInfo, diagram, setDiag
             body: JSON.stringify(diagram)
         })
             .then(response => response.json()) //response.json() or response.text() provides the 'data'
-            .then((data) => {
-                if (!data.success) {
-                    showAlert(data.message, 'success');
-                }
-            })
             .catch((error) => {
                 showAlert('An error occured while trying to access the backend API', 'danger')
                 console.log(error)
