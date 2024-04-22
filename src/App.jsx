@@ -26,6 +26,32 @@ function App(){
   
   const urls = {productionUrl : 'https://dbcrafter-project.uc.r.appspot.com', devUrl : 'http://localhost:3000'}
   
+  function login(){
+    setIsLoading(true);
+    fetch(import.meta.env.PROD?urls.productionUrl+'/loginstatus':urls.devUrl+'/loginstatus', {
+      method: 'GET',
+      headers: {         
+        'Content-Type': 'application/json',
+      },
+      credentials: 'include', //this must be set in order to save the received session-cookie,
+      //also, after setting credentials to include, cors options must be set to allow credentials and origin from this domain
+    })
+    .then(response => response.json()) //response.json() or response.text() provides the 'data'
+    .then((data)=>{
+        if(data.user){
+            setAuthInfo(data.user);
+        }
+    })
+    .catch((error)=>{
+      showAlert('An error occured while trying to access the backend API', 'danger')
+      console.log(error)
+    })
+    .finally(()=>{
+        setIsLoading(false);
+    })
+  }
+useEffect(login, []); //this is important to update it only the first time
+
     //the below code makes sure that the diagram state variable is reset everytime a user logs out, so that
   //if the user logs out without making changes, and then logs in again and tries to save a new diagramm, if the 
   //diagram is not reset, it will contain the name of the diagram the user was editing earlier, due to which

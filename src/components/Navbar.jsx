@@ -9,32 +9,6 @@ export default function Navbar({title, theme, toggleTheme, showAlert, authInfo, 
     function toggleCollapsed(){
         collapsed?setCollapsed(false):setCollapsed(true);   
     }
-    function login(){
-        setIsLoading(true);
-        fetch(import.meta.env.PROD?urls.productionUrl+'/loginstatus':urls.devUrl+'/loginstatus', {
-          method: 'GET',
-          headers: {         
-            'Content-Type': 'application/json',
-          },
-          credentials: 'include', //this must be set in order to save the received session-cookie,
-          //also, after setting credentials to include, cors options must be set to allow credentials and origin from this domain
-        })
-        .then(response => response.json()) //response.json() or response.text() provides the 'data'
-        .then((data)=>{
-            if(data.user){
-                setAuthInfo(data.user);
-            }
-        })
-        .catch((error)=>{
-          showAlert('An error occured while trying to access the backend API', 'danger')
-          console.log(error)
-        })
-        .finally(()=>{
-            setIsLoading(false);
-        })
-      }
-    useEffect(login, [authInfo]); //this is important to update it only when authInfo changes so that if showAlert changes,
-    //it does not trigger the login checker again and again
     function logout(){
         setIsLoading(true); //starting the loader
         fetch(import.meta.env.PROD?urls.productionUrl+'/logout':urls.devUrl+'/logout', {

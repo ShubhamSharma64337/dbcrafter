@@ -3,7 +3,7 @@ import {useState} from 'react'
 import {  useNavigate } from "react-router-dom";
 import TemplateModal from './TemplateModal';
 
-export default function Diagrams({authInfo, showAlert, setDiagram, setIsLoading, urls, theme}) {
+export default function Diagrams({showAlert, setDiagram, setIsLoading, urls, theme}) {
     const navigate = useNavigate();
     const [templates, setTemplates]= useState(null);
     const [templateModalVisible, setTemplateModalVisible] = useState(false);
@@ -42,14 +42,7 @@ export default function Diagrams({authInfo, showAlert, setDiagram, setIsLoading,
         })
       }
 
-    useEffect(()=>{
-      if(!authInfo){
-        showAlert("You cannot access this route without signing in!","danger");
-        navigate('/');
-        return;
-      }
-      getdiagrams();
-    }, [authInfo])
+    useEffect(getdiagrams,[])
 
     function openDiagram(e){
       setIsLoading(true);
