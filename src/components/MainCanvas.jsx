@@ -53,6 +53,31 @@ export default function MainCanvas({showAlert, theme, authInfo, diagram, setDiag
     //this is used to show or hide the auto saving loader beside the diagram name
     const [autoSaving, setAutoSaving] = useState(false);
 
+    //COLORS
+    const active_header_bg_light = '#0d6efd';
+    const inactive_header_bg_light = 'grey';
+    const active_header_text_light = 'white';
+    const inactive_header_text_light = 'white';
+    const body_bg_light = 'white';
+    const body_text_light = 'black';
+    const body_primary_text_light = '#0d6efd';
+    
+    const active_header_bg_dark = '#0d6efd';
+    const inactive_header_bg_dark = 'grey';
+    const active_header_text_dark = 'white';
+    const inactive_header_text_dark = 'white';
+    const body_bg_dark = '#313244';
+    const body_text_dark = 'white';
+    const body_primary_text_dark = '#89b4fa';
+
+    //ARROWS
+    const arrow_active_light = '#0d6efd';
+    const arrow_inactive_light = 'grey'
+
+    //TABLE SHADOWS
+    const shadow_light = '#d0d0d0';
+    const shadow_dark = 'black';
+
     //this function checks if the value of arguments x,y lies in the table
     //represented by tbl argument and returns true or false accordingly
     function isPointerInTbl(x, y, tbl) {
@@ -179,7 +204,6 @@ export default function MainCanvas({showAlert, theme, authInfo, diagram, setDiag
     function draw(bgWhite = false) { //the bgWhite parameter is used to create white background when downloading the canvas data as image
         const canvas = document.getElementById("canvas");
         const ctxt = canvas.getContext("2d");
-        
         //setting width and height properly
         // const nav_height = document.querySelector(".navbar").clientHeight;
         ctxt.canvas.height = window.innerHeight - 0.1;
@@ -187,7 +211,7 @@ export default function MainCanvas({showAlert, theme, authInfo, diagram, setDiag
         ctxt.font = '16px Segoe UI';
         ctxt.clearRect(0, 0, canvas.width, canvas.height);
         if(bgWhite){ //if bgWhite argument is true, draw a white background before drawing anything
-            ctxt.fillStyle = 'white';
+            ctxt.fillStyle = body_bg_light;
             ctxt.fillRect(0,0, canvas.width, canvas.height);
         }
         ctxt.scale(scale, scale);
@@ -205,19 +229,17 @@ export default function MainCanvas({showAlert, theme, authInfo, diagram, setDiag
 
             if(theme==='dark'){
                 ctxt.shadowBlur = 0; //setting fill shadow
-                ctxt.shadowColor = "#000000"; 
-                ctxt.fillStyle = '#313244';
+                ctxt.shadowColor = shadow_dark; 
+                ctxt.fillStyle = body_bg_dark;
             }  else {
                 ctxt.shadowBlur = 20; //setting fill shadow
-                ctxt.shadowColor = "#d0d0d0"; 
-                ctxt.fillStyle = 'white';
+                ctxt.shadowColor = shadow_light; 
+                ctxt.fillStyle = body_bg_light;
             }
             
             ctxt.beginPath(); //now filling the rounded white background
             ctxt.roundRect(tbl.x, tbl.y, tbl.w, tbl_height, 5);
             ctxt.fill();
-
-            ctxt.fillStyle = 'black';
             
             ctxt.shadowBlur = 0; //resetting fill shadow
 
@@ -226,16 +248,16 @@ export default function MainCanvas({showAlert, theme, authInfo, diagram, setDiag
             ctxt.textAlign = 'center'; //this makes sure that the x,y coordinates supplied to fillText lie at center of the text
 
             if (index === selections.selectedTbl) { //this chooses the header bg color
-                ctxt.fillStyle = '#0d6efd';
+                ctxt.fillStyle = active_header_bg_light;
             }else{
-                ctxt.fillStyle = 'grey';
+                ctxt.fillStyle = inactive_header_bg_light;
             }
 
             ctxt.beginPath();
             ctxt.roundRect(tbl.x, tbl.y, tbl.w, commonProps.rh, [5,5,0,0]); //we are making upper corners of header rounded
             ctxt.fill();
 
-            ctxt.fillStyle = 'white';
+            ctxt.fillStyle = active_header_text_light;
             ctxt.fillText(tbl.name, tbl.x + tbl.w * 0.5, tbl.y + 16);
             ctxt.fillStyle = 'black';
 
@@ -254,17 +276,17 @@ export default function MainCanvas({showAlert, theme, authInfo, diagram, setDiag
                 //filling the text
                 if(tbl.pKey === row.name){
                     if(theme==='dark'){
-                        ctxt.fillStyle = '#89b4fa';
+                        ctxt.fillStyle = body_primary_text_dark;
                     } else {
-                        ctxt.fillStyle = '#0d6efd';
+                        ctxt.fillStyle = body_primary_text_light;
                     }
                     ctxt.fillText(row.name , tbl.x + 3, tbl.y + 16 + commonProps.rh * (row_index));
                     
                 } else {
                     if(theme==='dark'){
-                        ctxt.fillStyle = 'white';
+                        ctxt.fillStyle = body_text_dark;
                     } else {
-                        ctxt.fillStyle = 'black';
+                        ctxt.fillStyle = body_text_light;
                     }
                     ctxt.fillText(row.name, tbl.x + 3, tbl.y + 16 + commonProps.rh * (row_index));
                 }
@@ -283,7 +305,7 @@ export default function MainCanvas({showAlert, theme, authInfo, diagram, setDiag
         }
 
         //this finds linked tables and calls drawArrow function to show their links
-        diagram.tbls.map((tbl)=>{
+        diagram.tbls.map((tbl, fromTblIndex)=>{
             tbl.fields.map((field, fromIndex)=>{
                 if(field.isFKey){
                     let second_tbl = diagram.tbls.find((tbl)=> tbl.name === field.refTbl);
@@ -295,9 +317,9 @@ export default function MainCanvas({showAlert, theme, authInfo, diagram, setDiag
                         toIndex++;
                     }
                     if(curveType === 'edge'){
-                        drawCurveEdge(tbl,second_tbl, fromIndex, toIndex);
+                        drawCurveEdge(tbl,second_tbl, fromIndex, toIndex, fromTblIndex);
                     } else {
-                        drawCurveBezier(tbl,second_tbl, fromIndex, toIndex);
+                        drawCurveBezier(tbl,second_tbl, fromIndex, toIndex, fromTblIndex);
                     }
                 }
             })
@@ -308,11 +330,16 @@ export default function MainCanvas({showAlert, theme, authInfo, diagram, setDiag
     //this function is used to draw arrows between tables linked with foreign keys
     //we will use bezier curves to draw smooth curves using control points
     //fromIndex and toIndex are the indices of the fields which are linked
-    function drawCurveBezier(tbl1,tbl2,fromIndex, toIndex){
+    function drawCurveBezier(tbl1, tbl2, fromIndex, toIndex, fromTblIndex){
         const canvas = document.getElementById("canvas");
         const ctxt = canvas.getContext("2d");
-        ctxt.strokeStyle = '#0d6efd';
-        ctxt.fillStyle = '#0d6efd';
+        if(fromTblIndex===selections.selectedTbl){
+            ctxt.strokeStyle = arrow_active_light;
+            ctxt.fillStyle = arrow_active_light;
+        } else {
+            ctxt.strokeStyle = arrow_inactive_light;
+            ctxt.fillStyle = arrow_inactive_light;
+        }
         ctxt.lineWidth = '2';
         let tbl1_bottom = tbl1.y + commonProps.rh + commonProps.rh*tbl1.fields.length;
         let tbl2_bottom = tbl2.y + commonProps.rh + commonProps.rh*tbl2.fields.length;
@@ -479,11 +506,16 @@ export default function MainCanvas({showAlert, theme, authInfo, diagram, setDiag
     //this function is used to draw arrows between tables linked with foreign keys
     //we will use normal lineTo function of ctxt because this function creates edgy arrows
     //fromIndex and toIndex are the indices of the fields which are linked
-    function drawCurveEdge(tbl1,tbl2,fromIndex, toIndex){
+    function drawCurveEdge(tbl1,tbl2,fromIndex, toIndex, fromTblIndex){
         const canvas = document.getElementById("canvas");
         const ctxt = canvas.getContext("2d");
-        ctxt.strokeStyle = '#0d6efd';
-        ctxt.fillStyle = '#0d6efd';
+        if(fromTblIndex===selections.selectedTbl){
+            ctxt.strokeStyle = arrow_active_light;
+            ctxt.fillStyle = arrow_active_light;
+        } else {
+            ctxt.strokeStyle = arrow_inactive_light;
+            ctxt.fillStyle = arrow_inactive_light;
+        }
         ctxt.lineWidth = '2';
         let tbl1_bottom = tbl1.y + commonProps.rh + commonProps.rh*tbl1.fields.length;
         let tbl2_bottom = tbl2.y + commonProps.rh + commonProps.rh*tbl2.fields.length;
