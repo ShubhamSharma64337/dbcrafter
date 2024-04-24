@@ -305,7 +305,7 @@ export default function MainCanvas({showAlert, theme, authInfo, diagram, setDiag
         }
 
         //this finds linked tables and calls drawArrow function to show their links
-        diagram.tbls.map((tbl, fromTblIndex)=>{
+        diagram.tbls.map((tbl)=>{
             tbl.fields.map((field, fromIndex)=>{
                 if(field.isFKey){
                     let second_tbl = diagram.tbls.find((tbl)=> tbl.name === field.refTbl);
@@ -317,9 +317,9 @@ export default function MainCanvas({showAlert, theme, authInfo, diagram, setDiag
                         toIndex++;
                     }
                     if(curveType === 'edge'){
-                        drawCurveEdge(tbl,second_tbl, fromIndex, toIndex, fromTblIndex);
+                        drawCurveEdge(tbl,second_tbl, fromIndex, toIndex);
                     } else {
-                        drawCurveBezier(tbl,second_tbl, fromIndex, toIndex, fromTblIndex);
+                        drawCurveBezier(tbl,second_tbl, fromIndex, toIndex);
                     }
                 }
             })
@@ -330,16 +330,11 @@ export default function MainCanvas({showAlert, theme, authInfo, diagram, setDiag
     //this function is used to draw arrows between tables linked with foreign keys
     //we will use bezier curves to draw smooth curves using control points
     //fromIndex and toIndex are the indices of the fields which are linked
-    function drawCurveBezier(tbl1, tbl2, fromIndex, toIndex, fromTblIndex){
+    function drawCurveBezier(tbl1, tbl2, fromIndex, toIndex){
         const canvas = document.getElementById("canvas");
         const ctxt = canvas.getContext("2d");
-        if(fromTblIndex===selections.selectedTbl){
-            ctxt.strokeStyle = arrow_active_light;
-            ctxt.fillStyle = arrow_active_light;
-        } else {
-            ctxt.strokeStyle = arrow_inactive_light;
-            ctxt.fillStyle = arrow_inactive_light;
-        }
+        ctxt.strokeStyle = arrow_active_light;
+        ctxt.fillStyle = arrow_active_light;
         ctxt.lineWidth = '2';
         let tbl1_bottom = tbl1.y + commonProps.rh + commonProps.rh*tbl1.fields.length;
         let tbl2_bottom = tbl2.y + commonProps.rh + commonProps.rh*tbl2.fields.length;
@@ -506,16 +501,11 @@ export default function MainCanvas({showAlert, theme, authInfo, diagram, setDiag
     //this function is used to draw arrows between tables linked with foreign keys
     //we will use normal lineTo function of ctxt because this function creates edgy arrows
     //fromIndex and toIndex are the indices of the fields which are linked
-    function drawCurveEdge(tbl1,tbl2,fromIndex, toIndex, fromTblIndex){
+    function drawCurveEdge(tbl1,tbl2,fromIndex, toIndex){
         const canvas = document.getElementById("canvas");
         const ctxt = canvas.getContext("2d");
-        if(fromTblIndex===selections.selectedTbl){
-            ctxt.strokeStyle = arrow_active_light;
-            ctxt.fillStyle = arrow_active_light;
-        } else {
-            ctxt.strokeStyle = arrow_inactive_light;
-            ctxt.fillStyle = arrow_inactive_light;
-        }
+        ctxt.strokeStyle = arrow_active_light;
+        ctxt.fillStyle = arrow_active_light;
         ctxt.lineWidth = '2';
         let tbl1_bottom = tbl1.y + commonProps.rh + commonProps.rh*tbl1.fields.length;
         let tbl2_bottom = tbl2.y + commonProps.rh + commonProps.rh*tbl2.fields.length;
