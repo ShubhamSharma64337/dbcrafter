@@ -728,6 +728,7 @@ export default function MainCanvas({showAlert, theme, authInfo, diagram, setDiag
         let ctxt = canvas.getContext("2d");
         let max_fname_length = 100;
         let max_ftype_length = 50;
+        let table_name_length = ctxt.measureText(newTbl.name).width; //this contains the width on canvas of name of the table just added
         for(let tbl of all_tbls){
             for(let field of tbl.fields){
                 var textMetrics = ctxt.measureText(field.name);
@@ -739,7 +740,11 @@ export default function MainCanvas({showAlert, theme, authInfo, diagram, setDiag
                     max_ftype_length = textMetrics.width;
                 }
             }
-            all_tbls[selections.selectedTbl].w = max_fname_length + max_ftype_length + 5;
+            if(table_name_length + 5 < max_fname_length + max_ftype_length + 5){ //if table field width is wider than table name
+                all_tbls[sel.selectedTbl].w = max_fname_length + max_ftype_length + 5;
+            } else {
+                all_tbls[sel.selectedTbl].w = table_name_length + 5; //if table name is wider than table field
+            }
         }
 
         setDiagram({...diagram, tbls: all_tbls});
@@ -855,6 +860,7 @@ export default function MainCanvas({showAlert, theme, authInfo, diagram, setDiag
         let ctxt = canvas.getContext("2d");
         let max_fname_length = 100;
         let max_ftype_length = 50;
+        let table_name_width = ctxt.measureText(newTbl.name).width;
         for(let tbl of all_tbls){
             for(let field of tbl.fields){
                 var textMetrics = ctxt.measureText(field.name);
@@ -866,7 +872,11 @@ export default function MainCanvas({showAlert, theme, authInfo, diagram, setDiag
                     max_ftype_length = textMetrics.width;
                 }
             }
-            all_tbls[selections.selectedTbl].w = max_fname_length + max_ftype_length + 5;
+            if(table_name_width + 5 < max_fname_length + max_ftype_length + 5){ //if table name width is lesser than field width
+                all_tbls[selections.selectedTbl].w = max_fname_length + max_ftype_length + 5;
+            } else {
+                all_tbls[selections.selectedTbl].w = table_name_width + 5; //if table name width is greater than field names width
+            }
         }
 
         showAlert("Updated table!");
