@@ -974,6 +974,29 @@ export default function MainCanvas({showAlert, theme, authInfo, diagram, setDiag
         setDiagram(diagramCopy);
     }
 
+    function scrollZoomHandler(wheelEvent){
+        let newScale = scale-wheelEvent.deltaY*0.001;
+        if(newScale>0.25 && newScale<2){
+            setScale(newScale);
+        }
+    }
+
+    function zoomIn(){
+        let newScale = scale+0.05;
+        if(newScale>2){
+            return;
+        }
+        setScale(newScale)
+    }
+
+    function zoomOut(){
+        let newScale = scale-0.05;
+        if(newScale<0.25){
+            return;
+        }
+        setScale(newScale)
+    }
+
     return (
             <div className={`bg-black canvas-div flex justify-center ${theme==='dark'?'bg-gray-900':'bg-white'}`} style={theme==='dark'?{ backgroundImage: `url(${backgroundDark})`}:{ backgroundImage: `url(${background})`}}>
                 <p className={`guestmode-alert flex justify-center items-center gap-x-2 bg-white shadow opacity-75 text-slate-800 ring-1 text-center absolute rounded-b px-1 py-0.5 top-0 ${authInfo ? 'hidden scale-0' : ''}`}>
@@ -1009,7 +1032,7 @@ export default function MainCanvas({showAlert, theme, authInfo, diagram, setDiag
                         :''
                     }
                 </div>
-                <canvas id='canvas' width={window.innerWidth} height={window.innerHeight} onTouchStart={handleMouseDown} onTouchMove={dragHandler} onTouchEnd={handleMouseUp} onMouseDown={handleMouseDown} onMouseMove={dragHandler} onMouseUp={handleMouseUp}></canvas>
+                <canvas id='canvas' width={window.innerWidth} height={window.innerHeight} onTouchStart={handleMouseDown} onTouchMove={dragHandler} onTouchEnd={handleMouseUp} onMouseDown={handleMouseDown} onMouseMove={dragHandler} onMouseUp={handleMouseUp} onWheel={scrollZoomHandler}></canvas>
                 <div className="top-right-buttons flex flex-col fixed top-4 right-4 gap-5">
                     <button type='button' className={`group relative bg-blue-700 flex shadow-lg p-3 text-white transition-transform rounded-full hover:scale-110 ${authInfo ? '' : 'hidden'}`} onClick={() => { 
                         setDiagram({ name: null, tbls: null , isPublic: false}); 
@@ -1097,12 +1120,12 @@ export default function MainCanvas({showAlert, theme, authInfo, diagram, setDiag
                     </button>
                 </div>
                 <div className="bottom-left-buttons flex  fixed bottom-4 left-4 gap-5">
-                    <button type='button' className='group relative bg-blue-700 shadow-lg p-3 text-white transition-transform rounded-full hover:scale-110' onClick={()=>{setScale(scale-0.05)}}>
+                    <button type='button' className='group relative bg-blue-700 shadow-lg p-3 text-white transition-transform rounded-full hover:scale-110' onClick={zoomOut}>
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
                             <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607ZM13.5 10.5h-6" />
                         </svg>
                     </button>
-                    <button type='button' className='group relative bg-blue-700 shadow-lg p-3 text-white transition-transform rounded-full hover:scale-110' onClick={()=>{setScale(scale+0.05)}}>
+                    <button type='button' className='group relative bg-blue-700 shadow-lg p-3 text-white transition-transform rounded-full hover:scale-110' onClick={zoomIn}>
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
                             <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607ZM10.5 7.5v6m3-3h-6" />
                         </svg>
