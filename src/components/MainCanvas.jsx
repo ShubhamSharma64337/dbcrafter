@@ -9,6 +9,7 @@ import SqlModal from './SqlModal';
 import { Link } from 'react-router-dom';
 import GuestInfoModal from './GuestInfoModal';
 import AutosaveLoader from './AutosaveLoader';
+import ImportJsonModal from './ImportJsonModal';
 export default function MainCanvas({showAlert, theme, authInfo, diagram, setDiagram, dtypes, setIsLoading, urls}) {
     window.addEventListener('resize',()=>{ //this helps in properly resizing the canvas whenever user resizes the window
         const canvas = document.getElementById("canvas");
@@ -24,6 +25,7 @@ export default function MainCanvas({showAlert, theme, authInfo, diagram, setDiag
     const [createDiagramModalShow, setCreateDiagramModalShow] = useState(false); //this is used to show or hide the create diagram modal
     const [sqlModalShow, setSqlModalShow] = useState(false);
     const [guestModalShow, setGuestModalShow] = useState(false);
+    const [importJsonModalShow, setImportJsonModalShow] = useState(false);
     const [curveType, setCurveType] = useState('bezier');
 
     const [offset, setOffset] = useState({x: 0, y:0}); //this is used to pan the canvas by translating the origin by offset
@@ -920,6 +922,9 @@ export default function MainCanvas({showAlert, theme, authInfo, diagram, setDiag
     function toggleGuestModal(){
         guestModalShow?setGuestModalShow(false):setGuestModalShow(true);
     }
+    function toggleImportJsonModal(){
+        importJsonModalShow?setImportJsonModalShow(false):setImportJsonModalShow(true);
+    }
     function toggleCurveType(){
         curveType==='edge'?setCurveType('bezier'):setCurveType('edge');
     }
@@ -1152,6 +1157,12 @@ export default function MainCanvas({showAlert, theme, authInfo, diagram, setDiag
                             <path fillRule="evenodd" d="M12 2.25a.75.75 0 0 1 .75.75v11.69l3.22-3.22a.75.75 0 1 1 1.06 1.06l-4.5 4.5a.75.75 0 0 1-1.06 0l-4.5-4.5a.75.75 0 1 1 1.06-1.06l3.22 3.22V3a.75.75 0 0 1 .75-.75Zm-9 13.5a.75.75 0 0 1 .75.75v2.25a1.5 1.5 0 0 0 1.5 1.5h13.5a1.5 1.5 0 0 0 1.5-1.5V16.5a.75.75 0 0 1 1.5 0v2.25a3 3 0 0 1-3 3H5.25a3 3 0 0 1-3-3V16.5a.75.75 0 0 1 .75-.75Z" clipRule="evenodd" />
                         </svg>
                     </button>
+                    <button type='button' className={`group relative bg-blue-700 shadow-lg p-3   text-white transition-transform rounded-full hover:scale-110 ${authInfo ? '' : 'hidden'}`} onClick={()=>{toggleImportJsonModal();}}>
+                        <span className={`text-sm text-nowrap tooltip absolute right-full top-1/2 bg-white text-black border border-slate-500 px-2 py-1 rounded -translate-y-1/2 me-2 hidden group-hover:block`}>Import JSON</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
+                            <path fillRule="evenodd" d="M11.47 2.47a.75.75 0 0 1 1.06 0l4.5 4.5a.75.75 0 0 1-1.06 1.06l-3.22-3.22V16.5a.75.75 0 0 1-1.5 0V4.81L8.03 8.03a.75.75 0 0 1-1.06-1.06l4.5-4.5ZM3 15.75a.75.75 0 0 1 .75.75v2.25a1.5 1.5 0 0 0 1.5 1.5h13.5a1.5 1.5 0 0 0 1.5-1.5V16.5a.75.75 0 0 1 1.5 0v2.25a3 3 0 0 1-3 3H5.25a3 3 0 0 1-3-3V16.5a.75.75 0 0 1 .75-.75Z" clipRule="evenodd" />
+                        </svg>
+                    </button>
                 </div>
                 <div className="bottom-left-buttons flex  fixed bottom-4 left-4 gap-5">
                     <button type='button' className='group relative bg-blue-700 shadow-lg p-3 text-white transition-transform rounded-full hover:scale-110' onClick={zoomOut}>
@@ -1171,6 +1182,7 @@ export default function MainCanvas({showAlert, theme, authInfo, diagram, setDiag
                 <CreateDiagramModal diagram={diagram} createDiagramModalShow={createDiagramModalShow} toggleModal={toggleCreateDiagramModal} showAlert={showAlert} setDiagram={setDiagram} setIsLoading={setIsLoading} urls={urls}></CreateDiagramModal>
                 <SqlModal diagram={diagram} show={sqlModalShow} toggleModal={toggleSqlModal}></SqlModal>
                 <GuestInfoModal visible={guestModalShow} toggleModal={toggleGuestModal}></GuestInfoModal>
+                <ImportJsonModal visible={importJsonModalShow} toggleVisible={toggleImportJsonModal} showAlert={showAlert} setDiagram={setDiagram}/>
             </div>
 
     )
