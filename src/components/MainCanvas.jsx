@@ -1088,7 +1088,7 @@ export default function MainCanvas({showAlert, theme, authInfo, diagram, setDiag
                     
                 <div className="bottom-right-buttons flex flex-col fixed bottom-4 right-4 gap-5">
                     <div className={`level1-menu ${moreOptionsVisible?'hidden':'flex flex-col gap-y-5'}`}>
-                        <button type='button' className={`relative group bg-blue-700 shadow-lg p-3 text-white transition-transform rounded-full hover:scale-110 ${authInfo ? '' : 'hidden'}`} onClick={toggleCurveType}>
+                        <button type='button' className={`relative group bg-blue-700 shadow-lg p-3 text-white transition-transform rounded-full hover:scale-110`} onClick={toggleCurveType}>
                             <span className={`text-sm text-nowrap tooltip absolute right-full top-1/2 bg-white text-black border border-slate-500 px-2 py-1 rounded -translate-y-1/2 me-2 hidden group-hover:block`}>Change Curve Type</span>
                             { curveType==='bezier'?
                             <svg viewBox="0 0 76 76" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" version="1.1" baseProfile="full" enableBackground="new 0 0 76.00 76.00" xmlSpace="preserve" fill="#000000">
@@ -1149,25 +1149,25 @@ export default function MainCanvas({showAlert, theme, authInfo, diagram, setDiag
                         </button>
                     </div>
                     <div className={`level2-menu flex-col gap-y-4 ${moreOptionsVisible?'flex':'hidden'}`}>
-                        <button type='button' className={`group relative bg-blue-700 shadow-lg p-3   text-white transition-transform rounded-full hover:scale-110 ${authInfo ? '' : 'hidden'}`} onClick={() => { toggleSqlModal() }}>
+                        <button type='button' className={`group relative bg-blue-700 shadow-lg p-3   text-white transition-transform rounded-full hover:scale-110`} onClick={() => { toggleSqlModal() }}>
                             <span className={`text-sm text-nowrap tooltip absolute right-full top-1/2 bg-white text-black border border-slate-500 px-2 py-1 rounded -translate-y-1/2 me-2 hidden group-hover:block`}>Get SQL</span>
                             <svg height="24" width="24" className='w-6 h-6' xmlns="http://www.w3.org/2000/svg">
                                 <text x="0" fontSize="13" y="16" fill="white" fontWeight={'bold'}>SQL</text>
                             </svg>
                         </button>
-                        <button type='button' className={`group relative bg-blue-700 shadow-lg p-3   text-white transition-transform rounded-full hover:scale-110 ${authInfo ? '' : 'hidden'}`} onClick={() => { imgDownload() }}>
+                        <button type='button' className={`group relative bg-blue-700 shadow-lg p-3   text-white transition-transform rounded-full hover:scale-110`} onClick={() => { imgDownload() }}>
                             <span className={`text-sm text-nowrap tooltip absolute right-full top-1/2 bg-white text-black border border-slate-500 px-2 py-1 rounded -translate-y-1/2 me-2 hidden group-hover:block`}>Export as Image</span>
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
                                 <path fillRule="evenodd" d="M1.5 6a2.25 2.25 0 0 1 2.25-2.25h16.5A2.25 2.25 0 0 1 22.5 6v12a2.25 2.25 0 0 1-2.25 2.25H3.75A2.25 2.25 0 0 1 1.5 18V6ZM3 16.06V18c0 .414.336.75.75.75h16.5A.75.75 0 0 0 21 18v-1.94l-2.69-2.689a1.5 1.5 0 0 0-2.12 0l-.88.879.97.97a.75.75 0 1 1-1.06 1.06l-5.16-5.159a1.5 1.5 0 0 0-2.12 0L3 16.061Zm10.125-7.81a1.125 1.125 0 1 1 2.25 0 1.125 1.125 0 0 1-2.25 0Z" clipRule="evenodd" />
                             </svg>
                         </button>
-                        <button type='button' className={`group relative bg-blue-700 shadow-lg p-3   text-white transition-transform rounded-full hover:scale-110 ${authInfo ? '' : 'hidden'}`} onClick={() => { jsonDownload() }}>
+                        <button type='button' className={`group relative bg-blue-700 shadow-lg p-3   text-white transition-transform rounded-full hover:scale-110`} onClick={() => { jsonDownload() }}>
                             <span className={`text-sm text-nowrap tooltip absolute right-full top-1/2 bg-white text-black border border-slate-500 px-2 py-1 rounded -translate-y-1/2 me-2 hidden group-hover:block`}>Export JSON</span>
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
                                 <path fillRule="evenodd" d="M12 2.25a.75.75 0 0 1 .75.75v11.69l3.22-3.22a.75.75 0 1 1 1.06 1.06l-4.5 4.5a.75.75 0 0 1-1.06 0l-4.5-4.5a.75.75 0 1 1 1.06-1.06l3.22 3.22V3a.75.75 0 0 1 .75-.75Zm-9 13.5a.75.75 0 0 1 .75.75v2.25a1.5 1.5 0 0 0 1.5 1.5h13.5a1.5 1.5 0 0 0 1.5-1.5V16.5a.75.75 0 0 1 1.5 0v2.25a3 3 0 0 1-3 3H5.25a3 3 0 0 1-3-3V16.5a.75.75 0 0 1 .75-.75Z" clipRule="evenodd" />
                             </svg>
                         </button>
-                        <button type='button' className={`group relative bg-blue-700 shadow-lg p-3   text-white transition-transform rounded-full hover:scale-110 ${authInfo ? '' : 'hidden'}`} onClick={() => { toggleImportJsonModal(); }}>
+                        <button type='button' className={`group relative bg-blue-700 shadow-lg p-3   text-white transition-transform rounded-full hover:scale-110`} onClick={() => { toggleImportJsonModal(); }}>
                             <span className={`text-sm text-nowrap tooltip absolute right-full top-1/2 bg-white text-black border border-slate-500 px-2 py-1 rounded -translate-y-1/2 me-2 hidden group-hover:block`}>Import JSON</span>
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
                                 <path fillRule="evenodd" d="M11.47 2.47a.75.75 0 0 1 1.06 0l4.5 4.5a.75.75 0 0 1-1.06 1.06l-3.22-3.22V16.5a.75.75 0 0 1-1.5 0V4.81L8.03 8.03a.75.75 0 0 1-1.06-1.06l4.5-4.5ZM3 15.75a.75.75 0 0 1 .75.75v2.25a1.5 1.5 0 0 0 1.5 1.5h13.5a1.5 1.5 0 0 0 1.5-1.5V16.5a.75.75 0 0 1 1.5 0v2.25a3 3 0 0 1-3 3H5.25a3 3 0 0 1-3-3V16.5a.75.75 0 0 1 .75-.75Z" clipRule="evenodd" />
