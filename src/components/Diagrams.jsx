@@ -80,6 +80,17 @@ export default function Diagrams({showAlert, setDiagram, setIsLoading, urls, the
         return;
       }
       setIsLoading(true);
+
+      let newDiagrams = [...diagrams]; //here we will find index of the deleted diagram, delete it from react state copy, and
+      let delIndex = newDiagrams.findIndex((dg)=>{ // will update it in state once request for deletion is successful on server
+        return dg._id === e.currentTarget.dataset.diagramid;
+      })
+      if(delIndex<0){
+        showAlert("Diagram with given diagramid not found!","danger");
+        return;
+      }
+      newDiagrams.splice(delIndex,1)
+
       fetch(import.meta.env.PROD?urls.productionUrl+'/user/deletediagram':urls.devUrl+'/user/deletediagram', {
           method: 'POST',
           headers: {         
@@ -93,7 +104,13 @@ export default function Diagrams({showAlert, setDiagram, setIsLoading, urls, the
         .then((data)=>{
             if(data.success){
               setDiagram({name: null, tbls: null, isPublic: false});
-              getdiagrams();
+
+              if(newDiagrams.length === 0){ //if the last diagram was deleted, we set diagrams to null and set loadStatus properly to show that no diagrams exist
+                setDiagrams(null);
+                setLoadStatus('No Diagrams Found!');
+              }else{
+                setDiagrams(newDiagrams);
+              }
               showAlert(data.message, "danger");
               return;
             } else {
