@@ -750,26 +750,20 @@ export default function MainCanvas({showAlert, theme, authInfo, diagram, setDiag
         //updating table width
         let canvas = document.getElementById('canvas');
         let ctxt = canvas.getContext("2d");
-        let max_fname_length = 100;
-        let max_ftype_length = 50;
+        let max_width = 150;
         let table_name_length = ctxt.measureText(newTbl.name).width; //this contains the width on canvas of name of the table just added
-        for(let tbl of all_tbls){
-            for(let field of tbl.fields){
-                var textMetrics = ctxt.measureText(field.name);
-                if(textMetrics.width>max_fname_length){
-                    max_fname_length = textMetrics.width;
-                }
-                textMetrics = ctxt.measureText(field.type);
-                if(textMetrics.width>max_ftype_length){
-                    max_ftype_length = textMetrics.width;
-                }
-            }
-            if(table_name_length + 5 < max_fname_length + max_ftype_length + 5){ //if table field width is wider than table name
-                all_tbls[sel.selectedTbl].w = max_fname_length + max_ftype_length + 5;
-            } else {
-                all_tbls[sel.selectedTbl].w = table_name_length + 5; //if table name is wider than table field
+        for(let field of newTbl.fields){
+            var textMetrics = ctxt.measureText(field.name+field.type+"()"+(field.size?field.size.toString():''));
+            if(textMetrics.width>max_width){
+                max_width = textMetrics.width;
             }
         }
+        if(table_name_length < max_width){ //if table field width is wider than table name
+            all_tbls[sel.selectedTbl].w = max_width + ctxt.measureText("oo").width; //here we keep an extra space for two 'o' characters
+        } else { //if table name is wider than table field
+            all_tbls[sel.selectedTbl].w = table_name_length + ctxt.measureText("oo").width;
+        }
+    
 
         setDiagram({...diagram, tbls: all_tbls});
         setSelections(sel);
@@ -859,6 +853,18 @@ export default function MainCanvas({showAlert, theme, authInfo, diagram, setDiag
                     }
                 )}
         });
+        
+        //Checking if duplicate field names are found
+        let fieldNames = []
+        for(let field of newTbl.fields){
+            fieldNames.push(field.name);
+        }
+        let fieldNamesSet = new Set(fieldNames);
+        if(fieldNames.length !== fieldNamesSet.size){
+            showAlert('Duplicate field names are not allowed!','warning');
+            return 1;
+        }
+
         //adding code to detect if any other table references this table, we need to change the name in the referencing table
         let old_tbl = all_tbls[selections.selectedTbl];
         let tblindex = 0;
@@ -882,25 +888,18 @@ export default function MainCanvas({showAlert, theme, authInfo, diagram, setDiag
         //updating table width
         let canvas = document.getElementById('canvas');
         let ctxt = canvas.getContext("2d");
-        let max_fname_length = 100;
-        let max_ftype_length = 50;
-        let table_name_width = ctxt.measureText(newTbl.name).width;
-        for(let tbl of all_tbls){
-            for(let field of tbl.fields){
-                var textMetrics = ctxt.measureText(field.name);
-                if(textMetrics.width>max_fname_length){
-                    max_fname_length = textMetrics.width;
-                }
-                textMetrics = ctxt.measureText(field.type);
-                if(textMetrics.width>max_ftype_length){
-                    max_ftype_length = textMetrics.width;
-                }
+        let max_width = 150;
+        let table_name_length = ctxt.measureText(newTbl.name).width; //this contains the width on canvas of name of the table just updated
+        for(let field of newTbl.fields){
+            var textMetrics = ctxt.measureText(field.name+field.type+"()"+(field.size?field.size.toString():''));
+            if(textMetrics.width>max_width){
+                max_width = textMetrics.width;
             }
-            if(table_name_width + 5 < max_fname_length + max_ftype_length + 5){ //if table name width is lesser than field width
-                all_tbls[selections.selectedTbl].w = max_fname_length + max_ftype_length + 5;
-            } else {
-                all_tbls[selections.selectedTbl].w = table_name_width + 5; //if table name width is greater than field names width
-            }
+        }
+        if(table_name_length < max_width){ //if table field width is wider than table name
+            all_tbls[selections.selectedTbl].w = max_width + ctxt.measureText("oo").width; //here we keep an extra space for two 'o' characters
+        } else { //if table name is wider than table field
+            all_tbls[selections.selectedTbl].w = table_name_length + ctxt.measureText("oo").width;
         }
 
         showAlert("Updated table!");
