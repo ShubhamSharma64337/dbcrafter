@@ -13,7 +13,7 @@ export default function DeleteAccount({setCurrentPath}) {
                 <label htmlFor='password' className='text-slate-400 font-medium'>Password</label>
                 <input type='text' id='password' className='border text-lg p-2 outline-blue-500 w-full' placeholder='Please re-enter your password'></input>
             </div>
-            <div className="my-5 flex gap-x-1">
+            <div className="my-5 flex gap-x-2">
                 <input type='checkbox' id='email' className='border text-lg p-2 outline-blue-500 w-5'></input>
                 <label htmlFor='email' className='text-slate-400 font-medium text-md'>I agree that all my saved diagrams will be deleted</label>
             </div>

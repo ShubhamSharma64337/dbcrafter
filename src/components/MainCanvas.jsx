@@ -13,6 +13,9 @@ import ImportJsonModal from './ImportJsonModal';
 export default function MainCanvas({showAlert, theme, authInfo, diagram, setDiagram, dtypes, setIsLoading, urls}) {
     window.addEventListener('resize',()=>{ //this helps in properly resizing the canvas whenever user resizes the window
         const canvas = document.getElementById("canvas");
+        if(!canvas){
+            return;
+        }
         const ctxt = canvas.getContext("2d");
         
         ctxt.canvas.height = window.innerHeight - 0.1;

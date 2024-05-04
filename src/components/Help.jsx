@@ -1,7 +1,7 @@
-import React from 'react'
+import { React, useEffect} from 'react'
 
 export default function Help({setCurrentPath}) {
-    setCurrentPath('/settings/help');
+    useEffect(()=>{setCurrentPath('/settings/help');},[]);
 
   return (
     <div className='px-20 py-10 flex justify-center items-center text-lg'>
