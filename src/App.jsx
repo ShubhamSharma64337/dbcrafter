@@ -5,6 +5,7 @@ import MainCanvas from './components/MainCanvas.jsx';
 import AboutContent from './components/AboutContent.jsx';
 import Alert from './components/Alert.jsx';
 import Diagrams from './components/Diagrams.jsx';
+import Settings from './components/Settings.jsx';
 import { useEffect, useState } from 'react';
 import {
   HashRouter as Router,
@@ -14,6 +15,7 @@ import {
 import SignupForm from './components/SignupForm.jsx';
 import LoginForm from './components/LoginForm.jsx';
 import Loader from './components/Loader.jsx';
+import ChangePasswordForm from './components/ChangePasswordForm.jsx';
 
 function App(){
   const [isLoading, setIsLoading] = useState(false);
@@ -89,6 +91,9 @@ useEffect(login, []); //this is important to update it only the first time
           <Route exact path='/craft' element={<MainCanvas dtypes={dtypes} showAlert={showAlert} theme={theme} authInfo={authInfo} diagram={diagram} setDiagram={setDiagram} setIsLoading={setIsLoading} urls={urls}/>} />
           <Route exact path='/diagrams' element={<Diagrams showAlert={showAlert} theme={theme} authInfo={authInfo} setDiagram={setDiagram} setIsLoading={setIsLoading} urls={urls}/>}/>
           <Route exact path='/about' element={<AboutContent theme={theme}/>}/>
+          <Route exact path='/settings' element={<Settings theme={theme}/>}>
+            <Route exact path='/settings/password' element={<ChangePasswordForm theme={theme} urls={urls} setIsLoading={setIsLoading} showAlert={showAlert}/>}/>
+          </Route>
         </Routes>
       </Router>
     </div> 
