@@ -1,6 +1,9 @@
-import React from 'react'
+import { React, useEffect} from 'react'
 
-export default function ChangePasswordForm({theme,urls,setIsLoading,showAlert}) {
+export default function ChangePasswordForm({theme,urls,setIsLoading,showAlert,setCurrentPath}) {
+    useEffect(()=>{
+        setCurrentPath('/settings/password');
+    },[]);
   function changePassword(){
     let fdobj = new FormData(document.querySelector('form')) //this retrieves only those inputs which have a name value
     let fdata = {}
@@ -16,7 +19,7 @@ export default function ChangePasswordForm({theme,urls,setIsLoading,showAlert}) 
         showAlert('Confirmation password does not match!','warning');
         return;
     }
-    
+
     setIsLoading(true);
     fetch(import.meta.env.PROD?urls.productionUrl+'/user/changepassword':urls.devUrl+'/user/changepassword', {
         method: 'POST',
@@ -45,18 +48,18 @@ export default function ChangePasswordForm({theme,urls,setIsLoading,showAlert}) 
         <form>
             <div className="my-5 flex flex-col gap-y-1">
                 <label htmlFor='oldPass' className='text-slate-400 font-medium'>Old Password</label>
-                <input required={true} className={`border text-lg p-2 outline-yellow-500 w-full`} type='password' name='oldPassword' id='oldPass' placeholder='Enter your old password'></input>
+                <input required={true} className={`border text-lg p-2 outline-blue-500 w-full`} type='password' name='oldPassword' id='oldPass' placeholder='Enter your old password'></input>
             </div>
             <div className="my-5 flex flex-col gap-y-1">
                 <label htmlFor='newPass' className='text-slate-400 font-medium'>New Password</label>
-                <input required={true} minLength={6} className={`border text-lg p-2 outline-yellow-500 w-full`} type='password' name='newPassword' id='newPass' placeholder='Enter the new password'></input> 
+                <input required={true} minLength={6} className={`border text-lg p-2 outline-blue-500 w-full`} type='password' name='newPassword' id='newPass' placeholder='Enter the new password'></input> 
             </div>
             <div className="my-5 flex flex-col gap-y-1">
                 <label htmlFor='confirmNewPass' className='text-slate-400 font-medium'>Confirm New Password</label>
-                <input required={true} minLength={6} className={`border text-lg p-2 outline-yellow-500 w-full`} type='password' name='confirmNewPassword' id='confirmNewPass' placeholder='Confirm new password'></input>
+                <input required={true} minLength={6} className={`border text-lg p-2 outline-blue-500 w-full`} type='password' name='confirmNewPassword' id='confirmNewPass' placeholder='Confirm new password'></input>
             </div>
             <div className="my-5 flex flex-col gap-y-1">
-                <button type='button' className='bg-yellow-600 rounded p-2 font-medium text-slate-50 hover:bg-yellow-500' onClick={changePassword}>Change</button>
+                <button type='button' className='bg-blue-600 rounded p-2 font-medium text-slate-50 hover:bg-blue-500' onClick={changePassword}>Change</button>
             </div>
         </form>
     </div>
