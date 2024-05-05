@@ -86,7 +86,7 @@ useEffect(login, []); //this is important to update it only the first time
   return (
     <div>
       <Router> 
-      <Navbar title='Dbcrafter' theme={theme} alert={alert} toggleTheme={toggleTheme} showAlert={showAlert} authInfo = {authInfo} setAuthInfo={setAuthInfo} setIsLoading={setIsLoading} urls={urls}/>
+      <Navbar title='Dbcrafter' theme={theme} alert={alert} toggleTheme={toggleTheme} showAlert={showAlert} authInfo = {authInfo} setAuthInfo={setAuthInfo} setIsLoading={setIsLoading} urls={urls} currentPath={currentPath} setCurrentPath={setCurrentPath}/>
       <Alert alert={alert} closeAlert={closeAlert} theme={theme}/>
       <Loader isLoading={isLoading}/>
         <Routes>
