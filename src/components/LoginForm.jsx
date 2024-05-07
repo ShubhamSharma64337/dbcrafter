@@ -78,7 +78,7 @@ export default function LoginForm({showAlert, setAuthInfo, theme, setIsLoading, 
               </div>
           </div>
           <div className="my-5 flex items-center">
-              <input type="checkbox" className="w-4 h-4" id="rememberCheck"/>
+              <input type="checkbox" className="w-4 h-4" id="rememberCheck" name='rememberMe'/>
               <label className="ms-2" htmlFor="rememberCheck">Remember Me</label>
           </div>
           <div className="my-5">
