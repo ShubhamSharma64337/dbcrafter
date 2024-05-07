@@ -100,7 +100,7 @@ useEffect(login, []); //this is important to update it only the first time
             <Route exact path='/settings/profile' element={<Profile authInfo={authInfo} setCurrentPath={setCurrentPath}/>}/>
             <Route exact path='/settings/password' element={<ChangePasswordForm theme={theme} urls={urls} setIsLoading={setIsLoading} showAlert={showAlert} setCurrentPath={setCurrentPath}/>}/>
             <Route exact path='/settings/resetaccount' element={<ResetAccount theme={theme} urls={urls} setIsLoading={setIsLoading} showAlert={showAlert} setCurrentPath={setCurrentPath}/>}/>
-            <Route exact path='/settings/deleteaccount' element={<DeleteAccount theme={theme} urls={urls} setIsLoading={setIsLoading} showAlert={showAlert} setCurrentPath={setCurrentPath}/>}/>
+            <Route exact path='/settings/deleteaccount' element={<DeleteAccount theme={theme} urls={urls} setIsLoading={setIsLoading} showAlert={showAlert} setCurrentPath={setCurrentPath} setAuthInfo={setAuthInfo}/>}/>
             <Route exact path='/settings/help' element={<Help theme={theme} urls={urls} setIsLoading={setIsLoading} showAlert={showAlert} setCurrentPath={setCurrentPath}/>}/>
           </Route>
         </Routes>
