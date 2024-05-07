@@ -3,8 +3,8 @@ import { Outlet, Link } from 'react-router-dom'
 
 export default function Settings({theme,urls,currentPath}) {
   return (
-    <div className={`grid grid-cols-4 grid-rows-5 lg:grid-rows-1 h-screen p-5 rounded gap-1`}>
-            <div className='left flex justify-center items-center p-5 border-s-4 border-blue-500 shadow-[0px_0px_2px_2px] shadow-slate-200 h-full bg-white rounded-lg lg:rounded-s-lg col-span-4 lg:col-span-1 lg:block row-span-1 lg:row-span-5  overflow-x-auto'>
+    <div className={`grid grid-cols-4 grid-rows-6 lg:grid-rows-1 h-screen p-5 rounded gap-1`}>
+            <div className='left flex justify-center items-center p-5 border-s-4 border-blue-500 shadow-[0px_0px_2px_2px] shadow-slate-200 h-full bg-white rounded-lg lg:rounded-s-lg col-span-4 lg:col-span-1 lg:block row-span-1 lg:row-span-6  overflow-x-auto'>
               <ul className='text-lg flex lg:flex-col justify-evenly h-full items-center w-full gap-x-2 lg:gap-x-0'>
                   <li className='w-full'>
                       <Link to='/settings/profile' className={`${currentPath === '/settings/profile' ? 'bg-gray-200' : ''} hover:bg-gray-200 py-5 px-10 rounded flex items-center gap-x-2 transition-colors`}>
@@ -56,7 +56,7 @@ export default function Settings({theme,urls,currentPath}) {
                   </li>
               </ul>
             </div>
-            <div className="right col-span-4 lg:col-span-3 lg:p-10 rounded-lg lg:rounded-e-lg row-span-4 lg:row-span-5">
+            <div className="right col-span-4 lg:col-span-3 lg:p-10 rounded-lg lg:rounded-e-lg row-span-5 lg:row-span-6">
                 <div className="breadcrumb px-10 py-5 text-slate-400 text-center lg:text-left text-lg">
                     {currentPath.slice(1,currentPath.length).toUpperCase().replace(/\//g,' > ')}   
                 </div>
