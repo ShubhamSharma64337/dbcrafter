@@ -92,7 +92,7 @@ export default function EditModal({table, editShow, toggleEditModal, tbls, showA
     const rowindex = parseInt(e.currentTarget.dataset.rowindex); //retrieving the field index using the data attribute of the select input
     let tableCopy = {...updatedTbl, fields: updatedTbl.fields.map((element, index)=>{ //now starting actually modifying the select field
         if(index === rowindex){
-          return {...element, [name]: value};
+          return {...element, [name]: value, size: null}; //Here we set size to null because if datatype is set to one without size, we need to update it
         } else {
           return {...element};
         }
@@ -186,7 +186,7 @@ export default function EditModal({table, editShow, toggleEditModal, tbls, showA
                             </select>
                           </td>
                           <td>
-                            <input name='size' type='number' className='border p-2 outline-blue-700' max={8000} value={updatedTbl.fields[index].size?updatedTbl.fields[index].size:''}  data-rowindex={index} placeholder='Length' onChange={handleChange}></input>
+                            <input name='size' disabled={['DATE','BOOL','BOOLEAN','TINYTEXT','TINYBLOB',"MEDIUMTEXT","MEDIUMBLOB","LONGTEXT","LONGBLOB","YEAR"].includes(element.type) ?true:false} type='number' className='border p-2 outline-blue-700' max={8000} value={updatedTbl.fields[index].size?updatedTbl.fields[index].size:''}  data-rowindex={index} placeholder='Length' onChange={handleChange}></input>
                           </td>
                           <td>
                             <input name='notNull' type='checkbox' className='border p-2 w-5 h-5 accent-blue-700' checked={element.notNull} data-rowindex={index} onChange={handleChange}></input>
