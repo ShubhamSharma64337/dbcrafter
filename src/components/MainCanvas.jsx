@@ -741,7 +741,7 @@ export default function MainCanvas({showAlert, theme, authInfo, diagram, setDiag
         // document.querySelector("#tblName").value = '';
         let new_element = null;
         if(!all_tbls){ //checking if there does not exist any prior table
-            all_tbls = [{...newTbl, x: 50, y: 50, w: 150}];
+            all_tbls = [{...newTbl, x: 150, y: 150, w: 150}];
         }else{
             let coords = nonCollapseFinder();
             new_element = { ...newTbl, x: coords.x, y: coords.y, w:150};
@@ -776,7 +776,7 @@ export default function MainCanvas({showAlert, theme, authInfo, diagram, setDiag
     //this function finds a place in canvas such that it does not collapse with any previously drawn tables
     function nonCollapseFinder(){
         if(!diagram.tbls){
-            return {x: 20, y: 20};
+            return {x: 150, y: 150};
         }
         let rightMostX = 0;
         let rightMostY = 0;
