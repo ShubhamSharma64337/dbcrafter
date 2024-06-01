@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 
 
-export default function CreateTableModal({show, toggleCreateModal, addTable, tbls, showAlert, dtypes}) {
+export default function CreateTableModal({show, toggleCreateModal, addTable, tbls, showAlert, dtypes, setIsLoading, urls}) {
   const [maxIndex, setMaxIndex] = useState(0);
   const [newTbl, setNewTbl] = useState({name: 'table', pKey: null, fields: [ //this state variable tracks the details filled into the modal form by the user, once finished, when user clicks on go button, this variable is used to add to the application level diagram object's tables
     {name: 'id', type: 'INT', size: null, notNull: false, isFKey: false, refTbl: 'NONE', refField: 'NONE'}
@@ -131,6 +131,46 @@ export default function CreateTableModal({show, toggleCreateModal, addTable, tbl
     toggleCreateModal(0)
   }
 
+  function autoFill(){
+    if(!document.getElementById('tableName').checkValidity()){ //this is required because by default, unless form is submitted with submit button, validation is not triggered
+      document.getElementById('tableName').reportValidity();
+      return;
+    }
+    const fdata = {tblName: document.getElementById('tableName').value};
+    setIsLoading(true);
+    fetch(import.meta.env.PROD?urls.productionUrl+'/user/getattributes':urls.devUrl+'/user/getattributes', {
+      method: 'POST',
+      headers: {         
+        'Content-Type': 'application/json',
+      },
+      credentials: 'include', //this must be set in order to save the received session-cookie,
+      //also, after setting credentials to include, cors options must be set to allow credentials and origin from this domain
+      body: JSON.stringify(fdata)
+    })
+    .then(response => response.json()) //response.json() or response.text() provides the 'data'
+    .then((data) => {
+        if(data.success){
+          let autoTbl = {...newTbl, fields: []};
+        for(let field of data.message){
+          if(field.isPKey){
+            autoTbl.pKey = field.name;
+          }
+          autoTbl.fields.push({name: field.name, type: field.type, size: null, notNull: false, isFKey: false, refTbl: 'NONE', refField: 'NONE'})
+        }
+        setNewTbl(autoTbl);
+      }else{
+        showAlert(data.message, data.success?'success':'danger')
+      }
+    })
+    .catch((error)=>{
+      showAlert('An error occured while trying to access the backend API', 'danger')
+      console.log(error)
+    })
+    .finally(()=>{
+      //stopping the loader
+      setIsLoading(false);
+    })
+  }
 
   return (
     show && <div className="overlay overflow-auto fixed justify-center md:justify-center flex items-start p-5 top-0 w-screen h-screen bg-black bg-opacity-35" id="addTblModal" data-modal-id="addTblModal">
@@ -154,9 +194,16 @@ export default function CreateTableModal({show, toggleCreateModal, addTable, tbl
             {/* Modal Body */}
             <div className="modal-body p-5">
             <form className="flex flex-col overflow-auto">
-                    <div className="formItem mb-3">
-                        <label className='block' htmlFor='tableName'>Table Name</label>
-                        <input name='tblName' id='tableName' className="border p-2 outline-blue-700" value={newTbl.name}  onChange={handleNameChange} type='text' required={true} maxLength={64} placeholder='Enter the table name'></input>
+                    <div className="mb-3">
+                          <label className='block' htmlFor='tableName'>Table Name</label>
+                        <div className='flex gap-x-2'>
+                          <input name='tblName' id='tableName' className="border p-2 outline-blue-700" value={newTbl.name}  onChange={handleNameChange} type='text' required={true} maxLength={64} placeholder='Enter the table name'></input>
+                          <button onClick={autoFill} type="button" className='bg-purple-100 p-2 rounded-full hover:bg-purple-200'>
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.2} stroke="currentColor" className="size-6">
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09ZM18.259 8.715 18 9.75l-.259-1.035a3.375 3.375 0 0 0-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 0 0 2.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 0 0 2.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 0 0-2.456 2.456ZM16.894 20.567 16.5 21.75l-.394-1.183a2.25 2.25 0 0 0-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 0 0 1.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 0 0 1.423 1.423l1.183.394-1.183.394a2.25 2.25 0 0 0-1.423 1.423Z" />
+                            </svg>
+                          </button>
+                        </div>
                     </div>
                     <table className='text-center border' cellPadding={15} cellSpacing={5}>
                       
