@@ -15,8 +15,8 @@ export default function GuestInfoModal({visible, toggleModal}) {
 
             {/* Modal Body */}
             <div className="modal-body p-5">
-                <p>
-                    You are not signed into an account, therefore many features which involve Saving the diagrams in the cloud, or accessing diagrams created by others will be disabled.
+                <p className='text-lg'>
+                    You are not signed into an account, therefore many features which involve Saving the diagrams in the cloud, using AI to generate tables, or accessing diagrams created by others will be disabled.
                      To access all the features, please create an account and sign-in.
                 </p>
             </div>
