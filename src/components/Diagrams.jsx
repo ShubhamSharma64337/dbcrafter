@@ -2,6 +2,7 @@ import React, { useEffect } from 'react'
 import {useState} from 'react'
 import {  useNavigate } from "react-router-dom";
 import TemplateModal from './TemplateModal';
+import PageNumber from './PageNumber';
 
 export default function Diagrams({showAlert, setDiagram, setIsLoading, urls, theme}) {
     const navigate = useNavigate();
@@ -9,13 +10,16 @@ export default function Diagrams({showAlert, setDiagram, setIsLoading, urls, the
     const [templateModalVisible, setTemplateModalVisible] = useState(false);
     const [diagrams, setDiagrams] = useState(null);
     const [loadStatus, setLoadStatus] = useState('Fetching Diagrams...');
-    function getdiagrams(){
+    const [numPages, setNumPages] = useState(0);
+    const [currentPage, setCurrentPage] = useState(1);
+    function getdiagrams(page){
         setIsLoading(true);
         fetch(import.meta.env.PROD?urls.productionUrl+'/user/getdiagrams':urls.devUrl+'/user/getdiagrams', {
-          method: 'GET',
+          method: 'POST',
           headers: {         
             'Content-Type': 'application/json',
           },
+          body: JSON.stringify({pageNumber: page}),
           credentials: 'include', //this must be set in order to save the received session-cookie,
           //also, after setting credentials to include, cors options must be set to allow credentials and origin from this domain
         })
@@ -25,6 +29,8 @@ export default function Diagrams({showAlert, setDiagram, setIsLoading, urls, the
               setDiagrams(data.message.map((element)=>{
                 return {...element, isEditing: false}
               }));
+              setNumPages(data.numPages);
+              setCurrentPage(page?page:currentPage);
             } else {
               setDiagrams(null); //without this, if the last diagram is deleted, the state will remain same, and the last diagram will still be shown on page
               setLoadStatus('No Diagrams Found!');
@@ -297,6 +303,7 @@ export default function Diagrams({showAlert, setDiagram, setIsLoading, urls, the
               </div>
               )
           })}
+          <PageNumber numPages={numPages} currentPage={currentPage} setCurrentPage={setCurrentPage} getdiagrams={getdiagrams}/>
           <div className="bottom-right-buttons flex flex-col fixed bottom-5 right-5 gap-5">
                     <button type='button' className={`group relative bg-blue-700 flex shadow-lg p-3 text-white transition-transform rounded-full hover:scale-110`} onClick={()=>{
                       setDiagram({name: null, tbls: null, isPublic: false});
