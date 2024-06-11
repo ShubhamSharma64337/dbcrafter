@@ -1,6 +1,6 @@
 import React from 'react'
 
-export default function TopBar({getdiagrams}) {
+export default function TopBar({getdiagrams, pgSize, setPgSize}) {
   function executeSearch(e){
     if(!document.querySelector("#search-form").checkValidity()){
         document.querySelector("#search-form").reportValidity();
@@ -8,8 +8,12 @@ export default function TopBar({getdiagrams}) {
     }
     getdiagrams(1, document.querySelector("#searchKeyword").value);
   }
+
+  function sizeChanger(e){
+    getdiagrams(1, null, e.currentTarget.value);
+  }
   return (
-    <div className='mb-5 flex justify-between text-sm md:text-md lg:text-lg sm:col-span-2 lg:col-span-3 xl:col-span-4'>
+    <div className='mb-5 flex justify-between items-center text-sm md:text-md lg:text-lg sm:col-span-2 lg:col-span-3 xl:col-span-4'>
         
         <form id="search-form">
             <div className='flex'>
@@ -21,6 +25,14 @@ export default function TopBar({getdiagrams}) {
                 </button>
             </div>
         </form>
+        <div>
+          <select id='pageSizeSelect' className='border outline-blue-200 border-slate-400 rounded p-2' value={pgSize} onChange={sizeChanger}>
+            <option value={4}>4</option>
+            <option value={6}>6</option>
+            <option value={8}>8</option>
+            <option value={12}>12</option>
+          </select>
+        </div>
     </div>
   )
 }

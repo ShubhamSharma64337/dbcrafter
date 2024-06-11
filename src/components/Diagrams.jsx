@@ -13,14 +13,15 @@ export default function Diagrams({showAlert, setDiagram, setIsLoading, urls, the
     const [loadStatus, setLoadStatus] = useState('Fetching Diagrams...');
     const [numPages, setNumPages] = useState(0);
     const [currentPage, setCurrentPage] = useState(1);
-    function getdiagrams(page,key=null){
+    const [pgSize, setPgSize] = useState(8);
+    function getdiagrams(page,key=null,size=pgSize){
         setIsLoading(true);
         fetch(import.meta.env.PROD?urls.productionUrl+'/user/getdiagrams':urls.devUrl+'/user/getdiagrams', {
           method: 'POST',
           headers: {         
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({pageNumber: page, keyword: key}),
+          body: JSON.stringify({pageNumber: page, keyword: key, pageSize: size}),
           credentials: 'include', //this must be set in order to save the received session-cookie,
           //also, after setting credentials to include, cors options must be set to allow credentials and origin from this domain
         })
@@ -31,6 +32,7 @@ export default function Diagrams({showAlert, setDiagram, setIsLoading, urls, the
                 return {...element, isEditing: false}
               }));
               setNumPages(data.numPages);
+              setPgSize(size);
               setCurrentPage(page?page:currentPage);
             } else {
               setDiagrams(null); //without this, if the last diagram is deleted, the state will remain same, and the last diagram will still be shown on page
@@ -247,7 +249,7 @@ export default function Diagrams({showAlert, setDiagram, setIsLoading, urls, the
 
   return (
   <div className='p-5'>
-    <TopBar getdiagrams={getdiagrams} />
+    <TopBar getdiagrams={getdiagrams} pgSize={pgSize} setPgSize={setPgSize}/>
     {diagrams ?
       <div className={`grid gap-5 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 ${theme === 'dark' ? 'bg-gray-950' : 'bg-white'}`}>
         {diagrams.map((element, index) => {
