@@ -248,7 +248,7 @@ export default function Diagrams({showAlert, setDiagram, setIsLoading, urls, the
     }
 
   return (
-  <div className='p-5'>
+  <div className={`p-5 ${theme === 'dark' ? 'bg-gray-950' : 'bg-white'}`}>
     <TopBar getdiagrams={getdiagrams} pgSize={pgSize} setPgSize={setPgSize}/>
     {diagrams ?
       <div className={`grid gap-5 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 ${theme === 'dark' ? 'bg-gray-950' : 'bg-white'}`}>
