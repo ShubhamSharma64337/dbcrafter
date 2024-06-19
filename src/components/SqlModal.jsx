@@ -3,11 +3,14 @@ export default function SqlModal({diagram, show,  toggleModal}) {
   const [sql, setSql] = useState(null); 
   useEffect(()=>{
     let newSql = [];
+
     if(!diagram.tbls){
       setSql(null)
       return;
     }
-    for(let table of diagram.tbls){
+
+    for(let table of diagram.tbls){ //this is the first iteration in which we will not consider the Foreign Key constraints
+
       let stmt = "CREATE TABLE " + table.name + "(\n";
       table.fields.map((field, index)=>{ //this creates each field's portion in the statement
         stmt = stmt + "\t" + field.name + " " + field.type;
@@ -20,9 +23,9 @@ export default function SqlModal({diagram, show,  toggleModal}) {
           if(field.notNull){
             stmt += " NOT NULL"
           }
-          if(field.isFKey){
-            stmt += " FOREIGN KEY REFERENCES " + field.refTbl +"(" + field.refField + ")";
-          }
+          // if(field.isFKey){
+          //   stmt += " FOREIGN KEY REFERENCES " + field.refTbl +"(" + field.refField + ")";
+          // }
         }
         if(index !== table.fields.length - 1){ //this removes comma in case of last field
           stmt = stmt + ", \n";
@@ -31,6 +34,18 @@ export default function SqlModal({diagram, show,  toggleModal}) {
       stmt = stmt + "\n);";
       newSql.push(stmt);
     }
+
+    for(let table of diagram.tbls){ //this is the second iteration in which we will create the Foreign Key Constraints
+      
+      let stmt = null;
+      table.fields.map((field, index)=>{ //this creates each field's portion in the statement
+        if(field.isFKey){
+          stmt = "ALTER TABLE " + table.name + "\n" + "ADD FOREIGN KEY (" + field.name + ") REFERENCES " + field.refTbl + "(" + field.refField + ");";
+            newSql.push(stmt);
+          }
+      })
+    }
+    
     setSql(newSql);
   }, [diagram])
 
