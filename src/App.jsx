@@ -84,11 +84,11 @@ useEffect(login, []); //this is important to update it only the first time
     theme==='light'?setTheme('dark'):setTheme('light');
   }
   return (
-    <div className={`min-h-screen ${theme==='dark'?'bg-gray-950':''}`}>
+    <div className={`min-h-screen ${theme==='dark'?'bg-gray-950 text-white':''}`}>
       <Router> 
       <Navbar title='Dbcrafter' theme={theme} alert={alert} toggleTheme={toggleTheme} showAlert={showAlert} authInfo = {authInfo} setAuthInfo={setAuthInfo} setIsLoading={setIsLoading} urls={urls} currentPath={currentPath} setCurrentPath={setCurrentPath}/>
       <Alert alert={alert} closeAlert={closeAlert} theme={theme}/>
-      <Loader isLoading={isLoading}/>
+      <Loader theme={theme} isLoading={isLoading}/>
         <Routes>
           <Route exact path='/' element={<MainContent theme={theme} showAlert={showAlert} authInfo={authInfo} />}/>
           <Route exact path='/signup' element={<SignupForm showAlert={showAlert} theme={theme} setIsLoading={setIsLoading} urls={urls}/>}/>

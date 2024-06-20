@@ -48,18 +48,18 @@ export default function SignupForm({showAlert, theme, setIsLoading, urls}) {
   }
   return (
 
-        <div className={`w-full flex justify-center h-screen p-10 ${theme==='dark'?'bg-gray-950':'bg-white'}`}>
-          <form className={`shadow-lg w-full sm:w-2/5 h-min p-10 ${theme==='dark'?'bg-gray-900 text-white':'bg-white border'} rounded`}>
+        <div className={`w-full flex justify-center h-screen p-10 ${theme==='dark'?'bg-gray-950':''}`}>
+          <form className={`shadow-lg w-full sm:w-2/5 h-min p-10 ${theme==='dark'?'bg-gray-900 text-white':'border'} rounded`}>
           <div className="my-5">
               <label htmlFor="signupEmail" className="block">Email address</label>
-              <input type="email" required={true} name='email' minLength={5} className="text-black border-2 border-slate-300 bg-slate-50 p-2 w-full outline-blue-700 hover:bg-slate-200 transition focus:bg-white" id="signupEmail" aria-describedby="emailHelp" placeholder='abc@xyz.com'/>
+              <input type="email" required={true} name='email' minLength={5} className={`border-2 ${theme==='dark'?'bg-gray-900 border-blue-400 focus:outline-none':'bg-slate-50 hover:bg-slate-200 focus:bg-white border-slate-300'} p-2 w-full outline-blue-700 transition`} id="signupEmail" aria-describedby="emailHelp" placeholder='abc@xyz.com'/>
               <div id="emailHelp" className="text-sm text-slate-500">We'll never share your email with anyone else.</div>
           </div>
           <div className="my-5">
               <label htmlFor="signupPassword" className="block">Password</label>
               <div className='flex'>
-                <input name='password' type={passwordVisible?'text':'password'} required={true} minLength={6} className="text-black border-2 border-r-2 border-slate-300 bg-slate-50 p-2 w-full outline-blue-700 hover:bg-slate-200 transition focus:bg-white" id="signupPassword" placeholder='Enter a password'/>
-                <button type='button' className="px-2 border-2 border-l-0 -z-2 border-slate-300 bg-slate-50 text-slate-500 rounded-r outline-blue-700" onClick={()=>{
+                <input name='password' type={passwordVisible?'text':'password'} required={true} minLength={6} className={`border-2 ${theme==='dark'?'bg-gray-900 border-blue-400 focus:outline-none':'bg-slate-50 hover:bg-slate-200 focus:bg-white border-slate-300'} p-2 w-full outline-blue-700 transition`} id="signupPassword" placeholder='Enter a password'/>
+                <button type='button' className={`px-2 border-2 border-l-0 -z-2 ${theme==='dark'?'border-blue-400 text-slate-300':'border-slate-300 bg-slate-50 text-slate-400'} rounded-r outline-blue-700`} onClick={()=>{
                   passwordVisible?setPasswordVisible(false):setPasswordVisible(true);
                 }}>
               {passwordVisible ?
@@ -80,8 +80,8 @@ export default function SignupForm({showAlert, theme, setIsLoading, urls}) {
           <div className="my-5">
               <label htmlFor="signupConfirmPassword" className="block">Confirm Password</label>
               <div className='flex'>
-                <input name="confirmPassword" type={confirmPasswordVisible?'text':'password'} required={true} minLength={6} className="text-black border-2 border-r-2 border-slate-300 bg-slate-50 p-2 w-full outline-blue-700 hover:bg-slate-200 transition focus:bg-white" id="signupConfirmPassword" placeholder='Re-enter the password'/>
-                <button type='button' className="px-2 border-2 border-l-0 -z-2 border-slate-300 bg-slate-50 text-slate-500 rounded-r outline-blue-700" onClick={()=>{
+                <input name="confirmPassword" type={confirmPasswordVisible?'text':'password'} required={true} minLength={6} className={`border-2 ${theme==='dark'?'bg-gray-900 border-blue-400 focus:outline-none':'bg-slate-50 hover:bg-slate-200 focus:bg-white border-slate-300'} p-2 w-full outline-blue-700 transition`} id="signupConfirmPassword" placeholder='Re-enter the password'/>
+                <button type='button' className={`${theme==='dark'?'border-blue-400 text-slate-300':'border-slate-300 bg-slate-50 text-slate-400'} px-2 border-2 border-l-0 -z-2  rounded-r outline-blue-700`} onClick={()=>{
                   confirmPasswordVisible?setConfirmPasswordVisible(false):setConfirmPasswordVisible(true);
                 }}>
               {confirmPasswordVisible ?

@@ -1036,7 +1036,7 @@ export default function MainCanvas({toggleTheme, showAlert, theme, authInfo, dia
 
     return (
             <div className={`bg-black canvas-div flex justify-center ${theme==='dark'?'bg-gray-900':'bg-white'}`} style={theme==='dark'?{ backgroundImage: `url(${backgroundDark})`}:{ backgroundImage: `url(${background})`}}>
-                <p className={`guestmode-alert flex justify-center items-center gap-x-2 bg-white shadow opacity-75 text-slate-800 ring-1 text-center absolute rounded-b px-1 py-0.5 top-0 ${authInfo ? 'hidden scale-0' : ''}`}>
+                <p className={`guestmode-alert flex justify-center items-center gap-x-2 ${theme==='dark'?'ring-2 bg-gray-900':'bg-white text-slate-800  ring-1'} shadow opacity-75  text-center absolute rounded-b px-1 py-0.5 top-0 ${authInfo ? 'hidden scale-0' : ''}`}>
                     Guest Mode
                     <button onClick={toggleGuestModal}>
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
@@ -1044,7 +1044,7 @@ export default function MainCanvas({toggleTheme, showAlert, theme, authInfo, dia
                         </svg>
                     </button>
                 </p>
-                <div className={`fixed flex gap-x-2 items-center top-4 left-1/2 -translate-x-1/2 ${theme==='dark'?'bg-gray-900 text-white':''} border border-blue-500 px-2 py-1 rounded ${!authInfo? 'hidden':''}`}>
+                <div className={`fixed flex gap-x-2 items-center top-4 left-1/2 -translate-x-1/2 ${theme==='dark'?'bg-gray-900 text-white':'bg-white'} border border-blue-500 px-2 py-1 rounded ${!authInfo? 'hidden':''}`}>
                     {diagram.name?diagram.name:'unnamed'}
                     <button className={`group ${diagram.name?'':'hidden'}`} onClick={toggleIsPublic}>
                         {
@@ -1205,11 +1205,11 @@ export default function MainCanvas({toggleTheme, showAlert, theme, authInfo, dia
                 </div>
 
                 <CreateTableModal theme={theme} dtypes={dtypes} show={createTableModalShow} toggleCreateModal={toggleCreateModal} tbls={diagram.tbls?diagram.tbls:null} addTable={addTbl} showAlert={showAlert} setIsLoading={setIsLoading} urls={urls} authInfo={authInfo}/>
-                <EditModal dtypes={dtypes} table={diagram.tbls && selections.selectedTbl !== null?diagram.tbls[selections.selectedTbl]:null} editShow={editTableModalShow} toggleEditModal={toggleEditModal} tbls={diagram.tbls?diagram.tbls:null} showAlert={showAlert} updateTbl={updateTbl}/>
-                <CreateDiagramModal diagram={diagram} createDiagramModalShow={createDiagramModalShow} toggleModal={toggleCreateDiagramModal} showAlert={showAlert} setDiagram={setDiagram} setIsLoading={setIsLoading} urls={urls}></CreateDiagramModal>
-                <SqlModal diagram={diagram} show={sqlModalShow} toggleModal={toggleSqlModal}></SqlModal>
-                <GuestInfoModal visible={guestModalShow} toggleModal={toggleGuestModal}></GuestInfoModal>
-                <ImportJsonModal visible={importJsonModalShow} toggleVisible={toggleImportJsonModal} showAlert={showAlert} setDiagram={setDiagram}/>
+                <EditModal theme={theme} dtypes={dtypes} table={diagram.tbls && selections.selectedTbl !== null?diagram.tbls[selections.selectedTbl]:null} editShow={editTableModalShow} toggleEditModal={toggleEditModal} tbls={diagram.tbls?diagram.tbls:null} showAlert={showAlert} updateTbl={updateTbl}/>
+                <CreateDiagramModal theme={theme} diagram={diagram} createDiagramModalShow={createDiagramModalShow} toggleModal={toggleCreateDiagramModal} showAlert={showAlert} setDiagram={setDiagram} setIsLoading={setIsLoading} urls={urls}></CreateDiagramModal>
+                <SqlModal theme={theme} diagram={diagram} show={sqlModalShow} toggleModal={toggleSqlModal}></SqlModal>
+                <GuestInfoModal theme={theme} visible={guestModalShow} toggleModal={toggleGuestModal}></GuestInfoModal>
+                <ImportJsonModal theme={theme} visible={importJsonModalShow} toggleVisible={toggleImportJsonModal} showAlert={showAlert} setDiagram={setDiagram}/>
             </div>
 
     )

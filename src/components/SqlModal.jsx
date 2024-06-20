@@ -1,5 +1,5 @@
 import { useState, React, useEffect } from 'react'
-export default function SqlModal({diagram, show,  toggleModal}) {
+export default function SqlModal({theme, diagram, show,  toggleModal}) {
   const [sql, setSql] = useState(null); 
   useEffect(()=>{
     let newSql = [];
@@ -68,17 +68,17 @@ export default function SqlModal({diagram, show,  toggleModal}) {
   }
   return (
     show && <div className="overlay overflow-auto fixed justify-center md:justify-center flex items-start p-5 top-0 w-screen h-screen bg-black bg-opacity-35" id="addTblModal" data-modal-id="addTblModal">
-        <div className="modal bg-white rounded w-full">
+        <div className={`modal ${theme==='dark'?'bg-gray-950 text-white':'bg-white'} rounded w-full`}>
             {/* Modal Header */}
             <div className="modal-header flex justify-between items-center border-blue-700 border-b-2 p-3">
-              <button type="button" className="p-2 rounded-full transition-colors bg-slate-200 hover:bg-red-300" onClick={toggleModal}>
+              <button type="button" className={`p-2 rounded-full transition-colors  ${theme==='dark'?'hover:bg-red-500':'bg-slate-200 hover:bg-red-300'}`} onClick={toggleModal}>
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
                 </svg>
               </button>
                 <p className='text-center text-lg font-medium '>Auto-Generated SQL</p>
               <div className='flex items-center gap-x-4'>
-                <button onClick={downloader} className={`bg-slate-200 p-2 rounded-full hover:bg-green-200 transition ${sql===null?'hidden':''}`}>
+                <button onClick={downloader} className={`p-2 rounded-full  ${theme==='dark'?'hover:bg-green-500':'bg-slate-200 hover:bg-green-300'} transition ${sql===null?'hidden':''}`}>
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
                     <path fillRule="evenodd" d="M12 2.25a.75.75 0 0 1 .75.75v11.69l3.22-3.22a.75.75 0 1 1 1.06 1.06l-4.5 4.5a.75.75 0 0 1-1.06 0l-4.5-4.5a.75.75 0 1 1 1.06-1.06l3.22 3.22V3a.75.75 0 0 1 .75-.75Zm-9 13.5a.75.75 0 0 1 .75.75v2.25a1.5 1.5 0 0 0 1.5 1.5h13.5a1.5 1.5 0 0 0 1.5-1.5V16.5a.75.75 0 0 1 1.5 0v2.25a3 3 0 0 1-3 3H5.25a3 3 0 0 1-3-3V16.5a.75.75 0 0 1 .75-.75Z" clipRule="evenodd" />
                   </svg>

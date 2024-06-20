@@ -48,18 +48,18 @@ export default function LoginForm({showAlert, setAuthInfo, theme, setIsLoading, 
   }
 
   return (
-        <div className={`flex justify-center w-full p-10 h-screen ${theme==='dark'?'bg-gray-950':''}`}>
-          <form className={`shadow-lg rounded w-full sm:w-2/5 h-min  p-10 ${theme==='dark'?'bg-gray-900 text-white':'bg-white'}`}>
+        <div className={`flex justify-center w-full p-10 h-screen ${theme==='dark'?'bg-gray-950 text-white':''}`}>
+          <form className={`shadow-lg rounded w-full sm:w-2/5 h-min  p-10 ${theme==='dark'?'bg-gray-900':'border'}`}>
           <div className="my-5">
               <label htmlFor="loginName" className="block">Email address</label>
-              <input type="email" value={mail} required={true} minLength={5} onChange={handleLowerMail} className="text-black border-2 border-slate-300 bg-slate-50 p-2 w-full out outline-blue-700 hover:bg-slate-200 transition focus:bg-white" id="loginName" name="email" placeholder='abc@xyz.com'/>
+              <input type="email" value={mail} required={true} minLength={5} onChange={handleLowerMail} className={`border-2  ${theme==='dark'?'bg-gray-900 border-blue-400 focus:outline-none':'bg-slate-50 hover:bg-slate-200 focus:bg-white border-slate-300'} p-2 w-full outline-blue-700  transition `} id="loginName" name="email" placeholder='abc@xyz.com'/>
               <div id="emailHelp" className="text-sm text-slate-500">We'll never share your email with anyone else.</div>
           </div>
           <div className="my-5">
               <label htmlFor="loginPassword" className="block">Password</label>
               <div className='flex'>
-                <input type={passwordVisible?'text':'password'} required={true} className="text-black border-2 border-r-2 border-slate-300 bg-slate-50 p-2 w-full outline-blue-700 hover:bg-slate-200 transition focus:bg-white" id="loginPassword" placeholder='Enter your password' name="password"/>
-                <button type='button' className="px-2 border-2 border-l-0 -z-2 border-slate-300 bg-slate-50 text-slate-500 rounded-r outline-blue-700" onClick={()=>{
+                <input type={passwordVisible?'text':'password'} required={true} className={`border-2 border-r-2 ${theme==='dark'?'bg-gray-900 border-blue-400 focus:outline-none':'bg-slate-50 hover:bg-slate-200 focus:bg-white border-slate-300'} p-2 w-full outline-blue-700 transition`} id="loginPassword" placeholder='Enter your password' name="password"/>
+                <button type='button' className={`px-2 border-2 border-l-0 -z-2 ${theme==='dark'?'border-blue-400 text-slate-300':'border-slate-300 bg-slate-50 text-slate-400'} rounded-r outline-blue-700`} onClick={()=>{
                   passwordVisible?setPasswordVisible(false):setPasswordVisible(true);
                 }}>
               {passwordVisible ?

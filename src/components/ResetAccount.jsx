@@ -44,7 +44,7 @@ export default function ResetAccount({theme, urls, setIsLoading, showAlert, setC
         <form>
             <div className="my-5 flex flex-col gap-y-1">
                 <label htmlFor='password' className='text-slate-400 font-medium'>Password</label>
-                <input type='password' required={true} name="password" id='password' className={`border ${theme==='dark'?'bg-gray-900 border-blue-500 text-white':''} text-lg p-2 outline-blue-500 w-full`} placeholder='Please re-enter your password'></input>
+                <input type='password' required={true} name="password" id='password' className={`border ${theme==='dark'?'bg-gray-900 border-blue-500 text-white focus:outline-none':'outline-blue-500'} text-lg p-2  w-full`} placeholder='Please re-enter your password'></input>
             </div>
             <div className="my-5 flex gap-x-2">
                 <input type='checkbox' id='email' required={true} className='border text-lg p-2 outline-blue-500 w-5'></input>

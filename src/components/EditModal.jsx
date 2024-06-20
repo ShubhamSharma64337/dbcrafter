@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 
-export default function EditModal({table, editShow, toggleEditModal, tbls, showAlert, updateTbl, dtypes}) {
+export default function EditModal({theme, table, editShow, toggleEditModal, tbls, showAlert, updateTbl, dtypes}) {
   const [maxIndex, setMaxIndex] = useState(0); //this keeps track about what name should be given to the new row being added in the modal
   const [updatedTbl, setUpdatedTbl] = useState({...table}) //this actually stores all the details about the form in the modal which is used
   //to update the table
@@ -137,16 +137,16 @@ export default function EditModal({table, editShow, toggleEditModal, tbls, showA
     //we can make sure this never happens by makiing the other code work in such a way, that whenever the diagram is updated, it makes sure
     //that selectedTbl does not go out of bounds, or is reset to null
     editShow && table && <div className="overlay overflow-auto fixed justify-center md:justify-center  flex items-start p-5 top-0 w-screen h-screen bg-black bg-opacity-35" id="addTblModal" data-modal-id="addTblModal">
-        <div className="modal bg-white rounded w-full">
+        <div className={`modal ${theme==='dark'?'bg-gray-950 text-white':'bg-white'} rounded w-full`}>
             {/* Modal Header */}
             <div className="modal-header flex justify-between items-center border-blue-700 border-b-2 p-3">
-              <button type="button" className="p-2 rounded-full transition-colors bg-slate-200 hover:bg-red-300" onClick={closeEditModal}>
+              <button type="button" className={`p-2 rounded-full transition-colors ${theme==='dark'?'hover:bg-red-500':'bg-slate-200 hover:bg-red-300'}`} onClick={closeEditModal}>
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
                 </svg>
               </button>
               <p className='text-center text-lg font-medium '>Modify Table</p>
-            <button className="bg-slate-200 p-2 rounded-full  transition-colors hover:bg-blue-300" type='button' onClick={editTable}>
+            <button className={`p-2 rounded-full  transition-colors ${theme==='dark'?'hover:bg-blue-500':'bg-slate-200 hover:bg-red-300'}`} type='button' onClick={editTable}>
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
                 <path fillRule="evenodd" d="M19.916 4.626a.75.75 0 0 1 .208 1.04l-9 13.5a.75.75 0 0 1-1.154.114l-6-6a.75.75 0 0 1 1.06-1.06l5.353 5.353 8.493-12.74a.75.75 0 0 1 1.04-.207Z" clipRule="evenodd" />
               </svg>
@@ -156,11 +156,11 @@ export default function EditModal({table, editShow, toggleEditModal, tbls, showA
             {/* Modal Body */}
             <div className="modal-body p-5">
             <form className="flex flex-col overflow-auto">
-                    <div className="formItem mb-3">
+                    <div className="formItem mb-3 p-1">
                         <label className='block' htmlFor='tableName'>Table Name</label>
-                        <input type='text' required={true} maxLength={64} name='tblName' id='tableName' className="border p-2 outline-blue-700" value={updatedTbl.name} onChange={handleNameChange} placeholder='Enter the table name'></input>
+                        <input type='text' required={true} maxLength={64} name='tblName' id='tableName' className={`border p-2 ${theme==='dark'?'bg-gray-900 focus:outline-none border-slate-700 focus:border-blue-500':'outline-blue-500'} `} value={updatedTbl.name} onChange={handleNameChange} placeholder='Enter the table name'></input>
                     </div>
-                    <table className='text-center border' cellPadding={15} cellSpacing={5}>
+                    <table className={`ms-1 text-center border ${theme==='dark'?'border-slate-700':''}`} cellPadding={15} cellSpacing={5}>
                       
                       <tbody>
                         <tr>
@@ -176,17 +176,17 @@ export default function EditModal({table, editShow, toggleEditModal, tbls, showA
                         {updatedTbl.fields.map((element, index)=>{
                           return <tr key={`row${index}`}>
                           <td>
-                            <input name='name' type='text' required={true} className='border p-2 outline-blue-700' value={element.name} data-rowindex={index} placeholder='Enter table name' onChange={handleChange}></input>
+                            <input name='name' type='text' required={true} className={`border p-2 ${theme==='dark'?'bg-gray-900 focus:outline-none border-slate-700 focus:border-blue-500':'outline-blue-500'} `} value={element.name} data-rowindex={index} placeholder='Enter table name' onChange={handleChange}></input>
                           </td>
                           <td>
-                            <select name='type' className='border py-2 px-3 outline-blue-700' value={element.type} data-rowindex={index} onChange={handleSelect}>
+                            <select name='type' className={`border p-2 ${theme==='dark'?'bg-gray-900 focus:outline-none border-slate-700 focus:border-blue-500':'outline-blue-500'} `} value={element.type} data-rowindex={index} onChange={handleSelect}>
                               {dtypes.map((element, index)=>{
                                 return <option key={index}>{element}</option>
                               })}
                             </select>
                           </td>
                           <td>
-                            <input name='size' disabled={['DATE','BOOL','BOOLEAN','TINYTEXT','TINYBLOB',"MEDIUMTEXT","MEDIUMBLOB","LONGTEXT","LONGBLOB","YEAR"].includes(element.type) ?true:false} type='number' className='border p-2 outline-blue-700' max={8000} value={updatedTbl.fields[index].size?updatedTbl.fields[index].size:''}  data-rowindex={index} placeholder='Length' onChange={handleChange}></input>
+                            <input name='size' disabled={['DATE','BOOL','BOOLEAN','TINYTEXT','TINYBLOB',"MEDIUMTEXT","MEDIUMBLOB","LONGTEXT","LONGBLOB","YEAR"].includes(element.type) ?true:false} type='number' className={`border p-2 ${theme==='dark'?'bg-gray-900 focus:outline-none border-slate-700 focus:border-blue-500':'outline-blue-500'} `} max={8000} value={updatedTbl.fields[index].size?updatedTbl.fields[index].size:''}  data-rowindex={index} placeholder='Length' onChange={handleChange}></input>
                           </td>
                           <td>
                             <input name='notNull' type='checkbox' className='border p-2 w-5 h-5 accent-blue-700' checked={element.notNull} data-rowindex={index} onChange={handleChange}></input>
@@ -198,7 +198,7 @@ export default function EditModal({table, editShow, toggleEditModal, tbls, showA
                             <input name='isFKey' type='checkbox' className='border p-2 w-5 h-5 accent-blue-700' checked={element.isFKey} data-rowindex={index} onChange={handleChange}></input>
                           </td>
                           <td>
-                            <select name='refTbl' className={`border py-2 px-3 outline-blue-700`} value={element.refTbl} data-rowindex={index} onChange={handleSelect} disabled={!element.isFKey}>
+                            <select name='refTbl' className={`border p-2 ${theme==='dark'?'bg-gray-900 focus:outline-none border-slate-700 focus:border-blue-500':'outline-blue-500'} `} value={element.refTbl} data-rowindex={index} onChange={handleSelect} disabled={!element.isFKey}>
                               <option value="NONE">NONE</option>
                               {tbls && tbls.map((currentTbl, index)=>{
                                 if(currentTbl.name === table.name){ //this makes sure we cannot reference a table to itself
@@ -209,7 +209,7 @@ export default function EditModal({table, editShow, toggleEditModal, tbls, showA
                             </select>
                           </td>
                           <td>
-                            <select name='refField' className='refFieldInput border py-2 px-3 outline-blue-700' disabled={element.refTbl==='NONE'?true:false} value={element.refTbl==='NONE'?'NONE':element.refField} data-rowindex={index} onChange={handleSelect}>
+                            <select name='refField' className={`refFieldInput border py-2 px-3 ${theme==='dark'?'bg-gray-900 focus:outline-none border-slate-700 focus:border-blue-500':'outline-blue-500'}`} disabled={element.refTbl==='NONE'?true:false} value={element.refTbl==='NONE'?'NONE':element.refField} data-rowindex={index} onChange={handleSelect}>
                               <option value={'NONE'}>NONE</option>
                               {tbls && tbls.map((table)=>{
                                 if(table.name === element.refTbl){

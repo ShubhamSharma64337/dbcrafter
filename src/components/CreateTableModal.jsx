@@ -197,7 +197,7 @@ export default function CreateTableModal({theme, show, toggleCreateModal, addTab
                     <div className="mb-3 p-1">
                           <label className='block' htmlFor='tableName'>Table Name</label>
                         <div className='flex gap-x-2'>
-                          <input name='tblName' id='tableName' className={`border outline-blue-500 p-2 ${theme==='dark'?'bg-gray-900':''} `} value={newTbl.name}  onChange={handleNameChange} type='text' required={true} maxLength={64} placeholder='Enter the table name'></input>
+                          <input name='tblName' id='tableName' className={`border p-2 ${theme==='dark'?'bg-gray-900 focus:outline-none border-slate-700 focus:border-blue-500':'outline-blue-500'} `} value={newTbl.name}  onChange={handleNameChange} type='text' required={true} maxLength={64} placeholder='Enter the table name'></input>
                           <button onClick={autoFill} type="button" className={`group relative ${theme==='dark'?'bg-purple-400 hover:bg-purple-500':'bg-purple-100 hover:bg-purple-200'} p-2 rounded-full   disabled:bg-slate-100 `} disabled={authInfo?false:true}>
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.2} stroke="currentColor" className="size-6">
                               <path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09ZM18.259 8.715 18 9.75l-.259-1.035a3.375 3.375 0 0 0-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 0 0 2.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 0 0 2.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 0 0-2.456 2.456ZM16.894 20.567 16.5 21.75l-.394-1.183a2.25 2.25 0 0 0-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 0 0 1.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 0 0 1.423 1.423l1.183.394-1.183.394a2.25 2.25 0 0 0-1.423 1.423Z" />
@@ -208,7 +208,7 @@ export default function CreateTableModal({theme, show, toggleCreateModal, addTab
                           </button>
                         </div>
                     </div>
-                    <table className='ms-1 text-center border' cellPadding={15} cellSpacing={5}>
+                    <table className={`ms-1 text-center border ${theme==='dark'?'border-slate-700':''}`} cellPadding={15} cellSpacing={5}>
                       
                       <tbody>
                         <tr>
@@ -224,17 +224,17 @@ export default function CreateTableModal({theme, show, toggleCreateModal, addTab
                         {newTbl.fields.map((element, index)=>{
                           return <tr key={`row${index}`}>
                           <td>
-                            <input name='name' type='text' required={true} className={`border p-2 ${theme==='dark'?'bg-gray-900':''} outline-blue-700`} value={newTbl.fields[index].name} data-rowindex={index} placeholder='Enter table name' onChange={handleChange}></input>
+                            <input name='name' type='text' required={true} className={`border p-2 ${theme==='dark'?'bg-gray-900 focus:outline-none focus:border-blue-500 border-slate-700':' outline-blue-700'}`} value={newTbl.fields[index].name} data-rowindex={index} placeholder='Enter table name' onChange={handleChange}></input>
                           </td>
                           <td>
-                            <select name='type' className={`border ${theme==='dark'?'bg-gray-900':''} py-2 px-3 outline-blue-700`} value={element.type} data-rowindex={index} onChange={handleSelect}>
+                            <select name='type' className={`border ${theme==='dark'?'bg-gray-900 focus:outline-none focus:border-blue-500 border-slate-700':' outline-blue-700'} py-2 px-3`} value={element.type} data-rowindex={index} onChange={handleSelect}>
                               {dtypes.map((element, index)=>{
                                 return <option key={index}>{element}</option>
                               })}
                             </select>
                           </td>
                           <td>
-                            <input name='size' type='number' disabled={['DATE','BOOL','BOOLEAN','TINYTEXT','TINYBLOB',"MEDIUMTEXT","MEDIUMBLOB","LONGTEXT","LONGBLOB","YEAR"].includes(element.type) ?true:false} className={`${theme==='dark'?'bg-gray-900':''} border p-2 outline-blue-700`} max={8000} value={newTbl.fields[index].size?newTbl.fields[index].size:''}  data-rowindex={index} placeholder='Length' onChange={handleChange}></input>
+                            <input name='size' type='number' disabled={['DATE','BOOL','BOOLEAN','TINYTEXT','TINYBLOB',"MEDIUMTEXT","MEDIUMBLOB","LONGTEXT","LONGBLOB","YEAR"].includes(element.type) ?true:false} className={`${theme==='dark'?'bg-gray-900 focus:outline-none focus:border-blue-500 border-slate-700':'outline-blue-700'} border p-2 `} max={8000} value={newTbl.fields[index].size?newTbl.fields[index].size:''}  data-rowindex={index} placeholder='Length' onChange={handleChange}></input>
                           </td>
                           <td>
                             <input name='notNull' type='checkbox' className='border p-2 w-5 h-5 accent-blue-700' checked={newTbl.notNull} data-rowindex={index} onChange={handleChange}></input>
@@ -246,7 +246,7 @@ export default function CreateTableModal({theme, show, toggleCreateModal, addTab
                             <input name='isFKey' type='checkbox' className='border p-2 w-5 h-5 accent-blue-700' checked={newTbl.fields[index].isFKey} data-rowindex={index} onChange={handleChange}></input>
                           </td>
                           <td>
-                            <select name='refTbl' className={`${theme==='dark'?'bg-gray-900':''} border py-2 px-3 outline-blue-700`} value={element.refTbl} data-rowindex={index} onChange={handleSelect} disabled={!element.isFKey}>
+                            <select name='refTbl' className={`${theme==='dark'?'bg-gray-900 focus:outline-none focus:border-blue-500 border-slate-700':' outline-blue-700'} border py-2 px-3`} value={element.refTbl} data-rowindex={index} onChange={handleSelect} disabled={!element.isFKey}>
                               <option value="NONE">NONE</option>
                               {tbls && tbls.map((element, index)=>{
                                 return <option key={index}>{element.name}</option>
@@ -254,7 +254,7 @@ export default function CreateTableModal({theme, show, toggleCreateModal, addTab
                             </select>
                           </td>
                           <td>
-                            <select name='refField' className={`refFieldInput ${theme==='dark'?'bg-gray-900':''} border py-2 px-3 outline-blue-700`} disabled={element.refTbl==='NONE'?true:false} value={element.refTbl==='NONE'?'NONE':element.refField} data-rowindex={index} onChange={handleSelect}>
+                            <select name='refField' className={`refFieldInput ${theme==='dark'?'bg-gray-900 focus:outline-none focus:border-blue-500 border-slate-700':'outline-blue-700'} border py-2 px-3 `} disabled={element.refTbl==='NONE'?true:false} value={element.refTbl==='NONE'?'NONE':element.refField} data-rowindex={index} onChange={handleSelect}>
                               <option value={'NONE'}>NONE</option>
                               {tbls && tbls.map((table)=>{
                                 if(table.name === element.refTbl){

@@ -53,7 +53,7 @@ export default function TemplateModal({theme, visible, toggleVisible, templates,
             {/* Modal Body */}
             <div className="modal-body grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-5 p-5">
               {templates ? templates.map((element, index) => {
-                return <button key={index} className={`card grid grid-cols-1 grid-rows-4  rounded p-1 transition shadow hover:shadow-none hover:border-gray-700 border-2 ${theme==='dark'?'border-blue-400':'border-slate-200'}`} onClick={openTemplate} data-id={element._id}>
+                return <button key={index} className={`card grid grid-cols-1 grid-rows-4  rounded p-1 transition shadow hover:shadow-none border-2 ${theme==='dark'?'border-gray-700 hover:border-blue-400':'border-slate-200 hover:border-blue-500 '}`} onClick={openTemplate} data-id={element._id}>
                   <div className='image row-span-3 h-full flex justify-center items-center'>
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-8 h-8">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M20.25 6.375c0 2.278-3.694 4.125-8.25 4.125S3.75 8.653 3.75 6.375m16.5 0c0-2.278-3.694-4.125-8.25-4.125S3.75 4.097 3.75 6.375m16.5 0v11.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125V6.375m16.5 0v3.75m-16.5-3.75v3.75m16.5 0v3.75C20.25 16.153 16.556 18 12 18s-8.25-1.847-8.25-4.125v-3.75m16.5 0c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125" />

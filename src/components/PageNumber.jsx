@@ -7,9 +7,9 @@ export default function PageNumber({theme, numPages,currentPage,getdiagrams}) {
   }
   return (
     <div className='flex my-5 justify-center text-sm md:text-md lg:text-lg sm:col-span-2 lg:col-span-3 xl:col-span-4'>
-        <ul className={`flex h-min rounded overflow-hidden shadow ${theme=='dark'?'border border-blue-400':''}`}>
+        <ul className={`flex h-min rounded overflow-hidden shadow ${theme=='dark'?'border border-blue-500':''}`}>
             {[...Array(numPages)].map((page,i)=>{
-                return <li key={i}><button className={`py-1 px-3 ${theme==='dark'?'text-white':''} hover:bg-blue-300 ${currentPage==i+1?'bg-blue-400':''}`} onClick={getpage} value={i+1}>{i+1}</button></li>
+                return <li key={i}><button className={`py-1 px-3 ${theme==='dark'?'text-white':''} hover:bg-blue-400 ${currentPage==i+1?'bg-blue-500':''}`} onClick={getpage} value={i+1}>{i+1}</button></li>
             })}
         </ul>
     </div>
