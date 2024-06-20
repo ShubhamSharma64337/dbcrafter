@@ -8,7 +8,7 @@ export default function AboutContent({theme}) {
             About the website
         </div>
         <div className='text-2xl text-justify flex flex-col justify-center items-center'>
-            Dbcrafter lets you create simple and easy to understand diagrams which succinctly represent relational databases. It allows you to auto-generate the SQL for the database, download it as a file, or export the whole diagram as a PNG image file. It
+            Dbcrafter lets you create simple and easy to understand diagrams which succinctly represent relational databases. You can use AI to automatically generate tables within a few seconds with dozens of fields. It allows you to auto-generate the SQL for the database, download it as a file, or export the whole diagram as a PNG image file. It
              is built using ReactJS, ExpressJS and the HTML Canvas API. It is an Open Source, unlicensed Web Application with its source code available on github to explore.
             <br></br>
             <br></br>
@@ -25,6 +25,7 @@ export default function AboutContent({theme}) {
               <li className={`flex justify-between ${theme==='dark'?'bg-blue-900':'bg-blue-50'} p-3 rounded my-1 items-center`}><span className='underline my-2'>Database:</span> MongoDB Cloud</li>
               <li className={`flex justify-between ${theme==='dark'?'bg-blue-900':'bg-blue-50'} p-3 rounded my-1 items-center`}><span className='underline my-2'>Frontend Hosting:</span> Github Pages</li>
               <li className={`flex justify-between ${theme==='dark'?'bg-blue-900':'bg-blue-50'} p-3 rounded my-1 items-center`}><span className='underline my-2'>Backend Hosting:</span> Google Cloud AppEngine</li>
+              <li className={`flex justify-between ${theme==='dark'?'bg-blue-900':'bg-blue-50'} p-3 rounded my-1 items-center`}><span className='underline my-2'>Generative AI API:</span> Google Gemini</li>
             </ul>
         </div>
       </div>
