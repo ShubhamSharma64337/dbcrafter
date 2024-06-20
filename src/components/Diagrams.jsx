@@ -248,8 +248,8 @@ export default function Diagrams({showAlert, setDiagram, setIsLoading, urls, the
     }
 
   return (
-  <div className={`p-5 ${theme === 'dark' ? 'bg-gray-950' : 'bg-white'}`}>
-    <TopBar getdiagrams={getdiagrams} pgSize={pgSize} setPgSize={setPgSize}/>
+  <div className={`p-5`}>
+    <TopBar theme={theme} getdiagrams={getdiagrams} pgSize={pgSize} setPgSize={setPgSize}/>
     {diagrams ?
       <div className={`grid gap-5 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 ${theme === 'dark' ? 'bg-gray-950' : 'bg-white'}`}>
         {diagrams.map((element, index) => {
@@ -323,7 +323,7 @@ export default function Diagrams({showAlert, setDiagram, setIsLoading, urls, the
       </div>
     }
     <div className={`${diagrams?'':'hidden'}`}>
-      <PageNumber numPages={numPages} currentPage={currentPage} setCurrentPage={setCurrentPage} getdiagrams={getdiagrams}/>
+      <PageNumber theme={theme} numPages={numPages} currentPage={currentPage} setCurrentPage={setCurrentPage} getdiagrams={getdiagrams}/>
     </div>
     <div className="bottom-right-buttons flex flex-col fixed bottom-5 right-5 gap-5">
       <button type='button' className={`group relative bg-blue-700 flex shadow-lg p-3 text-white transition-transform rounded-full hover:scale-110`} onClick={() => {
@@ -342,7 +342,7 @@ export default function Diagrams({showAlert, setDiagram, setIsLoading, urls, the
         </svg>
       </button>
     </div>
-    <TemplateModal showAlert={showAlert} urls={urls} visible={templateModalVisible} toggleVisible={toggleTemplateModal} templates={templates} setIsLoading={setIsLoading} setDiagram={setDiagram}></TemplateModal>
+    <TemplateModal theme={theme} showAlert={showAlert} urls={urls} visible={templateModalVisible} toggleVisible={toggleTemplateModal} templates={templates} setIsLoading={setIsLoading} setDiagram={setDiagram}></TemplateModal>
   </div>
   )
   }

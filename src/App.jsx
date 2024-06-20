@@ -84,7 +84,7 @@ useEffect(login, []); //this is important to update it only the first time
     theme==='light'?setTheme('dark'):setTheme('light');
   }
   return (
-    <div>
+    <div className={`min-h-screen ${theme==='dark'?'bg-gray-950':''}`}>
       <Router> 
       <Navbar title='Dbcrafter' theme={theme} alert={alert} toggleTheme={toggleTheme} showAlert={showAlert} authInfo = {authInfo} setAuthInfo={setAuthInfo} setIsLoading={setIsLoading} urls={urls} currentPath={currentPath} setCurrentPath={setCurrentPath}/>
       <Alert alert={alert} closeAlert={closeAlert} theme={theme}/>
@@ -93,11 +93,11 @@ useEffect(login, []); //this is important to update it only the first time
           <Route exact path='/' element={<MainContent theme={theme} showAlert={showAlert} authInfo={authInfo} />}/>
           <Route exact path='/signup' element={<SignupForm showAlert={showAlert} theme={theme} setIsLoading={setIsLoading} urls={urls}/>}/>
           <Route exact path='/login' element={<LoginForm showAlert={showAlert} setAuthInfo={setAuthInfo} theme={theme} setIsLoading={setIsLoading} urls={urls}/>}/>
-          <Route exact path='/craft' element={<MainCanvas dtypes={dtypes} showAlert={showAlert} theme={theme} authInfo={authInfo} diagram={diagram} setDiagram={setDiagram} setIsLoading={setIsLoading} urls={urls}/>} />
+          <Route exact path='/craft' element={<MainCanvas toggleTheme={toggleTheme} dtypes={dtypes} showAlert={showAlert} theme={theme} authInfo={authInfo} diagram={diagram} setDiagram={setDiagram} setIsLoading={setIsLoading} urls={urls}/>} />
           <Route exact path='/diagrams' element={<Diagrams showAlert={showAlert} theme={theme} authInfo={authInfo} setDiagram={setDiagram} setIsLoading={setIsLoading} urls={urls}/>}/>
           <Route exact path='/about' element={<AboutContent theme={theme}/>}/>
           <Route exact path='/settings' element={<Settings theme={theme} currentPath={currentPath}/>}>
-            <Route exact path='/settings/profile' element={<Profile authInfo={authInfo} setCurrentPath={setCurrentPath}/>}/>
+            <Route exact path='/settings/profile' element={<Profile theme={theme} authInfo={authInfo} setCurrentPath={setCurrentPath}/>}/>
             <Route exact path='/settings/password' element={<ChangePasswordForm theme={theme} urls={urls} setIsLoading={setIsLoading} showAlert={showAlert} setCurrentPath={setCurrentPath}/>}/>
             <Route exact path='/settings/resetaccount' element={<ResetAccount theme={theme} urls={urls} setIsLoading={setIsLoading} showAlert={showAlert} setCurrentPath={setCurrentPath}/>}/>
             <Route exact path='/settings/deleteaccount' element={<DeleteAccount theme={theme} urls={urls} setIsLoading={setIsLoading} showAlert={showAlert} setCurrentPath={setCurrentPath} setAuthInfo={setAuthInfo}/>}/>

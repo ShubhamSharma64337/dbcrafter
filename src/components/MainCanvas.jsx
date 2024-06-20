@@ -10,7 +10,8 @@ import { Link } from 'react-router-dom';
 import GuestInfoModal from './GuestInfoModal';
 import AutosaveLoader from './AutosaveLoader';
 import ImportJsonModal from './ImportJsonModal';
-export default function MainCanvas({showAlert, theme, authInfo, diagram, setDiagram, dtypes, setIsLoading, urls}) {
+import ThemeButton from './ThemeButton';
+export default function MainCanvas({toggleTheme, showAlert, theme, authInfo, diagram, setDiagram, dtypes, setIsLoading, urls}) {
     window.addEventListener('resize',()=>{ //this helps in properly resizing the canvas whenever user resizes the window
         const canvas = document.getElementById("canvas");
         if(!canvas){
@@ -1043,7 +1044,7 @@ export default function MainCanvas({showAlert, theme, authInfo, diagram, setDiag
                         </svg>
                     </button>
                 </p>
-                <div className={`fixed flex gap-x-2 items-center top-4 left-1/2 -translate-x-1/2 bg-white border border-blue-500 px-2 py-1 rounded ${!authInfo? 'hidden':''}`}>
+                <div className={`fixed flex gap-x-2 items-center top-4 left-1/2 -translate-x-1/2 ${theme==='dark'?'bg-gray-900 text-white':''} border border-blue-500 px-2 py-1 rounded ${!authInfo? 'hidden':''}`}>
                     {diagram.name?diagram.name:'unnamed'}
                     <button className={`group ${diagram.name?'':'hidden'}`} onClick={toggleIsPublic}>
                         {
@@ -1078,6 +1079,10 @@ export default function MainCanvas({showAlert, theme, authInfo, diagram, setDiag
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
                             <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                         </svg>
+                    </button>
+                    <button className='group relative bg-blue-700 flex shadow-lg p-3 text-white transition-transform rounded-full hover:scale-110' onClick={toggleTheme}>
+                        <ThemeButton theme={theme}/>
+                        <span className={`text-sm text-nowrap tooltip absolute right-full top-1/2 bg-white text-black border border-slate-500 px-2 py-1 rounded -translate-y-1/2 me-2 hidden group-hover:block`}>Toggle Theme</span>
                     </button>
                 </div>
                 <div className="top-left-buttons flex flex-col fixed top-4 left-4 gap-5">
@@ -1199,7 +1204,7 @@ export default function MainCanvas({showAlert, theme, authInfo, diagram, setDiag
                     </button>
                 </div>
 
-                <CreateTableModal dtypes={dtypes} show={createTableModalShow} toggleCreateModal={toggleCreateModal} tbls={diagram.tbls?diagram.tbls:null} addTable={addTbl} showAlert={showAlert} setIsLoading={setIsLoading} urls={urls} authInfo={authInfo}/>
+                <CreateTableModal theme={theme} dtypes={dtypes} show={createTableModalShow} toggleCreateModal={toggleCreateModal} tbls={diagram.tbls?diagram.tbls:null} addTable={addTbl} showAlert={showAlert} setIsLoading={setIsLoading} urls={urls} authInfo={authInfo}/>
                 <EditModal dtypes={dtypes} table={diagram.tbls && selections.selectedTbl !== null?diagram.tbls[selections.selectedTbl]:null} editShow={editTableModalShow} toggleEditModal={toggleEditModal} tbls={diagram.tbls?diagram.tbls:null} showAlert={showAlert} updateTbl={updateTbl}/>
                 <CreateDiagramModal diagram={diagram} createDiagramModalShow={createDiagramModalShow} toggleModal={toggleCreateDiagramModal} showAlert={showAlert} setDiagram={setDiagram} setIsLoading={setIsLoading} urls={urls}></CreateDiagramModal>
                 <SqlModal diagram={diagram} show={sqlModalShow} toggleModal={toggleSqlModal}></SqlModal>

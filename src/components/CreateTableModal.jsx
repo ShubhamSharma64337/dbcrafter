@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 
 
-export default function CreateTableModal({show, toggleCreateModal, addTable, tbls, showAlert, dtypes, setIsLoading, urls, authInfo}) {
+export default function CreateTableModal({theme, show, toggleCreateModal, addTable, tbls, showAlert, dtypes, setIsLoading, urls, authInfo}) {
   const [maxIndex, setMaxIndex] = useState(0);
   const [newTbl, setNewTbl] = useState({name: 'table', pKey: null, fields: [ //this state variable tracks the details filled into the modal form by the user, once finished, when user clicks on go button, this variable is used to add to the application level diagram object's tables
     {name: 'id', type: 'INT', size: null, notNull: false, isFKey: false, refTbl: 'NONE', refField: 'NONE'}
@@ -174,16 +174,16 @@ export default function CreateTableModal({show, toggleCreateModal, addTable, tbl
 
   return (
     show && <div className="overlay overflow-auto fixed justify-center md:justify-center flex items-start p-5 top-0 w-screen h-screen bg-black bg-opacity-35" id="addTblModal" data-modal-id="addTblModal">
-        <div className="modal bg-white rounded w-full">
+        <div className={`modal ${theme==='dark'?'bg-gray-950 text-white':'bg-white'} rounded w-full`}>
             {/* Modal Header */}
             <div className="modal-header flex justify-between items-center border-blue-700 border-b-2 p-3">
-              <button type="button" className="p-2 rounded-full transition-colors bg-slate-200 hover:bg-red-300" onClick={closeModal}>
+              <button type="button" className={`p-2 rounded-full transition-colors ${theme==='dark'?'hover:bg-red-500':'bg-slate-200 hover:bg-red-300'}`} onClick={closeModal}>
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
                 </svg>
               </button>
               <p className='text-center text-lg font-medium '>Add New Table</p>
-              <button className="bg-slate-200 p-2 rounded-full  transition-colors hover:bg-blue-300" type='button' onClick={addTbl}>
+              <button className={` p-2 rounded-full  transition-colors ${theme==='dark'?'hover:bg-blue-500':'bg-slate-200 hover:bg-blue-300'}`} type='button' onClick={addTbl}>
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
                   <path strokeLinecap="round" strokeLinejoin="round" d="m5.25 4.5 7.5 7.5-7.5 7.5m6-15 7.5 7.5-7.5 7.5" />
                 </svg>
@@ -194,11 +194,11 @@ export default function CreateTableModal({show, toggleCreateModal, addTable, tbl
             {/* Modal Body */}
             <div className="modal-body p-5">
             <form className="flex flex-col overflow-auto">
-                    <div className="mb-3">
+                    <div className="mb-3 p-1">
                           <label className='block' htmlFor='tableName'>Table Name</label>
                         <div className='flex gap-x-2'>
-                          <input name='tblName' id='tableName' className="border p-2 outline-blue-700" value={newTbl.name}  onChange={handleNameChange} type='text' required={true} maxLength={64} placeholder='Enter the table name'></input>
-                          <button onClick={autoFill} type="button" className={`group relative bg-purple-100 p-2 rounded-full hover:bg-purple-200  disabled:bg-slate-100 `} disabled={authInfo?false:true}>
+                          <input name='tblName' id='tableName' className={`border outline-blue-500 p-2 ${theme==='dark'?'bg-gray-900':''} `} value={newTbl.name}  onChange={handleNameChange} type='text' required={true} maxLength={64} placeholder='Enter the table name'></input>
+                          <button onClick={autoFill} type="button" className={`group relative ${theme==='dark'?'bg-purple-400 hover:bg-purple-500':'bg-purple-100 hover:bg-purple-200'} p-2 rounded-full   disabled:bg-slate-100 `} disabled={authInfo?false:true}>
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.2} stroke="currentColor" className="size-6">
                               <path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09ZM18.259 8.715 18 9.75l-.259-1.035a3.375 3.375 0 0 0-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 0 0 2.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 0 0 2.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 0 0-2.456 2.456ZM16.894 20.567 16.5 21.75l-.394-1.183a2.25 2.25 0 0 0-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 0 0 1.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 0 0 1.423 1.423l1.183.394-1.183.394a2.25 2.25 0 0 0-1.423 1.423Z" />
                             </svg>
@@ -208,7 +208,7 @@ export default function CreateTableModal({show, toggleCreateModal, addTable, tbl
                           </button>
                         </div>
                     </div>
-                    <table className='text-center border' cellPadding={15} cellSpacing={5}>
+                    <table className='ms-1 text-center border' cellPadding={15} cellSpacing={5}>
                       
                       <tbody>
                         <tr>
@@ -224,17 +224,17 @@ export default function CreateTableModal({show, toggleCreateModal, addTable, tbl
                         {newTbl.fields.map((element, index)=>{
                           return <tr key={`row${index}`}>
                           <td>
-                            <input name='name' type='text' required={true} className='border p-2 outline-blue-700' value={newTbl.fields[index].name} data-rowindex={index} placeholder='Enter table name' onChange={handleChange}></input>
+                            <input name='name' type='text' required={true} className={`border p-2 ${theme==='dark'?'bg-gray-900':''} outline-blue-700`} value={newTbl.fields[index].name} data-rowindex={index} placeholder='Enter table name' onChange={handleChange}></input>
                           </td>
                           <td>
-                            <select name='type' className='border py-2 px-3 outline-blue-700' value={element.type} data-rowindex={index} onChange={handleSelect}>
+                            <select name='type' className={`border ${theme==='dark'?'bg-gray-900':''} py-2 px-3 outline-blue-700`} value={element.type} data-rowindex={index} onChange={handleSelect}>
                               {dtypes.map((element, index)=>{
                                 return <option key={index}>{element}</option>
                               })}
                             </select>
                           </td>
                           <td>
-                            <input name='size' type='number' disabled={['DATE','BOOL','BOOLEAN','TINYTEXT','TINYBLOB',"MEDIUMTEXT","MEDIUMBLOB","LONGTEXT","LONGBLOB","YEAR"].includes(element.type) ?true:false} className='border p-2 outline-blue-700' max={8000} value={newTbl.fields[index].size?newTbl.fields[index].size:''}  data-rowindex={index} placeholder='Length' onChange={handleChange}></input>
+                            <input name='size' type='number' disabled={['DATE','BOOL','BOOLEAN','TINYTEXT','TINYBLOB',"MEDIUMTEXT","MEDIUMBLOB","LONGTEXT","LONGBLOB","YEAR"].includes(element.type) ?true:false} className={`${theme==='dark'?'bg-gray-900':''} border p-2 outline-blue-700`} max={8000} value={newTbl.fields[index].size?newTbl.fields[index].size:''}  data-rowindex={index} placeholder='Length' onChange={handleChange}></input>
                           </td>
                           <td>
                             <input name='notNull' type='checkbox' className='border p-2 w-5 h-5 accent-blue-700' checked={newTbl.notNull} data-rowindex={index} onChange={handleChange}></input>
@@ -246,7 +246,7 @@ export default function CreateTableModal({show, toggleCreateModal, addTable, tbl
                             <input name='isFKey' type='checkbox' className='border p-2 w-5 h-5 accent-blue-700' checked={newTbl.fields[index].isFKey} data-rowindex={index} onChange={handleChange}></input>
                           </td>
                           <td>
-                            <select name='refTbl' className={`border py-2 px-3 outline-blue-700`} value={element.refTbl} data-rowindex={index} onChange={handleSelect} disabled={!element.isFKey}>
+                            <select name='refTbl' className={`${theme==='dark'?'bg-gray-900':''} border py-2 px-3 outline-blue-700`} value={element.refTbl} data-rowindex={index} onChange={handleSelect} disabled={!element.isFKey}>
                               <option value="NONE">NONE</option>
                               {tbls && tbls.map((element, index)=>{
                                 return <option key={index}>{element.name}</option>
@@ -254,7 +254,7 @@ export default function CreateTableModal({show, toggleCreateModal, addTable, tbl
                             </select>
                           </td>
                           <td>
-                            <select name='refField' className='refFieldInput border py-2 px-3 outline-blue-700' disabled={element.refTbl==='NONE'?true:false} value={element.refTbl==='NONE'?'NONE':element.refField} data-rowindex={index} onChange={handleSelect}>
+                            <select name='refField' className={`refFieldInput ${theme==='dark'?'bg-gray-900':''} border py-2 px-3 outline-blue-700`} disabled={element.refTbl==='NONE'?true:false} value={element.refTbl==='NONE'?'NONE':element.refField} data-rowindex={index} onChange={handleSelect}>
                               <option value={'NONE'}>NONE</option>
                               {tbls && tbls.map((table)=>{
                                 if(table.name === element.refTbl){

@@ -2,7 +2,7 @@ import React from 'react'
 import { useEffect } from 'react';
 import {useNavigate} from 'react-router-dom';
 
-export default function DeleteAccount({setIsLoading, showAlert, setCurrentPath, urls, setAuthInfo}) {
+export default function DeleteAccount({theme, setIsLoading, showAlert, setCurrentPath, urls, setAuthInfo}) {
     const navigate = useNavigate();
 
     useEffect(()=>{
@@ -54,7 +54,7 @@ export default function DeleteAccount({setIsLoading, showAlert, setCurrentPath, 
         <form>
             <div className="my-5 flex flex-col gap-y-1">
                 <label htmlFor='password' className='text-slate-400 font-medium'>Password</label>
-                <input type='password' name='password' required={true} id='password' className='border text-lg p-2 outline-blue-500 w-full' placeholder='Please re-enter your password'></input>
+                <input type='password' name='password' required={true} id='password' className={`border text-lg p-2 ${theme==='dark'?'bg-gray-900 border-blue-500 text-white':''} outline-blue-500 w-full`} placeholder='Please re-enter your password'></input>
             </div>
             <div className="my-5 flex gap-x-2">
                 <input type='checkbox' required={true} id='email' className='border text-lg p-2 outline-blue-500 w-5'></input>
