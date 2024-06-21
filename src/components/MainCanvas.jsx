@@ -104,6 +104,7 @@ export default function MainCanvas({toggleTheme, showAlert, theme, authInfo, dia
     // to the index of the table on which mouse button is down
     function handleMouseDown(event) {
         if(!diagram.tbls){
+            document.body.querySelector('canvas').style.cursor = 'pointer'; //If user has clicked outside any table, change the mouse icon to pointer or pan
             return;
         }
         //By default the clientY and clientX values will be relative to whole document
@@ -128,6 +129,7 @@ export default function MainCanvas({toggleTheme, showAlert, theme, authInfo, dia
         for (let tb of diagram.tbls) {
             if (isPointerInTbl(clientX_correct, clientY_correct, tb)) {
                 setSelections({selectedTbl: index_clicked, is_dragging: true});
+                document.body.querySelector('canvas').style.cursor = 'move'; //If user has clicked on any table, change the mouse icon to move
                 tableWasSelected = true;
                 break;
             }
@@ -135,6 +137,7 @@ export default function MainCanvas({toggleTheme, showAlert, theme, authInfo, dia
         }
         if(!tableWasSelected){ //
             setSelections({...selections, selectedTbl: null} );
+            document.body.querySelector('canvas').style.cursor = 'pointer'; //If user has clicked outside any table, change the mouse icon to pointer or pan
         }
         if(!(selections.is_dragging)){
             setIsPanning(true);
@@ -147,6 +150,7 @@ export default function MainCanvas({toggleTheme, showAlert, theme, authInfo, dia
         let sel = {...selections, is_dragging: false};
         setSelections(sel);
         setIsPanning(false);
+        document.body.querySelector('canvas').style.cursor = 'default';
     }
 
     //implements drag and drop
