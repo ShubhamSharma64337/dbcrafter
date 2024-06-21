@@ -1066,11 +1066,14 @@ export default function MainCanvas({toggleTheme, showAlert, theme, authInfo, dia
                                 </svg>
 
 }
-                        <Tooltip theme={theme} position={'right'} text={'Toggle Public/Private'}></Tooltip>
+                        <Tooltip theme={theme} position={'bottom'} text={'Toggle Public/Private'}></Tooltip>
                     </button>
                     {
                         diagram.name?
-                        <AutosaveLoader autoSave={autosaveDiagram} autoSaving={autoSaving}></AutosaveLoader>
+                        <div className='relative group'>
+                            <AutosaveLoader autoSave={autosaveDiagram} autoSaving={autoSaving}></AutosaveLoader>
+                            <Tooltip theme={theme} position={'bottom'} text={'Save Changes'}></Tooltip>
+                        </div>
                         :''
                     }
                 </div>

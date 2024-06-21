@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import ThemeButton from './ThemeButton';
 import GithubButton from './GithubButton';
+import Tooltip from './Tooltip';
 export default function Navbar({title, theme, toggleTheme, showAlert, authInfo, setAuthInfo, setIsLoading, urls, currentPath, setCurrentPath}) {
     const navigate = useNavigate();
     const {pathname} = useLocation();
@@ -62,8 +63,9 @@ export default function Navbar({title, theme, toggleTheme, showAlert, authInfo, 
                         <li className="mx-2 my-2 md:my-0">
                             <Link className={`transition px-1.5 py-1 rounded ${theme==='dark'?'hover:bg-blue-900':'hover:bg-slate-200'} ${pathname==='/about'?'underline decoration-2 decoration-blue-500':''}`} to="/about" onClick={toggleCollapsed}>About</Link>
                         </li>
-                        <li className="mx-2 my-2 md:my-0 flex items-center">
+                        <li className="group relative mx-2 my-2 md:my-0 flex items-center">
                             <button onClick={toggleTheme}><ThemeButton theme={theme}/></button>
+                            <Tooltip position={'bottom'} theme={theme} text={'Toggle Theme'}></Tooltip>
                         </li>
                         <li className={`mx-2 my-2 md:my-0 flex items-center ${authInfo?'':'hidden'}`}>
                             <button className="relative flex flex-col items-center justify-center" onClick={() => { document.querySelector('#userDropdown').classList.toggle('hidden') }}>
