@@ -9,6 +9,8 @@ export default function SqlModal({theme, diagram, show,  toggleModal}) {
       return;
     }
 
+    newSql.push("CREATE DATABASE " + diagram.name + ";\n\nUSE " + diagram.name + ";\n");
+
     for(let table of diagram.tbls){ //this is the first iteration in which we will not consider the Foreign Key constraints
 
       let stmt = "CREATE TABLE " + table.name + "(\n";

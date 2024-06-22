@@ -186,7 +186,7 @@ export default function EditModal({theme, table, editShow, toggleEditModal, tbls
                             </select>
                           </td>
                           <td>
-                            <input name='size' disabled={['DATE','BOOL','BOOLEAN','TINYTEXT','TINYBLOB',"MEDIUMTEXT","MEDIUMBLOB","LONGTEXT","LONGBLOB","YEAR"].includes(element.type) ?true:false} type='number' className={`border p-2 ${theme==='dark'?'bg-gray-900 focus:outline-none border-slate-700 focus:border-blue-500':'outline-blue-500'} `} max={8000} value={updatedTbl.fields[index].size?updatedTbl.fields[index].size:''}  data-rowindex={index} placeholder='Length' onChange={handleChange}></input>
+                            <input name='size' required={['VARCHAR','VARBINARY'].includes(element.type) ? true:false} min={0} disabled={['DATE','BOOL','BOOLEAN','TINYTEXT','TINYBLOB',"MEDIUMTEXT","MEDIUMBLOB","LONGTEXT","LONGBLOB","YEAR"].includes(element.type) ?true:false} type='number' className={`border p-2 ${theme==='dark'?'bg-gray-900 focus:outline-none border-slate-700 focus:border-blue-500':'outline-blue-500'} `} max={8000} value={updatedTbl.fields[index].size?updatedTbl.fields[index].size:''}  data-rowindex={index} placeholder='Length' onChange={handleChange}></input>
                           </td>
                           <td>
                             <input name='notNull' type='checkbox' className='border p-2 w-5 h-5 accent-blue-700' checked={element.notNull} data-rowindex={index} onChange={handleChange}></input>
