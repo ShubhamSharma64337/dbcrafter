@@ -19,15 +19,14 @@ export default function SqlModal({theme, diagram, show,  toggleModal}) {
         if(field.size){
           stmt = stmt + "(" + field.size + ")"
         }
+        if(field.notNull){
+          stmt += " NOT NULL"
+        }
+        if(field.unique){
+          stmt += " UNIQUE"
+        }
         if(table.pKey === field.name){
           stmt += " PRIMARY KEY";
-        } else {
-          if(field.notNull){
-            stmt += " NOT NULL"
-          }
-          // if(field.isFKey){
-          //   stmt += " FOREIGN KEY REFERENCES " + field.refTbl +"(" + field.refField + ")";
-          // }
         }
         if(index !== table.fields.length - 1){ //this removes comma in case of last field
           stmt = stmt + ", \n";

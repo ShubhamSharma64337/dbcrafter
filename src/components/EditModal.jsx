@@ -18,7 +18,7 @@ export default function EditModal({theme, table, editShow, toggleEditModal, tbls
       return {...element}
     })}
     const insertIndex = parseInt(e.currentTarget.dataset.rowindex) + 1;
-    tableCopy.fields.splice(insertIndex,0, {name: 'field'+(maxIndex+1), type: 'INT', notNull: false, isFKey: false, refTbl: 'NONE', refField: 'NONE'})
+    tableCopy.fields.splice(insertIndex,0, {name: 'field'+(maxIndex+1), type: 'INT', notNull: false, unique: false, isFKey: false, refTbl: 'NONE', refField: 'NONE'})
     setUpdatedTbl(tableCopy);
     setMaxIndex(maxIndex+1);
   }
@@ -55,7 +55,7 @@ export default function EditModal({theme, table, editShow, toggleEditModal, tbls
           return {...element};
         }
       })}
-    } else if (name === 'notNull'){ //handle change in notNull checkbox
+    } else if (name === 'notNull' || name === 'unique'){ //handle change in notNull checkbox
         let checked = e.currentTarget.checked;
         tableCopy = {...updatedTbl, fields: updatedTbl.fields.map((element, index)=>{
           if(index === rowindex){
@@ -168,6 +168,7 @@ export default function EditModal({theme, table, editShow, toggleEditModal, tbls
                           <th>Datatype</th>
                           <th>Size</th>
                           <th>Not Null</th>
+                          <th>Unique</th>
                           <th>Primary Key</th>
                           <th>Foreign Key</th>
                           <th>Referenced Table</th>
@@ -190,6 +191,9 @@ export default function EditModal({theme, table, editShow, toggleEditModal, tbls
                           </td>
                           <td>
                             <input name='notNull' type='checkbox' className='border p-2 w-5 h-5 accent-blue-700' checked={element.notNull} data-rowindex={index} onChange={handleChange}></input>
+                          </td>
+                          <td>
+                            <input name='unique' type='checkbox' className='border p-2 w-5 h-5 accent-blue-700' checked={element.unique} data-rowindex={index} onChange={handleChange}></input>
                           </td>
                           <td>
                             <input name='pKey' type='checkbox' className='border p-2 w-5 h-5 accent-blue-700' checked={element.name===updatedTbl.pKey?true:false} data-rowindex={index} onChange={handleChange}></input>

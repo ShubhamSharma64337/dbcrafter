@@ -5,7 +5,7 @@ import Tooltip from './Tooltip';
 export default function CreateTableModal({theme, show, toggleCreateModal, addTable, tbls, showAlert, dtypes, setIsLoading, urls, authInfo}) {
   const [maxIndex, setMaxIndex] = useState(0);
   const [newTbl, setNewTbl] = useState({name: 'table', pKey: null, fields: [ //this state variable tracks the details filled into the modal form by the user, once finished, when user clicks on go button, this variable is used to add to the application level diagram object's tables
-    {name: 'id', type: 'INT', size: null, notNull: false, isFKey: false, refTbl: 'NONE', refField: 'NONE'}
+    {name: 'id', type: 'INT', size: null, notNull: false, unique: false, isFKey: false, refTbl: 'NONE', refField: 'NONE'}
   ]})
 
   function handleNameChange(e){ //table name change handler
@@ -17,7 +17,7 @@ export default function CreateTableModal({theme, show, toggleCreateModal, addTab
       return {...element}
     })}
     const insertIndex = parseInt(e.currentTarget.dataset.rowindex) + 1;
-    tableCopy.fields.splice(insertIndex,0, {name: 'field'+(maxIndex+1),size: null, type: 'INT', notNull: false, isFKey: false, refTbl: 'NONE', refField: 'NONE'})
+    tableCopy.fields.splice(insertIndex,0, {name: 'field'+(maxIndex+1),size: null, type: 'INT', notNull: false, unique: false, isFKey: false, refTbl: 'NONE', refField: 'NONE'})
     setNewTbl(tableCopy);
     setMaxIndex(maxIndex+1);
   }
@@ -55,7 +55,7 @@ export default function CreateTableModal({theme, show, toggleCreateModal, addTab
           return {...element};
         }
       })}
-    } else if (name === 'notNull'){ //handles change in Not Null checkbox
+    } else if (name === 'notNull' || name === 'unique'){ //handles change in Not Null checkbox
       let checked = e.currentTarget.checked;
       tableCopy = {...newTbl, fields: newTbl.fields.map((element, index)=>{
         if(index === rowindex){
@@ -215,6 +215,7 @@ export default function CreateTableModal({theme, show, toggleCreateModal, addTab
                           <th>Datatype</th>
                           <th>Size</th>
                           <th>Not Null</th>
+                          <th>Unique</th>
                           <th>Primary Key</th>
                           <th>Foreign Key</th>
                           <th>Referenced Table</th>
@@ -237,6 +238,9 @@ export default function CreateTableModal({theme, show, toggleCreateModal, addTab
                           </td>
                           <td>
                             <input name='notNull' type='checkbox' className='border p-2 w-5 h-5 accent-blue-700' checked={newTbl.notNull} data-rowindex={index} onChange={handleChange}></input>
+                          </td>
+                          <td>
+                            <input name='unique' type='checkbox' className='border p-2 w-5 h-5 accent-blue-700' checked={newTbl.unique} data-rowindex={index} onChange={handleChange}></input>
                           </td>
                           <td>
                             <input name='pKey' type='checkbox' className='border p-2 w-5 h-5 accent-blue-700' checked={element.name===newTbl.pKey?true:false} data-rowindex={index} onChange={handleChange}></input>
