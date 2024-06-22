@@ -120,13 +120,13 @@ export default function CreateTableModal({theme, show, toggleCreateModal, addTab
       return;
     }
     toggleCreateModal();
-    setNewTbl({name: 'table', pKey: null, fields: [{name: 'id', type: 'INT', size: null, notNull: false, isFKey: false, refTbl: 'NONE', refField: 'NONE'}]}) //this resets
+    setNewTbl({name: 'table', pKey: null, fields: [{name: 'id', type: 'INT', size: null, notNull: false, unique: false, isFKey: false, refTbl: 'NONE', refField: 'NONE'}]}) //this resets
     //the modal when a table has been added
     setMaxIndex(0)
   }
 
   function closeModal(){
-    setNewTbl({name: 'table', pKey: null, fields: [{name: 'id', type: 'INT', size: null, notNull: false, isFKey: false, refTbl: 'NONE', refField: 'NONE'}]}) //this resets the modal
+    setNewTbl({name: 'table', pKey: null, fields: [{name: 'id', type: 'INT', size: null, notNull: false, unique: false, isFKey: false, refTbl: 'NONE', refField: 'NONE'}]}) //this resets the modal
     //if the user closes the modal without adding the table to the diagram
     setMaxIndex(0)
     toggleCreateModal(0)
@@ -234,7 +234,7 @@ export default function CreateTableModal({theme, show, toggleCreateModal, addTab
                             </select>
                           </td>
                           <td>
-                            <input name='size' type='number' required={['VARCHAR','VARBINARY'].includes(element.type) ? true:false} min={0} disabled={['DATE','BOOL','BOOLEAN','TINYTEXT','TINYBLOB',"MEDIUMTEXT","MEDIUMBLOB","LONGTEXT","LONGBLOB","YEAR","ENUM","SET"].includes(element.type) ?true:false} className={`${theme==='dark'?'bg-gray-900 focus:outline-none focus:border-blue-500 border-slate-700':'outline-blue-700'} border p-2 `} max={8000} value={newTbl.fields[index].size?newTbl.fields[index].size:''}  data-rowindex={index} placeholder='Length' onChange={handleChange}></input>
+                            <input name='size' pattern={["DECIMAL","DEC","FLOAT","DOUBLE"].includes(element.type) ? "^[0-9]+,[0-9]+$" : undefined } type={["DECIMAL","DEC","FLOAT","DOUBLE"].includes(element.type)? 'text':'number'} required={['VARCHAR','VARBINARY'].includes(element.type) ? true:false} min={["DECIMAL","DEC","FLOAT","DOUBLE"].includes(element.type)?undefined:0} disabled={['DATE','BOOL','BOOLEAN','TINYTEXT','TINYBLOB',"MEDIUMTEXT","MEDIUMBLOB","LONGTEXT","LONGBLOB","YEAR","ENUM","SET"].includes(element.type) ?true:false} className={`${theme==='dark'?'bg-gray-900 focus:outline-none focus:border-blue-500 border-slate-700':'outline-blue-700'} border p-2 `} max={8000} value={newTbl.fields[index].size?newTbl.fields[index].size:''}  data-rowindex={index} placeholder={["DECIMAL","DEC","FLOAT","DOUBLE"].includes(element.type) ? 'Precision,Scale':['INT','INTEGER','BIGINT','SMALLINT','TINYINT','MEDIUMINT'].includes(element.type) ? 'Width':'Length'} onChange={handleChange}></input>
                           </td>
                           <td>
                             <input name='notNull' type='checkbox' className='border p-2 w-5 h-5 accent-blue-700' checked={newTbl.notNull} data-rowindex={index} onChange={handleChange}></input>

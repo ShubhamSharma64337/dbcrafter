@@ -17,7 +17,12 @@ export default function SqlModal({theme, diagram, show,  toggleModal}) {
       table.fields.map((field, index)=>{ //this creates each field's portion in the statement
         stmt = stmt + "\t" + field.name + " " + field.type;
         if(field.size){
-          stmt = stmt + "(" + field.size + ")"
+          if(['INT','INTEGER','BIGINT','SMALLINT','TINYINT','MEDIUMINT'].includes(field.type)){
+            stmt = stmt + "(" + field.size + ") ZEROFILL" //This is necessary, because without ZEROFILL, the Display Width has no effect
+          } else {
+            stmt = stmt + "(" + field.size + ")"
+          }
+          
         }
         if(field.notNull){
           stmt += " NOT NULL"
