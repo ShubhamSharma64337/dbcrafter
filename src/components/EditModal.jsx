@@ -18,7 +18,7 @@ export default function EditModal({theme, table, editShow, toggleEditModal, tbls
       return {...element}
     })}
     const insertIndex = parseInt(e.currentTarget.dataset.rowindex) + 1;
-    tableCopy.fields.splice(insertIndex,0, {name: 'field'+(maxIndex+1), type: 'INT', notNull: false, unique: false, isFKey: false, refTbl: 'NONE', refField: 'NONE'})
+    tableCopy.fields.splice(insertIndex,0, {name: 'field'+(maxIndex+1), type: 'INT', notNull: false, unique: false, isFKey: false, refTbl: 'NONE', refField: 'NONE', default: null})
     setUpdatedTbl(tableCopy);
     setMaxIndex(maxIndex+1);
   }
@@ -90,9 +90,18 @@ export default function EditModal({theme, table, editShow, toggleEditModal, tbls
     const name = e.currentTarget.name; //retrieving the name value of the select list, this will be same as the key in the updatedTbl dictionary
     const value = e.currentTarget.value; //retrieving the value of the select field
     const rowindex = parseInt(e.currentTarget.dataset.rowindex); //retrieving the field index using the data attribute of the select input
+
     let tableCopy = {...updatedTbl, fields: updatedTbl.fields.map((element, index)=>{ //now starting actually modifying the select field
         if(index === rowindex){
-          return {...element, [name]: value, size: null}; //Here we set size to null because if datatype is set to one without size, we need to update it
+          if(name === 'type'){ //This condition makes sure that the Default value is set to null if datatype is changed, this is necessary because 
+            //certain values cannot be typecasted to another type e.g. an integer or string cannot be typecasted to a DATE type value
+            return {...element, [name]: value, size: null, default: null}; //Here we set size to null because if datatype is set to one which does not support size, we need to update it
+          } else if (name === 'default'){
+            return {...element, [name]: value};
+          } 
+          else {
+            return {...element, [name]: value, size: null}; //Here we set size to null because if datatype is set to one which does not support size, we need to update it
+          }
         } else {
           return {...element};
         }
@@ -173,6 +182,7 @@ export default function EditModal({theme, table, editShow, toggleEditModal, tbls
                           <th>Foreign Key</th>
                           <th>Referenced Table</th>
                           <th>Referenced Field</th>
+                          <th>Default</th>
                         </tr>
                         {updatedTbl.fields.map((element, index)=>{
                           return <tr key={`row${index}`}>
@@ -223,6 +233,18 @@ export default function EditModal({theme, table, editShow, toggleEditModal, tbls
                                 }
                               })}
                             </select>
+                          </td>
+                          <td>
+                          {
+                              ["BOOL","BOOLEAN"].includes(element.type) ? 
+                                <select name='default' className={`border p-2 ${theme==='dark'?'bg-gray-900 focus:outline-none border-slate-700 focus:border-blue-500':'outline-blue-500'} `} value={element.default} data-rowindex={index} onChange={handleSelect}>
+                                  <option>NONE</option>
+                                  <option>TRUE</option>
+                                  <option>FALSE</option>
+                                </select>
+                                :
+                                <input name='default' type={["CHAR","VARCHAR","TEXT","MEDIUMTEXT","LONGTEXT","TINYTEXT","DATETIME","TIMESTAMP"].includes(element.type)? 'text': ["DATE"].includes(element.type) ? 'date' : 'number'} className={`${theme==='dark'?'bg-gray-900 focus:outline-none focus:border-blue-500 border-slate-700':'outline-blue-700'} border p-2`} value={element.default?element.default:''}  data-rowindex={index} placeholder={'Enter a value'} onChange={handleChange}></input>
+                            }                  
                           </td>
                           <td>
                               <button type="button" className="rounded" data-rowindex={index} onClick={addField}>

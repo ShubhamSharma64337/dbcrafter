@@ -16,13 +16,24 @@ export default function SqlModal({theme, diagram, show,  toggleModal}) {
       let stmt = "CREATE TABLE " + table.name + "(\n";
       table.fields.map((field, index)=>{ //this creates each field's portion in the statement
         stmt = stmt + "\t" + field.name + " " + field.type;
-        if(field.size){
+        if(field.size){ //This expression returns false if the value of size is an empty string
           if(['INT','INTEGER','BIGINT','SMALLINT','TINYINT','MEDIUMINT'].includes(field.type)){
             stmt = stmt + "(" + field.size + ") ZEROFILL" //This is necessary, because without ZEROFILL, the Display Width has no effect
           } else {
             stmt = stmt + "(" + field.size + ")"
           }
-          
+        }
+        if(field.default){ //This expression returns false if the value of default is an empty string
+          if (["CHAR", "VARCHAR", "TEXT", "MEDIUMTEXT", "LONGTEXT", "TINYTEXT", "DATETIME", "TIMESTAMP", "DATE"].includes(field.type)) {
+            stmt += " DEFAULT('" + field.default + "')"
+          } else if (['BOOL','BOOLEAN'].includes(field.type)) {
+            if(field.default !== 'NONE'){
+              stmt += " DEFAULT(" + (field.default) + ")"
+            } 
+          } else { //Numeric types
+            stmt += " DEFAULT(" + field.default + ")"
+          }
+
         }
         if(field.notNull){
           stmt += " NOT NULL"

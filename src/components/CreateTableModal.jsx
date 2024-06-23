@@ -5,7 +5,7 @@ import Tooltip from './Tooltip';
 export default function CreateTableModal({theme, show, toggleCreateModal, addTable, tbls, showAlert, dtypes, setIsLoading, urls, authInfo}) {
   const [maxIndex, setMaxIndex] = useState(0);
   const [newTbl, setNewTbl] = useState({name: 'table', pKey: null, fields: [ //this state variable tracks the details filled into the modal form by the user, once finished, when user clicks on go button, this variable is used to add to the application level diagram object's tables
-    {name: 'id', type: 'INT', size: null, notNull: false, unique: false, isFKey: false, refTbl: 'NONE', refField: 'NONE'}
+    {name: 'id', type: 'INT', size: null, notNull: false, unique: false, isFKey: false, refTbl: 'NONE', refField: 'NONE', default: null}
   ]})
 
   function handleNameChange(e){ //table name change handler
@@ -17,7 +17,7 @@ export default function CreateTableModal({theme, show, toggleCreateModal, addTab
       return {...element}
     })}
     const insertIndex = parseInt(e.currentTarget.dataset.rowindex) + 1;
-    tableCopy.fields.splice(insertIndex,0, {name: 'field'+(maxIndex+1),size: null, type: 'INT', notNull: false, unique: false, isFKey: false, refTbl: 'NONE', refField: 'NONE'})
+    tableCopy.fields.splice(insertIndex,0, {name: 'field'+(maxIndex+1),size: null, type: 'INT', notNull: false, unique: false, isFKey: false, refTbl: 'NONE', refField: 'NONE', default: null})
     setNewTbl(tableCopy);
     setMaxIndex(maxIndex+1);
   }
@@ -220,6 +220,7 @@ export default function CreateTableModal({theme, show, toggleCreateModal, addTab
                           <th>Foreign Key</th>
                           <th>Referenced Table</th>
                           <th>Referenced Field</th>
+                          <th>Default</th>
                         </tr>
                         {newTbl.fields.map((element, index)=>{
                           return <tr key={`row${index}`}>
@@ -267,6 +268,18 @@ export default function CreateTableModal({theme, show, toggleCreateModal, addTab
                                 }
                               })}
                             </select>
+                          </td>
+                          <td>
+                          {
+                              ["BOOL","BOOLEAN"].includes(element.type) ? 
+                                <select name='default' className={`border p-2 ${theme==='dark'?'bg-gray-900 focus:outline-none border-slate-700 focus:border-blue-500':'outline-blue-500'} `} value={element.default} data-rowindex={index} onChange={handleSelect}>
+                                  <option>NONE</option>
+                                  <option>TRUE</option>
+                                  <option>FALSE</option>
+                                </select>
+                                :
+                                <input name='default' type={["CHAR","VARCHAR","TEXT","MEDIUMTEXT","LONGTEXT","TINYTEXT","DATETIME","TIMESTAMP"].includes(element.type)? 'text': ["DATE"].includes(element.type) ? 'date' : 'number'} className={`${theme==='dark'?'bg-gray-900 focus:outline-none focus:border-blue-500 border-slate-700':'outline-blue-700'} border p-2`} value={element.default?element.default:''}  data-rowindex={index} placeholder={'Enter a value'} onChange={handleChange}></input>
+                            }  
                           </td>
                           <td>
                               <button type="button" className="rounded" data-rowindex={index} onClick={addField}>
