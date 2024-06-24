@@ -4,7 +4,7 @@ import Tooltip from './Tooltip';
 
 export default function CreateTableModal({theme, show, toggleCreateModal, addTable, tbls, showAlert, dtypes, setIsLoading, urls, authInfo}) {
   const [maxIndex, setMaxIndex] = useState(0);
-  const [newTbl, setNewTbl] = useState({name: 'table', pKey: null, fields: [ //this state variable tracks the details filled into the modal form by the user, once finished, when user clicks on go button, this variable is used to add to the application level diagram object's tables
+  const [newTbl, setNewTbl] = useState({name: 'table1', pKey: null, fields: [ //this state variable tracks the details filled into the modal form by the user, once finished, when user clicks on go button, this variable is used to add to the application level diagram object's tables
     {name: 'id', type: 'INT', size: null, notNull: false, unique: false, isFKey: false, refTbl: 'NONE', refField: 'NONE', default: null}
   ]})
 
@@ -120,13 +120,13 @@ export default function CreateTableModal({theme, show, toggleCreateModal, addTab
       return;
     }
     toggleCreateModal();
-    setNewTbl({name: 'table', pKey: null, fields: [{name: 'id', type: 'INT', size: null, notNull: false, unique: false, isFKey: false, refTbl: 'NONE', refField: 'NONE'}]}) //this resets
+    setNewTbl({name: 'table1', pKey: null, fields: [{name: 'id', type: 'INT', size: null, notNull: false, unique: false, isFKey: false, refTbl: 'NONE', refField: 'NONE'}]}) //this resets
     //the modal when a table has been added
     setMaxIndex(0)
   }
 
   function closeModal(){
-    setNewTbl({name: 'table', pKey: null, fields: [{name: 'id', type: 'INT', size: null, notNull: false, unique: false, isFKey: false, refTbl: 'NONE', refField: 'NONE'}]}) //this resets the modal
+    setNewTbl({name: 'table1', pKey: null, fields: [{name: 'id', type: 'INT', size: null, notNull: false, unique: false, isFKey: false, refTbl: 'NONE', refField: 'NONE'}]}) //this resets the modal
     //if the user closes the modal without adding the table to the diagram
     setMaxIndex(0)
     toggleCreateModal(0)
