@@ -175,7 +175,7 @@ export default function EditModal({theme, table, editShow, toggleEditModal, tbls
                         <tr>
                           <th>Field name</th>
                           <th>Datatype</th>
-                          <th>Size</th>
+                          <th>Attributes</th>
                           <th>Not Null</th>
                           <th>Unique</th>
                           <th>Primary Key</th>
@@ -197,7 +197,7 @@ export default function EditModal({theme, table, editShow, toggleEditModal, tbls
                             </select>
                           </td>
                           <td>
-                            <input name='size' type={["DECIMAL","DEC","FLOAT","DOUBLE"].includes(element.type)? 'text':'number'} pattern={["DECIMAL","DEC","FLOAT","DOUBLE"].includes(element.type) ? "^[0-9]+,[0-9]+$" : undefined } required={['VARCHAR','VARBINARY'].includes(element.type) ? true:false} min={0} disabled={['DATE','BOOL','BOOLEAN','TINYTEXT','TINYBLOB',"MEDIUMTEXT","MEDIUMBLOB","LONGTEXT","LONGBLOB","YEAR"].includes(element.type) ?true:false} className={`border p-2 ${theme==='dark'?'bg-gray-900 focus:outline-none border-slate-700 focus:border-blue-500':'outline-blue-500'} `} max={8000} value={updatedTbl.fields[index].size?updatedTbl.fields[index].size:''}  data-rowindex={index} placeholder={["DECIMAL","DEC","FLOAT","DOUBLE"].includes(element.type) ? 'Precision,Scale': ['INT','INTEGER','BIGINT','TINYINT','SMALLINT','MEDIUMINT'].includes(element.type) ? 'Width':'Length'} onChange={handleChange}></input>
+                            <input name='size' type={["DECIMAL","DEC","FLOAT","DOUBLE","SET"].includes(element.type)? 'text':'number'} pattern={["DECIMAL","DEC","FLOAT","DOUBLE"].includes(element.type) ? "^[0-9]+,[0-9]+$" : ["SET"].includes(element.type) ? "^'([^',]*)'(?:,'([^',]*)')*$" : undefined } required={['VARCHAR','VARBINARY'].includes(element.type) ? true:false} min={0} disabled={['DATE','BOOL','BOOLEAN','TINYTEXT','TINYBLOB',"MEDIUMTEXT","MEDIUMBLOB","LONGTEXT","LONGBLOB","YEAR"].includes(element.type) ?true:false} className={`border p-2 ${theme==='dark'?'bg-gray-900 focus:outline-none border-slate-700 focus:border-blue-500':'outline-blue-500'} `} max={8000} value={updatedTbl.fields[index].size?updatedTbl.fields[index].size:''}  data-rowindex={index} placeholder={["DECIMAL","DEC","FLOAT","DOUBLE"].includes(element.type) ? 'Precision,Scale': ['INT','INTEGER','BIGINT','TINYINT','SMALLINT','MEDIUMINT'].includes(element.type) ? 'Width': ["SET"].includes(element.type)?"'val1','val2',...": ['DATETIME','TIME','TIMESTAMP'].includes(element.type) ? 'fsp':'Length'} onChange={handleChange}></input>
                           </td>
                           <td>
                             <input name='notNull' type='checkbox' className='border p-2 w-5 h-5 accent-blue-700' checked={element.notNull} data-rowindex={index} onChange={handleChange}></input>
@@ -243,7 +243,7 @@ export default function EditModal({theme, table, editShow, toggleEditModal, tbls
                                   <option>FALSE</option>
                                 </select>
                                 :
-                                <input name='default' type={["CHAR","VARCHAR","TEXT","MEDIUMTEXT","LONGTEXT","TINYTEXT","DATETIME","TIMESTAMP"].includes(element.type)? 'text': ["DATE"].includes(element.type) ? 'date' : 'number'} className={`${theme==='dark'?'bg-gray-900 focus:outline-none focus:border-blue-500 border-slate-700':'outline-blue-700'} border p-2`} value={element.default?element.default:''}  data-rowindex={index} placeholder={'Enter a value'} onChange={handleChange}></input>
+                                <input pattern={element.type === 'SET' ? "^'([^',]*)(?:,([^',]*))*'$":undefined} name='default' type={["CHAR","VARCHAR","TEXT","MEDIUMTEXT","LONGTEXT","TINYTEXT","DATETIME","TIMESTAMP","SET"].includes(element.type)? 'text': ["DATE"].includes(element.type) ? 'date' : 'number'} className={`${theme==='dark'?'bg-gray-900 focus:outline-none focus:border-blue-500 border-slate-700':'outline-blue-700'} border p-2`} value={element.default?element.default:''}  data-rowindex={index} placeholder={element.type === 'SET'? "'val1,val2,...'":'Enter a value'} onChange={handleChange}></input>
                             }                  
                           </td>
                           <td>
