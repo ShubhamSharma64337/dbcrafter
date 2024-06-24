@@ -9,7 +9,7 @@ export default function SqlModal({theme, diagram, show,  toggleModal}) {
       return;
     }
 
-    newSql.push("CREATE DATABASE " + diagram.name + ";\n\nUSE " + diagram.name + ";\n");
+    newSql.push("CREATE DATABASE " + (diagram.name ? diagram.name : 'NewDatabase') + ";\n\nUSE " + (diagram.name ? diagram.name : 'NewDatabase') + ";\n");
 
     for(let table of diagram.tbls){ //this is the first iteration in which we will not consider the Foreign Key constraints
 
