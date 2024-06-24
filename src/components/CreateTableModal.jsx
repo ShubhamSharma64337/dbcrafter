@@ -234,8 +234,8 @@ export default function CreateTableModal({theme, show, toggleCreateModal, addTab
                               })}
                             </select>
                           </td>
-                          <td>
-                            <input name='size' pattern={["DECIMAL","DEC","FLOAT","DOUBLE"].includes(element.type) ? "^[0-9]+,[0-9]+$" : ["SET"].includes(element.type) ? "^'([^',]*)'(?:,'([^',]*)')*$":undefined } type={["DECIMAL","DEC","FLOAT","DOUBLE","SET"].includes(element.type)? 'text':'number'} required={['VARCHAR','VARBINARY'].includes(element.type) ? true:false} min={["DECIMAL","DEC","FLOAT","DOUBLE"].includes(element.type)?undefined:0} disabled={['DATE','BOOL','BOOLEAN','TINYTEXT','TINYBLOB',"MEDIUMTEXT","MEDIUMBLOB","LONGTEXT","LONGBLOB","YEAR","ENUM"].includes(element.type) ?true:false} className={`${theme==='dark'?'bg-gray-900 focus:outline-none focus:border-blue-500 border-slate-700':'outline-blue-700'} border p-2 `} max={8000} value={newTbl.fields[index].size?newTbl.fields[index].size:''}  data-rowindex={index} placeholder={["DECIMAL","DEC","FLOAT","DOUBLE"].includes(element.type) ? 'Precision,Scale':['INT','INTEGER','BIGINT','SMALLINT','TINYINT','MEDIUMINT'].includes(element.type) ? 'Width':["SET"].includes(element.type)?"'val1','val2',...":['DATETIME','TIME','TIMESTAMP'].includes(element.type) ? 'fsp':'Length'} onChange={handleChange}></input>
+                          <td> {/* IMPORTANT */}
+                            <input name='size' pattern={["DECIMAL","DEC","FLOAT","DOUBLE"].includes(element.type) ? "^[0-9]+,[0-9]+$" : ["SET","ENUM"].includes(element.type) ? "^'([^',]*)'(?:,'([^',]*)')*$":undefined } type={["DECIMAL","DEC","FLOAT","DOUBLE","SET","ENUM"].includes(element.type)? 'text':'number'} required={['VARCHAR','VARBINARY'].includes(element.type) ? true:false} min={["DECIMAL","DEC","FLOAT","DOUBLE"].includes(element.type)?undefined:0} disabled={['DATE','BOOL','BOOLEAN','TINYTEXT','TINYBLOB',"MEDIUMTEXT","MEDIUMBLOB","LONGTEXT","LONGBLOB","YEAR"].includes(element.type) ?true:false} className={`${theme==='dark'?'bg-gray-900 focus:outline-none focus:border-blue-500 border-slate-700':'outline-blue-700'} border p-2 `} max={8000} value={newTbl.fields[index].size?newTbl.fields[index].size:''}  data-rowindex={index} placeholder={["DECIMAL","DEC","FLOAT","DOUBLE"].includes(element.type) ? 'Precision,Scale':['INT','INTEGER','BIGINT','SMALLINT','TINYINT','MEDIUMINT'].includes(element.type) ? 'Width':["SET","ENUM"].includes(element.type)?"'val1','val2',...":['DATETIME','TIME','TIMESTAMP'].includes(element.type) ? 'fsp':'Length'} onChange={handleChange}></input>
                           </td>
                           <td>
                             <input name='notNull' type='checkbox' className='border p-2 w-5 h-5 accent-blue-700' checked={newTbl.notNull} data-rowindex={index} onChange={handleChange}></input>
@@ -269,7 +269,7 @@ export default function CreateTableModal({theme, show, toggleCreateModal, addTab
                               })}
                             </select>
                           </td>
-                          <td>
+                          <td> {/* IMPORTANT */}
                           {
                               ["BOOL","BOOLEAN"].includes(element.type) ? 
                                 <select name='default' className={`border p-2 ${theme==='dark'?'bg-gray-900 focus:outline-none border-slate-700 focus:border-blue-500':'outline-blue-500'} `} value={element.default} data-rowindex={index} onChange={handleSelect}>
@@ -278,7 +278,7 @@ export default function CreateTableModal({theme, show, toggleCreateModal, addTab
                                   <option>FALSE</option>
                                 </select>
                                 :
-                                <input pattern={element.type === 'SET' ? "^'([^',]*)(?:,([^',]*))*'$":undefined} name='default' type={["CHAR","VARCHAR","TEXT","MEDIUMTEXT","LONGTEXT","TINYTEXT","DATETIME","TIMESTAMP","SET"].includes(element.type)? 'text': ["DATE"].includes(element.type) ? 'date' : 'number'} className={`${theme==='dark'?'bg-gray-900 focus:outline-none focus:border-blue-500 border-slate-700':'outline-blue-700'} border p-2`} value={element.default?element.default:''}  data-rowindex={index} placeholder={element.type === 'SET'? "'val1,val2,...'":'Enter a value'} onChange={handleChange}></input>
+                                <input pattern={["CHAR","VARCHAR","TEXT","MEDIUMTEXT","LONGTEXT","TINYTEXT","DATETIME","TIMESTAMP"].includes(element.type) ? "[^']*" : element.type === 'SET' ? "^'([^',]*)(?:,([^',]*))*'$": element.type === 'ENUM' ? "^'([^',]+)'$":undefined} name='default' type={["CHAR","VARCHAR","TEXT","MEDIUMTEXT","LONGTEXT","TINYTEXT","DATETIME","TIMESTAMP","SET","ENUM"].includes(element.type)? 'text': ["DATE"].includes(element.type) ? 'date' : 'number'} className={`${theme==='dark'?'bg-gray-900 focus:outline-none focus:border-blue-500 border-slate-700':'outline-blue-700'} border p-2`} value={element.default?element.default:''}  data-rowindex={index} placeholder={element.type === 'SET'? "'val1,val2,...'": element.type === 'ENUM' ? "'value'":'Enter a value'} onChange={handleChange}></input>
                             }  
                           </td>
                           <td>
