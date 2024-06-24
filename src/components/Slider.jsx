@@ -8,7 +8,8 @@ import img5 from '/craft5.png'
 export default function Slider({theme}) {
   const [currentImage, setCurrentImage] = useState(1);
   const captions = ['Simple, easy to understand diagrams','Create and store as many diagrams as you want','One click conversion to SQL','Save your time by using hundreds of pre-provided diagrams','Leverage the power of AI to generate tables']
-    useEffect(()=>{
+
+  useEffect(()=>{
         if(currentImage===1){
             document.getElementById('sliderImage').src = img1;
             document.getElementById('sliderImageCaption').innerText = captions[0];
@@ -42,9 +43,17 @@ export default function Slider({theme}) {
                   </button>
               </div>
               <figure className='flex flex-col justify-center items-center  w-4/5 sm:w-3/5'>
-                <img id='sliderImage' src={img1} className={`mb-5 hover:scale-95 transition w-full h-auto rounded-lg ring ${theme==='dark'?'ring-blue-500':'ring-blue-700'}`}></img>
+                <div className='relative mb-5 '>
+                <img id='sliderImage' src={img1} className={`hover:scale-95 transition w-full h-auto rounded-lg ring ${theme==='dark'?'ring-blue-500':'ring-blue-700'}`}></img>
+                    <ul className='absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-x-2 bg-gray-800 rounded bg-opacity-50 p-2'>
+                        {[1,2,3,4,5].map((item,index)=>{
+                            return <li key={index} className={`${item===currentImage?'bg-blue-600':'bg-slate-200'} w-3 h-3 rounded-full transition-colors`}></li>
+                        })}
+                    </ul>
+                </div>
                 <figcaption id='sliderImageCaption' className={`w-fit text-lg border-b-2 border-blue-600 ${theme==='dark'?'text-white':''}`}></figcaption>
               </figure>
+
               <div className={`hidden sm:block`}>
                   <button className={`bg-blue-600 font-[800] text-lg text-white shadow-blue-900 hover:shadow-blue-900   border-slate-700 px-4 py-3 rounded-lg shadow-[0px_4px_0.1rem] hover:shadow-[0px_0.1px_0.1rem] hover:translate-y-[4px] transition`} onClick={(e) => {
                       if (currentImage < 5) {
