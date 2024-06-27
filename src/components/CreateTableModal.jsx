@@ -13,6 +13,27 @@ export default function CreateTableModal({theme, show, toggleCreateModal, addTab
   //field name input element, which have invalid text in them
 
   function handleNameChange(e){ //table name change handler
+    let name = e.currentTarget.name;
+    let value = e.currentTarget.value;
+    let newFormValidation = [...formValidation];
+    if(name === 'tblName'){
+      if(/(^[0-9].*|^.*\s.*$|^.*[!@#$%^&*(),.?":{}|<>-].*$)/.test(value)){ //Here we check if the field name satisfies the valid name pattern of MySQL
+        if(newFormValidation.indexOf('tableName')<0){
+          newFormValidation.push('tableName'); // and is not already pushed, then push the 'fieldName'+index string into the validation status array
+        }
+      }
+      else if(reservedKeywordsMysql.includes(value.toUpperCase())){ // and the name he enters is a reserved keyword
+        if(newFormValidation.indexOf('tableName')<0){
+          newFormValidation.push('tableName'); // and is not already pushed, then push the 'fieldName'+index string into the validation status array
+        }
+      } else {
+        let removalIndex = newFormValidation.indexOf('tableName'); //otherwise, if the name user is updating, was already invalid, then
+        if(removalIndex>-1){ // remove it from the validation status array
+          newFormValidation.splice(removalIndex, 1)
+        }
+      }
+    }
+    setFormValidation(newFormValidation);
     setNewTbl({...newTbl, name: e.target.value});
   }
 
@@ -77,22 +98,26 @@ export default function CreateTableModal({theme, show, toggleCreateModal, addTab
           tableCopy = {...newTbl, pKey: null};
       }
     } else {  //handle change in field name or type or any other text input
-
+      let newFormValidation = [...formValidation];
+      
       if(name === 'name'){ //If the user is trying to change the name of a field
-        let newFormValidation = [...formValidation];
-        if(reservedKeywordsMysql.includes(value.toUpperCase())){ // and the name he enters is a reserved keyword
+        if(/(^[0-9].*|^.*\s.*$|^.*[!@#$%^&*(),.?":{}|<>-].*$)/.test(value)){ //Here we check if the field name satisfies the valid name pattern of MySQL
           if(newFormValidation.indexOf('fieldName'+rowindex)<0){
             newFormValidation.push('fieldName'+rowindex); // and is not already pushed, then push the 'fieldName'+index string into the validation status array
-            setFormValidation(newFormValidation);
+          }
+        }
+        else if(reservedKeywordsMysql.includes(value.toUpperCase())){ // and the name he enters is a reserved keyword
+          if(newFormValidation.indexOf('fieldName'+rowindex)<0){
+            newFormValidation.push('fieldName'+rowindex); // and is not already pushed, then push the 'fieldName'+index string into the validation status array
           }
         } else {
           let removalIndex = newFormValidation.indexOf('fieldName'+rowindex); //otherwise, if the name user is updating, was already invalid, then
           if(removalIndex>-1){ // remove it from the validation status array
             newFormValidation.splice(removalIndex, 1)
           }
-          setFormValidation(newFormValidation);
         }
       }
+      setFormValidation(newFormValidation);
       tableCopy = {...newTbl, fields: newTbl.fields.map((element, index)=>{
         if(index === rowindex){
           return {...element, [name]: value};
@@ -226,8 +251,11 @@ export default function CreateTableModal({theme, show, toggleCreateModal, addTab
                     <div className="mb-3 p-1">
                           <label className='block' htmlFor='tableName'>Table Name</label>
                         <div className='flex gap-x-2'>
-                          <input name='tblName' id='tableName' className={`border p-2 ${theme==='dark'?'bg-gray-900 focus:outline-none border-slate-700 focus:border-blue-500':'outline-blue-500'} `} value={newTbl.name}  onChange={handleNameChange} type='text' required={true} maxLength={64} placeholder='Enter the table name'></input>
-                          <button onClick={autoFill} type="button" className={`group relative ${theme==='dark'?'bg-purple-400 hover:bg-purple-500':'bg-purple-100 hover:bg-purple-200'} p-2 rounded-full   disabled:bg-slate-100 `} disabled={authInfo?false:true}>
+                          <div className='flex flex-col'>
+                            <input name='tblName' id='tableName' className={`rounded focus:outline-none border-2  p-2  ${theme==='dark'?formValidation.includes('tableName') ? 'bg-gray-900 border-red-500': 'bg-gray-900  border-slate-700 focus:border-blue-500':formValidation.includes('tableName')?'border-red-500 ': 'focus:border-blue-700'}`} value={newTbl.name}  onChange={handleNameChange} type='text' required={true} maxLength={64} placeholder='Enter the table name'></input>
+                            <span className={`${formValidation.includes('tableName')?'':'hidden'} text-red-500 text-sm text-left`}>Invalid Table Name</span>
+                          </div>
+                          <button onClick={autoFill} type="button" className={`h-min p-2 rounded-full disabled:bg-slate-100  group relative ${theme==='dark'?'bg-purple-400 hover:bg-purple-500':'bg-purple-100 hover:bg-purple-200'}`} disabled={authInfo?false:true}>
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.2} stroke="currentColor" className="size-6">
                               <path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09ZM18.259 8.715 18 9.75l-.259-1.035a3.375 3.375 0 0 0-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 0 0 2.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 0 0 2.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 0 0-2.456 2.456ZM16.894 20.567 16.5 21.75l-.394-1.183a2.25 2.25 0 0 0-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 0 0 1.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 0 0 1.423 1.423l1.183.394-1.183.394a2.25 2.25 0 0 0-1.423 1.423Z" />
                             </svg>
@@ -254,7 +282,7 @@ export default function CreateTableModal({theme, show, toggleCreateModal, addTab
                           return <tr key={`row${index}`} className='align-text-top'>
                           <td className='flex flex-col'>
                             <input name='name' type='text' required={true} className={`rounded focus:outline-none border-2  p-2  ${theme==='dark'?formValidation.includes('fieldName'+index) ? 'bg-gray-900 border-red-500': 'bg-gray-900  border-slate-700 focus:border-blue-500':formValidation.includes('fieldName'+index)?'border-red-500 ': 'focus:border-blue-700'}`} value={newTbl.fields[index].name} data-rowindex={index} placeholder='Enter table name' onChange={handleChange}></input>
-                            <span className={`${formValidation.includes('fieldName'+index)?'':'hidden'} text-red-500 text-sm text-left`}>MySQL Reserved Keyword</span>
+                            <span className={`${formValidation.includes('fieldName'+index)?'':'hidden'} text-red-500 text-sm text-left`}>Invalid Field Name</span>
                           </td>
                           <td>
                             <select name='type' className={`border ${theme==='dark'?'bg-gray-900 focus:outline-none focus:border-blue-500 border-slate-700':' outline-blue-700'} py-2 px-3`} value={element.type} data-rowindex={index} onChange={handleSelect}>

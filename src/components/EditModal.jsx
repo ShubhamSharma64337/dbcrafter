@@ -8,6 +8,27 @@ export default function EditModal({theme, table, editShow, toggleEditModal, tbls
   const [formValidation, setFormValidation] = useState(['none']);
 
   function handleNameChange(e){ //table name change handler
+    let name = e.currentTarget.name;
+    let value = e.currentTarget.value;
+    let newFormValidation = [...formValidation];
+    if(name === 'tblName'){
+      if(/(^[0-9].*|^.*\s.*$|^.*[!@#$%^&*(),.?":{}|<>-].*$)/.test(value)){ //Here we check if the field name satisfies the valid name pattern of MySQL
+        if(newFormValidation.indexOf('tableName')<0){
+          newFormValidation.push('tableName'); // and is not already pushed, then push the 'fieldName'+index string into the validation status array
+        }
+      }
+      else if(reservedKeywordsMysql.includes(value.toUpperCase())){ // and the name he enters is a reserved keyword
+        if(newFormValidation.indexOf('tableName')<0){
+          newFormValidation.push('tableName'); // and is not already pushed, then push the 'fieldName'+index string into the validation status array
+        }
+      } else {
+        let removalIndex = newFormValidation.indexOf('tableName'); //otherwise, if the name user is updating, was already invalid, then
+        if(removalIndex>-1){ // remove it from the validation status array
+          newFormValidation.splice(removalIndex, 1)
+        }
+      }
+    }
+    setFormValidation(newFormValidation);
     setUpdatedTbl({...updatedTbl, name: e.target.value});
   }
 
@@ -78,21 +99,26 @@ export default function EditModal({theme, table, editShow, toggleEditModal, tbls
       }
     } else {  //handle change in field name or type or any other text input
       
+      let newFormValidation = [...formValidation];
+      
       if(name === 'name'){ //If the user is trying to change the name of a field
-        let newFormValidation = [...formValidation];
-        if(reservedKeywordsMysql.includes(value.toUpperCase())){ // and the name he enters is a reserved keyword
+        if(/(^[0-9].*|^.*\s.*$|^.*[!@#$%^&*(),.?":{}|<>-].*$)/.test(value)){ //Here we check if the field name satisfies the valid name pattern of MySQL
           if(newFormValidation.indexOf('fieldName'+rowindex)<0){
             newFormValidation.push('fieldName'+rowindex); // and is not already pushed, then push the 'fieldName'+index string into the validation status array
-            setFormValidation(newFormValidation);
+          }
+        }
+        else if(reservedKeywordsMysql.includes(value.toUpperCase())){ // and the name he enters is a reserved keyword
+          if(newFormValidation.indexOf('fieldName'+rowindex)<0){
+            newFormValidation.push('fieldName'+rowindex); // and is not already pushed, then push the 'fieldName'+index string into the validation status array
           }
         } else {
           let removalIndex = newFormValidation.indexOf('fieldName'+rowindex); //otherwise, if the name user is updating, was already invalid, then
           if(removalIndex>-1){ // remove it from the validation status array
             newFormValidation.splice(removalIndex, 1)
           }
-          setFormValidation(newFormValidation);
         }
       }
+      setFormValidation(newFormValidation);
 
       tableCopy = {...updatedTbl, fields: updatedTbl.fields.map((element, index)=>{
         if(index === rowindex){
@@ -194,7 +220,10 @@ export default function EditModal({theme, table, editShow, toggleEditModal, tbls
             <form className="flex flex-col overflow-auto">
                     <div className="formItem mb-3 p-1">
                         <label className='block' htmlFor='tableName'>Table Name</label>
-                        <input type='text' required={true} maxLength={64} name='tblName' id='tableName' className={`border p-2 ${theme==='dark'?'bg-gray-900 focus:outline-none border-slate-700 focus:border-blue-500':'outline-blue-500'} `} value={updatedTbl.name} onChange={handleNameChange} placeholder='Enter the table name'></input>
+                        <div className='flex flex-col'>
+                          <input maxLength={64} type='text' required={true} name='tblName' id='tableName' className={`w-min rounded focus:outline-none border-2  p-2  ${theme==='dark'?formValidation.includes('tableName') ? 'bg-gray-900 border-red-500': 'bg-gray-900  border-slate-700 focus:border-blue-500':formValidation.includes('tableName')?'border-red-500 ': 'focus:border-blue-700'}`} value={updatedTbl.name} onChange={handleNameChange} placeholder='Enter the table name'></input>
+                          <span className={`${formValidation.includes('tableName')?'':'hidden'} text-red-500 text-sm text-left`}>Invalid Table Name</span>
+                        </div>
                     </div>
                     <table className={`ms-1 text-center border ${theme==='dark'?'border-slate-700':''}`} cellPadding={15} cellSpacing={5}>
                       
