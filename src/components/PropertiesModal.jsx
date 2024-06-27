@@ -18,10 +18,10 @@ export default function PropertiesModal({theme, visible,toggleModal,tbls}) {
   },[tbls])
   return (
     visible && <div className={`overlay flex justify-center items-center w-screen h-screen absolute top-0 bg-black bg-opacity-50`}>
-        <div className={`modal w-2/5 text-lg ${theme === 'dark'? 'bg-gray-900':'bg-white'} p-2 rounded-md shadow-lg`}>
+        <div className={`modal w-4/5 md:w-3/5 lg:w-2/5 text-lg ${theme === 'dark'? 'bg-gray-900':'bg-white'} p-2 rounded-md shadow-lg`}>
             <div className="modal-header border-b px-1 py-2 flex justify-between">
                 <div>
-                Statistics
+                Properties
                 </div>
                   <button onClick={toggleModal}>
                       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="size-5">
