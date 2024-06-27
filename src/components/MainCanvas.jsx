@@ -12,6 +12,7 @@ import AutosaveLoader from './AutosaveLoader';
 import ImportJsonModal from './ImportJsonModal';
 import ThemeButton from './ThemeButton';
 import Tooltip from './Tooltip';
+import PropertiesModal from './PropertiesModal';
 export default function MainCanvas({toggleTheme, showAlert, theme, authInfo, diagram, setDiagram, dtypes, setIsLoading, urls}) {
     window.addEventListener('resize',()=>{ //this helps in properly resizing the canvas whenever user resizes the window
         const canvas = document.getElementById("canvas");
@@ -31,6 +32,7 @@ export default function MainCanvas({toggleTheme, showAlert, theme, authInfo, dia
     const [sqlModalShow, setSqlModalShow] = useState(false);
     const [guestModalShow, setGuestModalShow] = useState(false);
     const [importJsonModalShow, setImportJsonModalShow] = useState(false);
+    const [statisticsModalShow, setStatisticsModalShow] = useState(false);
     const [curveType, setCurveType] = useState('bezier');
 
     const [offset, setOffset] = useState({x: 0, y:0}); //this is used to pan the canvas by translating the origin by offset
@@ -932,6 +934,9 @@ export default function MainCanvas({toggleTheme, showAlert, theme, authInfo, dia
     function toggleImportJsonModal(){
         importJsonModalShow?setImportJsonModalShow(false):setImportJsonModalShow(true);
     }
+    function toggleStatisticsModal(){
+        statisticsModalShow?setStatisticsModalShow(false):setStatisticsModalShow(true);
+    }
     function toggleCurveType(){
         curveType==='edge'?setCurveType('bezier'):setCurveType('edge');
     }
@@ -1204,14 +1209,23 @@ export default function MainCanvas({toggleTheme, showAlert, theme, authInfo, dia
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
                             <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607ZM13.5 10.5h-6" />
                         </svg>
+                        <Tooltip text={'Zoom Out'} theme={theme} position={'top'}></Tooltip>
                     </button>
                     <button type='button' className='group relative bg-blue-700 shadow-lg p-3 text-white transition-transform rounded-full hover:scale-110' onClick={zoomIn}>
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
                             <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607ZM10.5 7.5v6m3-3h-6" />
                         </svg>
+                        <Tooltip text={'Zoom In'} theme={theme} position={'top'}></Tooltip>
+                    </button>
+                    <button type='button' className='group relative bg-blue-700 shadow-lg p-3 text-white transition-transform rounded-full hover:scale-110' onClick={toggleStatisticsModal}>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25M9 16.5v.75m3-3v3M15 12v5.25m-4.5-15H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
+                        </svg>
+                        <Tooltip text={'Properties'} theme={theme} position={'top'}></Tooltip>
                     </button>
                 </div>
 
+                <PropertiesModal theme={theme} visible={statisticsModalShow} toggleModal={toggleStatisticsModal} tbls={diagram.tbls}></PropertiesModal>
                 <CreateTableModal theme={theme} dtypes={dtypes} show={createTableModalShow} toggleCreateModal={toggleCreateModal} tbls={diagram.tbls?diagram.tbls:null} addTable={addTbl} showAlert={showAlert} setIsLoading={setIsLoading} urls={urls} authInfo={authInfo}/>
                 <EditModal theme={theme} dtypes={dtypes} table={diagram.tbls && selections.selectedTbl !== null?diagram.tbls[selections.selectedTbl]:null} editShow={editTableModalShow} toggleEditModal={toggleEditModal} tbls={diagram.tbls?diagram.tbls:null} showAlert={showAlert} updateTbl={updateTbl}/>
                 <CreateDiagramModal theme={theme} diagram={diagram} createDiagramModalShow={createDiagramModalShow} toggleModal={toggleCreateDiagramModal} showAlert={showAlert} setDiagram={setDiagram} setIsLoading={setIsLoading} urls={urls}></CreateDiagramModal>
