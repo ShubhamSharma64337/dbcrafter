@@ -111,7 +111,7 @@ export default function CreateDiagramModal({theme, diagram, createDiagramModalSh
                     <div className="formItem my-3 flex flex-col">
                         {/* <label className='block' htmlFor='diagramName'>Diagram Name</label> */}
                         <input required={true} name='diagramName' id='diagramName' value={diagramName?diagramName:''} onChange={handleChange} className={`rounded focus:outline-none border-2  p-2  ${theme==='dark'?formValidation.includes('diagramName') ? 'bg-gray-900 border-red-500': 'bg-gray-900  border-slate-700 focus:border-blue-500':formValidation.includes('diagramName')?'border-red-500 ': 'focus:border-blue-700'}`} type='text' placeholder='Enter the diagram name'></input>
-                        <span className={`${formValidation.includes('diagramName')?'':'hidden'} text-red-500 text-sm text-left`}>Invalid Table Name</span>
+                        <span className={`${formValidation.includes('diagramName')?'':'hidden'} text-red-500 text-sm text-left`}>Invalid Diagram Name</span>
                     </div>
                     <div className="formItem my-3 flex items-center gap-x-2">
                         <input name='isPublic' id='isPublic' className="h-4 w-4 " type='checkbox' checked={isPublic} onChange={handleCheck}></input>
