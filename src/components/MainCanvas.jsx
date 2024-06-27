@@ -285,7 +285,7 @@ export default function MainCanvas({toggleTheme, showAlert, theme, authInfo, dia
                 // ctxt.stroke();
                 // ctxt.strokeStyle = 'black';
                 //filling the text
-                if(tbl.pKey === row.name){
+                if(row.pKey){
                     if(theme==='dark'){
                         ctxt.fillStyle = body_primary_text_dark;
                     } else {
@@ -889,7 +889,6 @@ export default function MainCanvas({toggleTheme, showAlert, theme, authInfo, dia
         }
         all_tbls[selections.selectedTbl].name = newTbl.name;
         all_tbls[selections.selectedTbl].fields = newTbl.fields;
-        all_tbls[selections.selectedTbl].pKey = newTbl.pKey;
         all_tbls[selections.selectedTbl].x = old_tbl.x;
         all_tbls[selections.selectedTbl].y = old_tbl.y;
         all_tbls[selections.selectedTbl].w = old_tbl.w;

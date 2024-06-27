@@ -41,7 +41,7 @@ export default function EditModal({theme, table, editShow, toggleEditModal, tbls
       return {...element}
     })}
     const insertIndex = parseInt(e.currentTarget.dataset.rowindex) + 1;
-    tableCopy.fields.splice(insertIndex,0, {name: 'field'+(maxIndex+1), type: 'INT', notNull: false, unique: false, isFKey: false, refTbl: 'NONE', refField: 'NONE', default: null})
+    tableCopy.fields.splice(insertIndex,0, {name: 'field'+(maxIndex+1), type: 'INT', notNull: false, unique: false, pKey: false, isFKey: false, refTbl: 'NONE', refField: 'NONE', default: null})
     setUpdatedTbl(tableCopy);
     setMaxIndex(maxIndex+1);
   }
@@ -53,9 +53,6 @@ export default function EditModal({theme, table, editShow, toggleEditModal, tbls
     if(tableCopy.fields.length<2){ //this makes sure that user does not delete all the rows in the table
       showAlert("Table must have at least one row!","danger");
       return;
-    }
-    if(tableCopy.fields[parseInt(e.currentTarget.dataset.rowindex)].name === tableCopy.pKey){ //this resets the primary key to null if field which is currently set to primary key is deleted
-      tableCopy.pKey = null;
     }
     tableCopy.fields.splice(parseInt(e.currentTarget.dataset.rowindex),1)
     setUpdatedTbl(tableCopy);
@@ -90,13 +87,16 @@ export default function EditModal({theme, table, editShow, toggleEditModal, tbls
         })
       } 
     } else if (name === 'pKey'){ //handle change in pkey checkbox
-      let currentField = updatedTbl.fields[parseInt(e.currentTarget.dataset.rowindex)];
       let checked = e.currentTarget.checked;
-      if(checked === true){
-        tableCopy = {...updatedTbl, pKey: currentField.name}
-      } else {
-        tableCopy = {...updatedTbl, pKey: null}
-      }
+      tableCopy = {...updatedTbl, fields: updatedTbl.fields.map((element, index)=>{
+        if(index === rowindex){
+            return {...element, [name]:checked};
+        }
+        else {
+          return {...element };
+        }
+      })
+    } 
     } else {  //handle change in field name or type or any other text input
       
       let newFormValidation = [...formValidation];
@@ -263,7 +263,7 @@ export default function EditModal({theme, table, editShow, toggleEditModal, tbls
                             <input name='unique' type='checkbox' className='border p-2 w-5 h-5 accent-blue-700' checked={element.unique} data-rowindex={index} onChange={handleChange}></input>
                           </td>
                           <td>
-                            <input name='pKey' type='checkbox' className='border p-2 w-5 h-5 accent-blue-700' checked={element.name===updatedTbl.pKey?true:false} data-rowindex={index} onChange={handleChange}></input>
+                            <input name='pKey' type='checkbox' className='border p-2 w-5 h-5 accent-blue-700' checked={element.pKey} data-rowindex={index} onChange={handleChange}></input>
                           </td>
                           <td>
                             <input name='isFKey' type='checkbox' className='border p-2 w-5 h-5 accent-blue-700' checked={element.isFKey} data-rowindex={index} onChange={handleChange}></input>

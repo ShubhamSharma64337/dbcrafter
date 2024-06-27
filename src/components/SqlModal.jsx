@@ -14,6 +14,7 @@ export default function SqlModal({theme, diagram, show,  toggleModal}) {
     for(let table of diagram.tbls){ //this is the first iteration in which we will not consider the Foreign Key constraints
 
       let stmt = "CREATE TABLE " + table.name + "(\n";
+      let pKeyFields = []; //This array stores the names of all the fields which make the primary key
       table.fields.map((field, index)=>{ //this creates each field's portion in the statement
         stmt = stmt + "\t" + field.name + " " + field.type;
         if(field.size){ //This expression returns false if the value of size is an empty string
@@ -38,16 +39,22 @@ export default function SqlModal({theme, diagram, show,  toggleModal}) {
         if(field.notNull){
           stmt += " NOT NULL"
         }
+        if(field.pKey){
+          pKeyFields.push(field.name);
+        }
         if(field.unique){
           stmt += " UNIQUE"
-        }
-        if(table.pKey === field.name){
-          stmt += " PRIMARY KEY";
         }
         if(index !== table.fields.length - 1){ //this removes comma in case of last field
           stmt = stmt + ", \n";
         }
       })
+      if(pKeyFields.length>0){ // Creating the statement to set Primary Key
+        stmt += ", \n";
+        stmt += "\tPRIMARY KEY (" + pKeyFields.map((value,index)=>{
+          return value;
+        }) + ")";
+      }
       stmt = stmt + "\n);";
       newSql.push(stmt);
     }
@@ -79,7 +86,7 @@ export default function SqlModal({theme, diagram, show,  toggleModal}) {
     element.setAttribute('href','data:text/plain;charset=utf-8, '+ encodeURIComponent(wholeSql));
     element.classList.add('hidden');
     document.body.appendChild(element);
-    element.click();
+    element.click(); //This triggers the download
 
     document.body.removeChild(element);
   }
