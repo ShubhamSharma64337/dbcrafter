@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 
-export default function PropertiesModal({theme, visible,toggleModal,tbls}) {
+export default function PropertiesModal({theme, createdAt, visible,toggleModal,tbls}) {
   const [relationships, setRelationships] = useState(0);
   useEffect(()=>{
     let relcount = 0;
@@ -34,6 +34,7 @@ export default function PropertiesModal({theme, visible,toggleModal,tbls}) {
                 <ul>
                     <li className='flex justify-between'><span>Tables</span> <span>{tbls?tbls.length:'0'}</span></li>
                     <li className='flex justify-between'><span>Foreign Keys</span> <span>{relationships}</span></li>
+                    <li className='flex justify-between'><span>Created At</span> <span>{createdAt?createdAt:'Old Version'}</span></li>
                     
                 </ul>
             </div>

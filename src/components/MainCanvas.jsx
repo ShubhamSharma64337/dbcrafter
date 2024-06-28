@@ -1225,7 +1225,7 @@ export default function MainCanvas({toggleTheme, showAlert, theme, authInfo, dia
                     </button>
                 </div>
 
-                <PropertiesModal theme={theme} visible={statisticsModalShow} toggleModal={toggleStatisticsModal} tbls={diagram.tbls}></PropertiesModal>
+                <PropertiesModal theme={theme} createdAt={diagram.createdAt} visible={statisticsModalShow} toggleModal={toggleStatisticsModal} tbls={diagram.tbls}></PropertiesModal>
                 <CreateTableModal theme={theme} dtypes={dtypes} show={createTableModalShow} toggleCreateModal={toggleCreateModal} tbls={diagram.tbls?diagram.tbls:null} addTable={addTbl} showAlert={showAlert} setIsLoading={setIsLoading} urls={urls} authInfo={authInfo}/>
                 <EditModal theme={theme} dtypes={dtypes} table={diagram.tbls && selections.selectedTbl !== null?diagram.tbls[selections.selectedTbl]:null} editShow={editTableModalShow} toggleEditModal={toggleEditModal} tbls={diagram.tbls?diagram.tbls:null} showAlert={showAlert} updateTbl={updateTbl}/>
                 <CreateDiagramModal theme={theme} diagram={diagram} createDiagramModalShow={createDiagramModalShow} toggleModal={toggleCreateDiagramModal} showAlert={showAlert} setDiagram={setDiagram} setIsLoading={setIsLoading} urls={urls}></CreateDiagramModal>

@@ -71,7 +71,7 @@ export default function CreateDiagramModal({theme, diagram, createDiagramModalSh
     .then(response => response.json()) //response.json() or response.text() provides the 'data'
     .then((data) => {
         if(data.success){
-          setDiagram({...diagramCopy})
+          setDiagram({...diagramCopy, createdAt: data.createdAt})
           showAlert(data.message, 'success');
           toggleModal();
         } else {
