@@ -31,7 +31,7 @@ function App(){
   const dtypes = [
     "CHAR","VARCHAR","BINARY","VARBINARY","TINYBLOB","TINYTEXT","TEXT","BLOB","MEDIUMTEXT","MEDIUMBLOB","LONGTEXT","LONGBLOB","TINYINT","BOOL","BOOLEAN","SMALLINT","MEDIUMINT","INT","INTEGER","BIGINT","FLOAT","DOUBLE","DECIMAL","DEC","ENUM","SET","DATE","DATETIME","TIMESTAMP","TIME","YEAR"];
   
-  const urls = {productionUrl : 'https://dbcrafter.el.r.appspot.com', devUrl : 'http://localhost:3000'}
+  const urls = {productionUrl : 'https://dbcrafter-backend.onrender.com', devUrl : 'http://localhost:3000'}
   
   function login(){
     setIsLoading(true);
